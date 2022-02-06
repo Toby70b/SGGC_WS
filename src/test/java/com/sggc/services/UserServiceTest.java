@@ -1,6 +1,7 @@
 package com.sggc.services;
 
 import com.sggc.exceptions.UserHasNoGamesException;
+import com.sggc.models.Game;
 import com.sggc.models.GetOwnedGamesResponse;
 import com.sggc.models.GetOwnedGamesResponseDetails;
 import com.sggc.models.User;
@@ -19,7 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -48,7 +49,7 @@ class UserServiceTest {
             mockGetOwnedGamesResponse.setResponse(getOwnedGamesResponseDetails);
             when(steamRequestHandler.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse);
             UserHasNoGamesException exception =
-                    assertThrows(UserHasNoGamesException.class, () -> userService.getIdsOfGamesOwnedByAllUsers(Set.of("1", "2")));
+                    assertThrows(UserHasNoGamesException.class, () -> userService.getIdsOfGamesOwnedByAllUsers(Set.of("1")));
             assertEquals(exception.getUserId(), "1");
 
         }
@@ -135,19 +136,59 @@ class UserServiceTest {
     class GetIdsOfGamesOwnedByUserTests {
         @Test
         @DisplayName("If the user provided already exists within the database it will return a list of game ids of games owned by that user")
-        void ifTheUserProvidedAlreadyExistsWithinTheDatabaseItWillReturnAListOfTheUsersOwnedGameIds() {
+        void ifTheUserProvidedAlreadyExistsWithinTheDatabaseItWillReturnAListOfTheUsersOwnedGameIds() throws UserHasNoGamesException {
+            User user1 = new User();
+            HashSet<String> set1 = new HashSet<>();
+            set1.add("2");
+            set1.add("1342");
+            set1.add("10");
+            user1.setOwnedGameIds(set1);
+
+            when(userRepository.findById("1")).thenReturn(Optional.of(user1));
+            assertEquals(Set.of("2", "1342", "10"), userService.findOwnedGamesByUserId("1"));
         }
 
         @Test
         @DisplayName("If the user provided does not exist within the database it will contact the Steam API and return a list of game ids of games owned by that user")
-        void ifTheUserProvidedDoesNotExistWithinTheDatabaseItWillContactTheSteamApiAndReturnAListOfTheUsersOwnedGameIds() {
+        void ifTheUserProvidedDoesNotExistWithinTheDatabaseItWillContactTheSteamApiAndReturnAListOfTheUsersOwnedGameIds() throws UserHasNoGamesException {
+            when(userRepository.findById("1")).thenReturn(Optional.empty());
+            GetOwnedGamesResponse mockGetOwnedGamesResponse = new GetOwnedGamesResponse();
+            GetOwnedGamesResponseDetails getOwnedGamesResponseDetails = new GetOwnedGamesResponseDetails();
+            getOwnedGamesResponseDetails.setGameCount(3);
+
+            Game game1 = createExampleGame("2");
+            Game game2 = createExampleGame("1342");
+            Game game3 = createExampleGame("10");
+
+
+            getOwnedGamesResponseDetails.setGames(Set.of(game1, game2, game3));
+            mockGetOwnedGamesResponse.setResponse(getOwnedGamesResponseDetails);
+            when(steamRequestHandler.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse);
+
+
+            assertEquals(Set.of("2", "1342", "10"), userService.findOwnedGamesByUserId("1"));
         }
 
         @Test
         @DisplayName("If the user provided does not exist within the database if the user owns at least one game a new user will be saved to the database with details from the Steam API response")
-        void ifTheUserProvidedDoesNotExistWithinTheDatabaseIfTheUserOwnsAtLeastOneGameANewUserWillBeSavedToTheDatabase() {
-        }
+        void ifTheUserProvidedDoesNotExistWithinTheDatabaseIfTheUserOwnsAtLeastOneGameANewUserWillBeSavedToTheDatabase() throws UserHasNoGamesException {
+            when(userRepository.findById("12")).thenReturn(Optional.empty());
+            GetOwnedGamesResponse mockGetOwnedGamesResponse = new GetOwnedGamesResponse();
+            GetOwnedGamesResponseDetails getOwnedGamesResponseDetails = new GetOwnedGamesResponseDetails();
+            getOwnedGamesResponseDetails.setGameCount(1);
+            Game game1 = createExampleGame("2");
+            getOwnedGamesResponseDetails.setGames(Set.of(game1));
+            mockGetOwnedGamesResponse.setResponse(getOwnedGamesResponseDetails);
+            when(steamRequestHandler.requestUsersOwnedGamesFromSteamApi("12")).thenReturn(mockGetOwnedGamesResponse);
+            userService.findOwnedGamesByUserId("12");
 
+            User expectedUserObject =  new User();
+            expectedUserObject.setId("12");
+            expectedUserObject.setOwnedGameIds(Set.of("2"));
+            verify(userRepository, times(1)).save(expectedUserObject);
+
+
+        }
 
         @Test
         @DisplayName("If the user found via the Steam API does not own any games it will throw an exception with an appropriate message")
@@ -163,5 +204,11 @@ class UserServiceTest {
             assertEquals(exception.getUserId(), "1");
         }
 
+    }
+
+    private Game createExampleGame(String gameId) {
+        Game game = new Game();
+        game.setAppid(gameId);
+        return game;
     }
 }

@@ -22,6 +22,21 @@ public class GameService {
     private final GameRepository gameRepository;
     private final SteamRequestHandler steamRequestHandler;
 
+    public Set<Game> getCommonGames(Set<String> gameIds, boolean multiplayerOnly) {
+        //Sometimes games have been removed from steam but still appear in users game libraries, thus remove nulls from the list.
+        Set<Game> commonGames =  gameIds.stream().map(gameRepository::findGameByAppid).filter(Objects::nonNull).collect(Collectors.toSet());
+        if(multiplayerOnly){
+            commonGames = commonGames.stream().filter(game -> {
+                try {
+                    return isGameMultiplayer(game);
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            }).collect(Collectors.toSet());
+        }
+        return commonGames;
+    }
+
     private boolean isGameMultiplayer(Game game) throws IOException {
         if (game.getMultiplayer() != null) {
             return game.getMultiplayer();
@@ -43,23 +58,6 @@ public class GameService {
             return false;
         }
     }
-
-    public Set<Game> getCommonGames(Set<String> gameIds, boolean multiplayerOnly) {
-        //Sometimes games have been removed from steam but still appear in users game libraries, thus remove nulls from the list.
-        Set<Game> commonGames =  gameIds.stream().map(gameRepository::findGameByAppid).filter(Objects::nonNull).collect(Collectors.toSet());
-        if(multiplayerOnly){
-            commonGames = commonGames.stream().filter(game -> {
-                try {
-                    return isGameMultiplayer(game);
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
-            }).collect(Collectors.toSet());
-        }
-        return commonGames;
-    }
-
-
 }
 
 
