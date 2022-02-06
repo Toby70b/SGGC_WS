@@ -36,16 +36,16 @@ public class UserService {
             Set<String> usersOwnedGameIds;
             try {
                 usersOwnedGameIds = getUsersOwnedGameIds(userId);
-                /*
-                    Cache the user to speed up searches. in a proper prod environment this would be cleaned regularly
-                    to catch changes in users owned games
-                */
-                userRepository.save(new User(userId, usersOwnedGameIds));
-                return usersOwnedGameIds;
             } catch (UserHasNoGamesException e) {
                 e.setUserId(userId);
                 throw e;
             }
+            /*
+                Cache the user to speed up searches. in a proper prod environment this would be cleaned regularly
+                to catch changes in users owned games
+            */
+            userRepository.save(new User(userId, usersOwnedGameIds));
+            return usersOwnedGameIds;
         }
     }
 

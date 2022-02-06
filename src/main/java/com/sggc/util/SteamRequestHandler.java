@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
@@ -16,26 +17,20 @@ import java.util.Collections;
 
 import static com.sggc.util.CommonUtil.*;
 
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class SteamRequestHandler {
     private final Logger logger = LoggerFactory.getLogger(SteamRequestHandler.class);
 
     @Value("${steamapi.key}")
     private String steamApiKey;
-    private final WebClient.Builder webClientBuilder;
+
+    private final RestTemplate restTemplate;
 
     public GetOwnedGamesResponse requestUsersOwnedGamesFromSteamApi(String userId) {
         String requestUri = GET_OWNED_GAMES_ENDPOINT+"?key=" + steamApiKey + "&steamid=" + userId;
         logger.debug("Contacting " + requestUri + " to get owned games of user " + userId);
-        return webClientBuilder.build().get()
-                .uri(GET_OWNED_GAMES_ENDPOINT, uriBuilder -> uriBuilder
-                        .queryParam("key", steamApiKey)
-                        .queryParam("steamid", userId)
-                        .build())
-                .retrieve()
-                .bodyToMono(GetOwnedGamesResponse.class)
-                .block();
+        return restTemplate.getForObject(GET_OWNED_GAMES_ENDPOINT,GetOwnedGamesResponse.class);
     }
 
 
@@ -43,14 +38,7 @@ public class SteamRequestHandler {
     public String requestAppDetailsFromSteamApi(String appId) {
         String URI = GET_APP_DETAILS_ENDPOINT + "?appids=" + appId;
         logger.debug("Contacting " + URI + " to get details of game " + appId);
-
-        return webClientBuilder.build().get()
-                .uri(GET_APP_DETAILS_ENDPOINT, uriBuilder -> uriBuilder
-                        .queryParam("appids", appId)
-                        .build())
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        return restTemplate.getForObject(GET_APP_DETAILS_ENDPOINT,String.class);
     }
 
     public GameData parseGameDetailsList(String stringToParse) throws IOException {

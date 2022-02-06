@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+//TODO add message here
 @Data
 public class UserHasNoGamesException extends Exception {
     private String userId;
