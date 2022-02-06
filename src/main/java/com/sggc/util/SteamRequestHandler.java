@@ -33,8 +33,6 @@ public class SteamRequestHandler {
         return restTemplate.getForObject(GET_OWNED_GAMES_ENDPOINT,GetOwnedGamesResponse.class);
     }
 
-
-
     public String requestAppDetailsFromSteamApi(String appId) {
         String URI = GET_APP_DETAILS_ENDPOINT + "?appids=" + appId;
         logger.debug("Contacting " + URI + " to get details of game " + appId);
