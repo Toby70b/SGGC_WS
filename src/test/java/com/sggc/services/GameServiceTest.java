@@ -36,8 +36,8 @@ class GameServiceTest {
     class IsGameMultiplayerTests {
 
         @Test
-        @DisplayName("Return game details regardless of multiplayer status")
-        void ifTheGameIsMultiplayerItWillReturnTrue() {
+        @DisplayName("Return the details of game via its id")
+        void ReturnDetailsOfGameById() {
             Game exampleGame = new Game();
             exampleGame.setAppid("12");
             exampleGame.setMultiplayer(true);
