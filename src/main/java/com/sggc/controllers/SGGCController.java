@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.Set;
 
 @RestController
@@ -23,12 +22,11 @@ public class SGGCController {
 
     @CrossOrigin
     @PostMapping(value = "/")
-    public ResponseEntity<Set<Game>> getGamesAllUsersOwn(@Valid @RequestBody GetCommonGamesRequest request) throws IOException, UserHasNoGamesException {
+    public ResponseEntity<Set<Game>> getGamesAllUsersOwn(@Valid @RequestBody GetCommonGamesRequest request) throws UserHasNoGamesException {
         Set<String> steamUserIds = request.getSteamIds();
         Set<String> commonGameIdsBetweenUsers = userService.getIdsOfGamesOwnedByAllUsers(steamUserIds);
         Set<Game> commonGames = gameService.getCommonGames(commonGameIdsBetweenUsers,request.isMultiplayerOnly());
         return new ResponseEntity<>(commonGames, HttpStatus.OK);
     }
-
 
 }
