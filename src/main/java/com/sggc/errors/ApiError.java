@@ -1,20 +1,27 @@
 package com.sggc.errors;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Data
+@NoArgsConstructor
 public class ApiError {
 
-    private final String apiVersion;
-    private final String code;
-    private final String exception;
-    private final String errorMessage;
+    private String apiVersion;
+    private String code;
+    private String exception;
+    private String errorMessage;
 
+    public ApiError(String apiVersion, String code, String exception, String errorMessage) {
+        this.apiVersion = apiVersion;
+        this.code = code;
+        this.exception = exception;
+        this.errorMessage = errorMessage;
+    }
 
     public static ApiError fromDefaultAttributeMap(String apiVersion,
                                                    Map<String, Object> defaultErrorAttributes) {

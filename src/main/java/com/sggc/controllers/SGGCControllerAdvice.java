@@ -27,12 +27,13 @@ public class SGGCControllerAdvice extends ResponseEntityExceptionHandler {
                 currentApiVersion,
                 Integer.toString(HttpStatus.NOT_FOUND.value()),
                 "UserHasNoGamesException",
-                "User with Id: " + ex.getUserId() + " has no games associated with their account, or doesn't exist "
+                "User with Id: " + ex.getUserId() + " has no games associated with their account, or doesn't exist"
         );
         logger.error("ERROR:", ex);
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
-
+    //TODO we need a catch-all case here, can replace the below IOException case
+    /*
     @ExceptionHandler(IOException.class)
     public ResponseEntity<ApiError> handleIOException(IOException ex) {
         final ApiError error = new ApiError(
@@ -44,4 +45,5 @@ public class SGGCControllerAdvice extends ResponseEntityExceptionHandler {
         logger.error("ERROR:", ex);
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    */
 }

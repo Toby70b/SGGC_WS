@@ -11,4 +11,7 @@ public class UserHasNoGamesException extends Exception {
     public UserHasNoGamesException() {
         super();
     }
+    public UserHasNoGamesException(String userId) {
+        super(); this.userId = userId;
+    }
 }
