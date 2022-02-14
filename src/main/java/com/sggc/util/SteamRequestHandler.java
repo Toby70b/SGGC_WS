@@ -21,7 +21,7 @@ import static com.sggc.util.CommonUtil.*;
 public class SteamRequestHandler {
     private final Logger logger = LoggerFactory.getLogger(SteamRequestHandler.class);
 
-    @Value("${steamapi.key}")
+    @Value("${steam.api.key}")
     private String steamApiKey;
 
     private final RestTemplate restTemplate;

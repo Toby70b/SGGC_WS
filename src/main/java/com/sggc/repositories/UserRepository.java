@@ -1,10 +1,9 @@
 package com.sggc.repositories;
 
 import com.sggc.models.User;
+import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
+import org.springframework.data.repository.CrudRepository;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Repository;
-
-@Repository
-public interface UserRepository extends MongoRepository<User ,String> {
+@EnableScan
+public interface UserRepository extends CrudRepository<User ,String> {
 }
