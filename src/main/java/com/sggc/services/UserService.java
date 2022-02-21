@@ -5,16 +5,17 @@ import com.sggc.models.Game;
 import com.sggc.models.GetOwnedGamesResponseDetails;
 import com.sggc.models.User;
 import com.sggc.repositories.UserRepository;
+import com.sggc.util.DateUtil;
 import com.sggc.util.SteamRequestHandler;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,8 +24,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final static Logger logger = LoggerFactory.getLogger(UserService.class);
-
     private final SteamRequestHandler steamRequestHandler;
+    private final Clock systemClock;
 
     public Set<String> findOwnedGamesByUserId(String userId) throws UserHasNoGamesException {
         logger.debug("Attempting to find user with id: " + userId);
@@ -34,7 +35,7 @@ public class UserService {
             return user.get().getOwnedGameIds();
         } else {
             logger.debug("User with matching id hasnt been found in Mongo Repo, will request details from Steam API");
-            Set<String> usersOwnedGameIds;
+            Set<String> usersOwnedGameIds = new HashSet<>();
             try {
                 usersOwnedGameIds = getUsersOwnedGameIds(userId);
             } catch (UserHasNoGamesException e) {
@@ -45,7 +46,7 @@ public class UserService {
                 Cache the user to speed up searches. in a proper prod environment this would be cleaned regularly
                 to catch changes in users owned games
             */
-            userRepository.save(new User(userId, usersOwnedGameIds));
+            userRepository.save(new User(userId, usersOwnedGameIds,calculateUserRemovalDate()));
             return usersOwnedGameIds;
         }
     }
@@ -78,5 +79,14 @@ public class UserService {
                 .stream()
                 .map(Game::getAppid)
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Sets the removalDate to be 24 hours from current time represented in milliseconds
+     * @return the time 24 hours from now represented in milliseconds
+     */
+    private long calculateUserRemovalDate() {
+        DateUtil dateUtil = new DateUtil(systemClock);
+        return dateUtil.getTimeOneDayFromNow().toEpochMilli();
     }
 }

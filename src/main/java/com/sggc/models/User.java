@@ -13,9 +13,9 @@ import javax.persistence.ElementCollection;
 import java.util.Set;
 
 @Data
+@DynamoDBTable(tableName = "User")
 @RequiredArgsConstructor
 @NoArgsConstructor
-@DynamoDBTable(tableName = "User")
 public class User {
     @NonNull
     private String id;
@@ -33,4 +33,8 @@ public class User {
     public Set<String> getOwnedGameIds() {
         return ownedGameIds;
     }
+
+    //TTL (time-to-live) field for DynamoDB
+    @NonNull
+    private double removalDate;
 }
