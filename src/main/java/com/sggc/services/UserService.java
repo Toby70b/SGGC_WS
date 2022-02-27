@@ -1,5 +1,6 @@
 package com.sggc.services;
 
+import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.models.Game;
 import com.sggc.models.GetOwnedGamesResponseDetails;
@@ -27,7 +28,7 @@ public class UserService {
     private final SteamRequestHandler steamRequestHandler;
     private final Clock systemClock;
 
-    public Set<String> findOwnedGamesByUserId(String userId) throws UserHasNoGamesException {
+    public Set<String> findOwnedGamesByUserId(String userId) throws UserHasNoGamesException, SecretRetrievalException {
         logger.debug("Attempting to find user with id: " + userId);
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
@@ -42,6 +43,9 @@ public class UserService {
                 e.setUserId(userId);
                 throw e;
             }
+            catch (SecretRetrievalException e){
+                throw e;
+            }
             /*
                 Cache the user to speed up searches. in a proper prod environment this would be cleaned regularly
                 to catch changes in users owned games
@@ -51,7 +55,7 @@ public class UserService {
         }
     }
 
-    public Set<String> getIdsOfGamesOwnedByAllUsers(Set<String> userIds) throws UserHasNoGamesException {
+    public Set<String> getIdsOfGamesOwnedByAllUsers(Set<String> userIds) throws UserHasNoGamesException, SecretRetrievalException {
         Set<String> combinedGameIds = new HashSet<>();
         for (String userId : userIds) {
             Set<String> usersOwnedGameIds = findOwnedGamesByUserId(userId);
@@ -64,7 +68,7 @@ public class UserService {
         return combinedGameIds;
     }
 
-    private Set<String> getUsersOwnedGameIds(String userId) throws UserHasNoGamesException {
+    private Set<String> getUsersOwnedGameIds(String userId) throws UserHasNoGamesException, SecretRetrievalException {
         Set<String> gameIdList;
         GetOwnedGamesResponseDetails response = steamRequestHandler.requestUsersOwnedGamesFromSteamApi(userId).getResponse();
         if(response.getGameCount()==0){

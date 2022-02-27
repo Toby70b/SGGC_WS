@@ -2,6 +2,7 @@ package com.sggc.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sggc.errors.ApiError;
+import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.models.Game;
 import com.sggc.models.GetCommonGamesRequest;
@@ -49,7 +50,7 @@ class SGGCControllerTest {
 
     @Test
     @DisplayName("If provided with a valid request it will return a successful response whose body includes a list of games")
-    void IfProvidedWithAValidRequestItWillReturnASuccessfulResponseWhoseBodyIncludesAListOfGames() throws UserHasNoGamesException {
+    void IfProvidedWithAValidRequestItWillReturnASuccessfulResponseWhoseBodyIncludesAListOfGames() throws UserHasNoGamesException, SecretRetrievalException {
         when(userService.getIdsOfGamesOwnedByAllUsers(any())).thenReturn(new HashSet<>());
         Game exampleGame = new Game();
         when(gameService.getCommonGames(any(), anyBoolean())).thenReturn(Set.of(exampleGame));

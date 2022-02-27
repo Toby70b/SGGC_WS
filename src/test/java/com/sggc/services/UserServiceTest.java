@@ -1,5 +1,6 @@
 package com.sggc.services;
 
+import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.models.Game;
 import com.sggc.models.GetOwnedGamesResponse;
@@ -7,22 +8,16 @@ import com.sggc.models.GetOwnedGamesResponseDetails;
 import com.sggc.models.User;
 import com.sggc.repositories.UserRepository;
 import com.sggc.util.SteamRequestHandler;
-import org.junit.Before;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 
 import java.time.Clock;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.Optional;
@@ -52,7 +47,7 @@ class UserServiceTest {
 
         @Test
         @DisplayName("If one of the users provided does not own any games it will throw an exception with an appropriate message")
-        void ifOneOfTheUsersProvidedDoesNotOwnAnyGamesItWillThrowAnExceptionWithAnAppropriateMessage() {
+        void ifOneOfTheUsersProvidedDoesNotOwnAnyGamesItWillThrowAnExceptionWithAnAppropriateMessage() throws SecretRetrievalException {
             when(userRepository.findById("1")).thenReturn(Optional.empty());
 
             GetOwnedGamesResponse mockGetOwnedGamesResponse = new GetOwnedGamesResponse();
@@ -71,7 +66,7 @@ class UserServiceTest {
         class AllUsersOwnOneGameTests {
             @Test
             @DisplayName("If provided with a list of users who own one common game it will return a list of common games")
-            void ifProvidedWithAListOfUsersWhoOwnOneCommonGameItWillReturnThatGame() throws UserHasNoGamesException {
+            void ifProvidedWithAListOfUsersWhoOwnOneCommonGameItWillReturnThatGame() throws UserHasNoGamesException, SecretRetrievalException {
 
                 User user1 = new User();
                 HashSet<String> set1 = new HashSet<>();
@@ -96,7 +91,7 @@ class UserServiceTest {
 
             @Test
             @DisplayName("If provided with a list of users who own multiple common games it will return a list of common games")
-            void ifProvidedWithAListOfUsersWhoOwnMultipleCommonGameItWillReturnThoseGames() throws UserHasNoGamesException {
+            void ifProvidedWithAListOfUsersWhoOwnMultipleCommonGameItWillReturnThoseGames() throws UserHasNoGamesException, SecretRetrievalException {
                 User user1 = new User();
                 HashSet<String> set1 = new HashSet<>();
                 set1.add("1");
@@ -119,7 +114,7 @@ class UserServiceTest {
 
             @Test
             @DisplayName("If provided with a list of users who no multiple common games it will return an empty list")
-            void ifProvidedWithAListOfUsersWhoDontOwnAnyCommonGamesItWillReturnAnEmptyList() throws UserHasNoGamesException {
+            void ifProvidedWithAListOfUsersWhoDontOwnAnyCommonGamesItWillReturnAnEmptyList() throws UserHasNoGamesException, SecretRetrievalException {
                 User user1 = new User();
                 HashSet<String> set1 = new HashSet<>();
                 set1.add("1");
@@ -148,7 +143,7 @@ class UserServiceTest {
     class GetIdsOfGamesOwnedByUserTests {
         @Test
         @DisplayName("If the user provided already exists within the database it will return a list of game ids of games owned by that user")
-        void ifTheUserProvidedAlreadyExistsWithinTheDatabaseItWillReturnAListOfTheUsersOwnedGameIds() throws UserHasNoGamesException {
+        void ifTheUserProvidedAlreadyExistsWithinTheDatabaseItWillReturnAListOfTheUsersOwnedGameIds() throws UserHasNoGamesException, SecretRetrievalException {
             User user1 = new User();
             HashSet<String> set1 = new HashSet<>();
             set1.add("2");
@@ -162,7 +157,7 @@ class UserServiceTest {
 
         @Test
         @DisplayName("If the user provided does not exist within the database it will contact the Steam API and return a list of game ids of games owned by that user")
-        void ifTheUserProvidedDoesNotExistWithinTheDatabaseItWillContactTheSteamApiAndReturnAListOfTheUsersOwnedGameIds() throws UserHasNoGamesException {
+        void ifTheUserProvidedDoesNotExistWithinTheDatabaseItWillContactTheSteamApiAndReturnAListOfTheUsersOwnedGameIds() throws UserHasNoGamesException, SecretRetrievalException {
             when(clock.instant()).thenReturn(Clock.systemUTC().instant());
             when(userRepository.findById("1")).thenReturn(Optional.empty());
             GetOwnedGamesResponse mockGetOwnedGamesResponse = new GetOwnedGamesResponse();
@@ -181,7 +176,7 @@ class UserServiceTest {
 
         @Test
         @DisplayName("If the user provided does not exist within the database if the user owns at least one game a new user will be saved to the database with details from the Steam API response")
-        void ifTheUserProvidedDoesNotExistWithinTheDatabaseIfTheUserOwnsAtLeastOneGameANewUserWillBeSavedToTheDatabase() throws UserHasNoGamesException {
+        void ifTheUserProvidedDoesNotExistWithinTheDatabaseIfTheUserOwnsAtLeastOneGameANewUserWillBeSavedToTheDatabase() throws UserHasNoGamesException, SecretRetrievalException {
             when(userRepository.findById("12")).thenReturn(Optional.empty());
             GetOwnedGamesResponse mockGetOwnedGamesResponse = new GetOwnedGamesResponse();
             GetOwnedGamesResponseDetails getOwnedGamesResponseDetails = new GetOwnedGamesResponseDetails();
@@ -208,7 +203,7 @@ class UserServiceTest {
 
         @Test
         @DisplayName("If the user found via the Steam API does not own any games it will throw an exception with an appropriate message")
-        void ifTheUserFoundViaTheSteamApiDoesNotOwnAnyGamesItWillThrowAnExceptionWithAnAppropriateMessage() {
+        void ifTheUserFoundViaTheSteamApiDoesNotOwnAnyGamesItWillThrowAnExceptionWithAnAppropriateMessage() throws SecretRetrievalException {
             when(userRepository.findById("1")).thenReturn(Optional.empty());
             GetOwnedGamesResponse mockGetOwnedGamesResponse = new GetOwnedGamesResponse();
             GetOwnedGamesResponseDetails getOwnedGamesResponseDetails = new GetOwnedGamesResponseDetails();

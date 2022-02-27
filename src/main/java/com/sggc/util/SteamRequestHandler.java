@@ -1,15 +1,16 @@
 package com.sggc.util;
 
 import com.google.gson.*;
+import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.models.GameCategory;
 import com.sggc.models.GameData;
 import com.sggc.models.GetOwnedGamesResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -21,13 +22,11 @@ import static com.sggc.util.CommonUtil.*;
 public class SteamRequestHandler {
     private final Logger logger = LoggerFactory.getLogger(SteamRequestHandler.class);
 
-    @Value("${steam.api.key}")
-    private String steamApiKey;
-
     private final RestTemplate restTemplate;
+    private static final String STEAM_API_KEY_NAME = "SteamAPIKey";
 
-    public GetOwnedGamesResponse requestUsersOwnedGamesFromSteamApi(String userId) {
-        String requestUri = GET_OWNED_GAMES_ENDPOINT+"?key=" + steamApiKey + "&steamid=" + userId;
+    public GetOwnedGamesResponse requestUsersOwnedGamesFromSteamApi(String userId) throws SecretRetrievalException {
+        String requestUri = GET_OWNED_GAMES_ENDPOINT+"?key=" + getSteamApiKey() + "&steamid=" + userId;
         logger.debug("Contacting " + requestUri + " to get owned games of user " + userId);
         return restTemplate.getForObject(GET_OWNED_GAMES_ENDPOINT,GetOwnedGamesResponse.class);
     }
@@ -64,6 +63,20 @@ public class SteamRequestHandler {
 
         } catch (JsonSyntaxException e) {
             throw new IOException("Error when parsing response string into JSON object, this is likely due an invalid user id", e);
+        }
+    }
+
+    /**
+     * Retrieves the Steam API key from AWS secrets manager
+     * @return the Steam API key stored within AWS secrets manager
+     * @throws SecretRetrievalException if an exception occurs trying to retrieve the Steam API key from AWS secrets manager
+     */
+    private String getSteamApiKey() throws SecretRetrievalException {
+        try(SecretsManagerClient secretsManagerClient = SecretManagerUtil.createSecretManagerClient()){
+            return SecretManagerUtil.getSecretValue(secretsManagerClient,STEAM_API_KEY_NAME);
+        }
+        catch (Exception e){
+            throw new SecretRetrievalException("Exception occurred when attempting to retrieve Steam API Key from AWS secrets manager",e);
         }
     }
 

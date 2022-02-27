@@ -1,5 +1,6 @@
 package com.sggc.controllers;
 
+import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.models.Game;
 import com.sggc.models.GetCommonGamesRequest;
@@ -22,7 +23,7 @@ public class SGGCController {
 
     @CrossOrigin
     @PostMapping(value = "/")
-    public ResponseEntity<Set<Game>> getGamesAllUsersOwn(@Valid @RequestBody GetCommonGamesRequest request) throws UserHasNoGamesException {
+    public ResponseEntity<Set<Game>> getGamesAllUsersOwn(@Valid @RequestBody GetCommonGamesRequest request) throws UserHasNoGamesException, SecretRetrievalException {
         Set<String> steamUserIds = request.getSteamIds();
         Set<String> commonGameIdsBetweenUsers = userService.getIdsOfGamesOwnedByAllUsers(steamUserIds);
         Set<Game> commonGames = gameService.getCommonGames(commonGameIdsBetweenUsers,request.isMultiplayerOnly());
