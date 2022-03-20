@@ -19,6 +19,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a service for interacting with User objects
+ */
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -28,6 +31,18 @@ public class UserService {
     private final SteamRequestHandler steamRequestHandler;
     private final Clock systemClock;
 
+    //TODO: I dont think its best to throw an exception here, as the method is just doing its job and still functions,
+    //throw in the calling method
+
+    /**
+     * Retrieves the Steam games owned by a user by user id
+     *
+     * @param userId the Steam id of the user
+     * @return a collection of game id's owned by the user
+     * @throws UserHasNoGamesException  if the user does not own any games
+     * @throws SecretRetrievalException if an error occurs attempting to retrieve the Steam API key secret from AWS
+     *                                  secrets manager
+     */
     public Set<String> findOwnedGamesByUserId(String userId) throws UserHasNoGamesException, SecretRetrievalException {
         logger.debug("Attempting to find user with id: " + userId);
         Optional<User> user = userRepository.findById(userId);
@@ -42,20 +57,28 @@ public class UserService {
             } catch (UserHasNoGamesException e) {
                 e.setUserId(userId);
                 throw e;
-            }
-            catch (SecretRetrievalException e){
+            } catch (SecretRetrievalException e) {
                 throw e;
             }
             /*
                 Cache the user to speed up searches. in a proper prod environment this would be cleaned regularly
                 to catch changes in users owned games
             */
-            userRepository.save(new User(userId, usersOwnedGameIds,calculateUserRemovalDate()));
+            userRepository.save(new User(userId, usersOwnedGameIds, calculateUserRemovalDate()));
             userRepository.findAll();
             return usersOwnedGameIds;
         }
     }
 
+    /**
+     * Returns a collection of game id's owned by each user specified
+     *
+     * @param userIds user id's to determine common games
+     * @return a collection of strings representing ids of Steam games owned by all users
+     * @throws UserHasNoGamesException  if the user does not own any games
+     * @throws SecretRetrievalException if an error occurs attempting to retrieve the Steam API key secret from AWS
+     *                                  secrets manager
+     */
     public Set<String> getIdsOfGamesOwnedByAllUsers(Set<String> userIds) throws UserHasNoGamesException, SecretRetrievalException {
         Set<String> combinedGameIds = new HashSet<>();
         for (String userId : userIds) {
@@ -69,16 +92,33 @@ public class UserService {
         return combinedGameIds;
     }
 
+    //TODO: remove exception throwing here
+
+    /**
+     * Returns a collection of the ids of Steam games owned by a user by user id
+     *
+     * @param userId the Steam id of the user
+     * @return a collection of strings representing ids of Steam games
+     * @throws UserHasNoGamesException  if the user does not own any games
+     * @throws SecretRetrievalException if an error occurs attempting to retrieve the Steam API key secret from AWS
+     *                                  secrets manager
+     */
     private Set<String> getUsersOwnedGameIds(String userId) throws UserHasNoGamesException, SecretRetrievalException {
         Set<String> gameIdList;
         GetOwnedGamesResponseDetails response = steamRequestHandler.requestUsersOwnedGamesFromSteamApi(userId).getResponse();
-        if(response.getGameCount()==0){
+        if (response.getGameCount() == 0) {
             throw new UserHasNoGamesException();
         }
         gameIdList = parseGameIdsFromResponse(response);
         return gameIdList;
     }
 
+    /**
+     * Parses the Steam GetOwnedGamesResponse into a collection of game id's
+     *
+     * @param response the Steam GetOwnedGameResponse
+     * @return a collection of strings representing ids of Steam games
+     */
     private Set<String> parseGameIdsFromResponse(GetOwnedGamesResponseDetails response) {
         return response.getGames()
                 .stream()
@@ -88,6 +128,7 @@ public class UserService {
 
     /**
      * Sets the removalDate to be 24 hours from current time represented in milliseconds
+     *
      * @return the time 24 hours from now represented in milliseconds
      */
     private long calculateUserRemovalDate() {

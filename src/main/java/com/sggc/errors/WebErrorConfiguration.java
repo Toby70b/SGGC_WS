@@ -5,6 +5,9 @@ import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Represents a class used to support the controller advice to return standardized errors back to the controller
+ */
 @Configuration
 public class WebErrorConfiguration {
 

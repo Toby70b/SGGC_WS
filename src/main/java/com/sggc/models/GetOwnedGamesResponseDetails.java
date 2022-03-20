@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
+/**
+ * Represents a response to the SGGC controller to retrieve common games
+ */
 @Data
 @RequiredArgsConstructor
 public class GetOwnedGamesResponseDetails {

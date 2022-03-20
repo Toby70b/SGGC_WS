@@ -5,6 +5,9 @@ import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Repository interface for retrieving games
+ */
 @Repository
 @EnableScan
 public interface GameRepository extends CrudRepository<Game, String> {

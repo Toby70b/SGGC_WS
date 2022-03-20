@@ -6,6 +6,9 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.util.Map;
 
+/**
+ * Represents a class used to support the controller advice to return standardized errors back to the controller
+ */
 @AllArgsConstructor
 public class RequestErrorAttributes extends DefaultErrorAttributes {
 

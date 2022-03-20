@@ -12,11 +12,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.math.BigInteger;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,7 +38,7 @@ class GameServiceTest {
     void IfProvidedWithAGameIdItWillReturnTheDetailsOfTheGameMatchingThatId() {
         Game exampleGame = createExampleGame("12", true, "Some game name");
         when(gameRepository.findGameByAppid("12")).thenReturn(exampleGame);
-        assertEquals(Set.of(exampleGame), gameService.getCommonGames(Set.of("12"), false));
+        assertEquals(Set.of(exampleGame), gameService.findGamesById(Set.of("12"), false));
     }
 
     @Test
@@ -54,7 +52,7 @@ class GameServiceTest {
         when(gameRepository.findGameByAppid("12")).thenReturn(exampleGame1);
         when(gameRepository.findGameByAppid("78")).thenReturn(exampleGame2);
         when(gameRepository.findGameByAppid("112")).thenReturn(exampleGame3);
-        assertEquals(Set.of(exampleGame1, exampleGame2, exampleGame3), gameService.getCommonGames(Set.of("12", "78", "112"), false));
+        assertEquals(Set.of(exampleGame1, exampleGame2, exampleGame3), gameService.findGamesById(Set.of("12", "78", "112"), false));
     }
 
     @Nested
@@ -74,7 +72,7 @@ class GameServiceTest {
                 when(gameRepository.findGameByAppid("12")).thenReturn(exampleGame1);
                 when(gameRepository.findGameByAppid("78")).thenReturn(exampleGame2);
                 when(gameRepository.findGameByAppid("112")).thenReturn(exampleGame3);
-                assertEquals(Set.of(exampleGame2, exampleGame3), gameService.getCommonGames(Set.of("12", "78", "112"), true));
+                assertEquals(Set.of(exampleGame2, exampleGame3), gameService.findGamesById(Set.of("12", "78", "112"), true));
             }
         }
 
@@ -146,7 +144,7 @@ class GameServiceTest {
                 when(steamRequestHandler.parseGameDetailsList(multiplayerAppDetailsResponseExampleJson1)).thenReturn(multiplayerGameData1);
                 when(steamRequestHandler.parseGameDetailsList(singlePlayerAppDetailsResponseExampleJson)).thenReturn(singlePlayerGameData1);
                 when(steamRequestHandler.parseGameDetailsList(multiplayerAppDetailsResponseExampleJson2)).thenReturn(multiplayerGameData2);
-                assertEquals(Set.of(exampleGame1, exampleGame3), gameService.getCommonGames(Set.of("573100","573101" ,"573102"), true));
+                assertEquals(Set.of(exampleGame1, exampleGame3), gameService.findGamesById(Set.of("573100","573101" ,"573102"), true));
             }
 
             @Test
@@ -155,7 +153,7 @@ class GameServiceTest {
                 when(steamRequestHandler.parseGameDetailsList(any())).thenThrow(new IOException());
                 Game exampleGame1 = createExampleGame("12", null, "Some game name");
                 when(gameRepository.findGameByAppid("12")).thenReturn(exampleGame1);
-                assertThrows(UncheckedIOException.class, () -> gameService.getCommonGames(Set.of("12"), true));
+                assertThrows(UncheckedIOException.class, () -> gameService.findGamesById(Set.of("12"), true));
             }
         }
 

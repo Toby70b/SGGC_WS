@@ -4,7 +4,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-//TODO add message here
+/**
+ * Represents an exception to be thrown when a Steam user owns no games
+ */
 @Data
 public class UserHasNoGamesException extends Exception {
     private String userId;

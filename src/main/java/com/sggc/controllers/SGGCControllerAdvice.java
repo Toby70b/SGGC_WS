@@ -11,15 +11,21 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.io.IOException;
-
 @RestControllerAdvice
+/**
+ * Controller advice to the SGGC controller used to provide the controller with a standardized method of returning errors back to the client
+ */
 public class SGGCControllerAdvice extends ResponseEntityExceptionHandler {
 
     @Value("${sggc.api.version}")
     private String currentApiVersion;
     private Logger logger = LoggerFactory.getLogger(SGGCControllerAdvice.class);
 
+    /**
+     * Catches uncaught UserHasNoGamesException that have reached the controller and wraps them in a standardized error object with some additional details for the client
+     * @param ex the UserHasNoGamesException
+     * @return a response containing a standardized error object with some additional details for the client
+     */
     @ExceptionHandler(UserHasNoGamesException.class)
     public ResponseEntity<ApiError> handleUserHasNoGames(UserHasNoGamesException ex) {
 

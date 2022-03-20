@@ -8,10 +8,13 @@ import lombok.*;
 
 import java.util.Set;
 import org.springframework.data.annotation.Id;
+
+/**
+ * Represents a response to the SGGC controller to retrieve common games
+ */
 @Data
 @DynamoDBTable(tableName = "User")
 @RequiredArgsConstructor
-@NoArgsConstructor
 @AllArgsConstructor
 public class User {
 
@@ -32,6 +35,5 @@ public class User {
     }
 
     //TTL (time-to-live) field for DynamoDB
-    @NonNull
     private double removalDate;
 }

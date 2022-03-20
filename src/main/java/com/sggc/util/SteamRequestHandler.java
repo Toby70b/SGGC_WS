@@ -17,6 +17,10 @@ import java.util.Collections;
 
 import static com.sggc.util.CommonUtil.*;
 
+/**
+ * Class representing an interface for communicating with the Steam API
+ */
+//TODO: Look for any improvements that could be made here
 @Component
 @RequiredArgsConstructor
 public class SteamRequestHandler {
@@ -25,18 +29,36 @@ public class SteamRequestHandler {
     private final RestTemplate restTemplate;
     private static final String STEAM_API_KEY_NAME = "SteamAPIKey";
 
+    /**
+     * Send a request to the Steam API's GetOwnedGames endpoint to retrieve the details of a specific game
+     * @param userId the user id whose being queries
+     * @return the response from the Steam API parsed into a {@link GetOwnedGamesResponse} object
+     * @throws SecretRetrievalException if an error occurs retrieving the Steam API key secret from AWS secrets manager
+     */
     public GetOwnedGamesResponse requestUsersOwnedGamesFromSteamApi(String userId) throws SecretRetrievalException {
         String requestUri = GET_OWNED_GAMES_ENDPOINT+"?key=" + getSteamApiKey() + "&steamid=" + userId;
         logger.debug("Contacting " + requestUri + " to get owned games of user " + userId);
         return restTemplate.getForObject(requestUri,GetOwnedGamesResponse.class);
     }
 
+    //TODO: return parsed response
+    /**
+     * Send a request to the Steam API's GetAppDetails endpoint to retrieve the details of a specific game
+     * @param appId the appid of the game whose details are being requested
+     * @return a String response from the Steam API
+     */
     public String requestAppDetailsFromSteamApi(String appId) {
         String URI = GET_APP_DETAILS_ENDPOINT + "?appids=" + appId;
         logger.debug("Contacting " + URI + " to get details of game " + appId);
         return restTemplate.getForObject(URI,String.class);
     }
 
+    /**
+     * Parses the game details list from Steam GetAppDetails endpoint into a model object
+     * @param stringToParse the string to parse
+     * @return a {@link GameData} object serialized from the response from the Steam API
+     * @throws IOException if an error occurs while serializing the string into JSON
+     */
     public GameData parseGameDetailsList(String stringToParse) throws IOException {
         Gson gson = new Gson();
         JsonElement jsonTree = parseResponseStringToJson(stringToParse);
@@ -57,6 +79,12 @@ public class SteamRequestHandler {
         return gson.fromJson(obj.toString(), GameData.class);
     }
 
+    /**
+     * Parses a response string to JSON
+     * @param stringToParse the string to parse
+     * @return JSON representation of the string
+     * @throws IOException if an error occurs while serializing the string into JSON
+     */
     public JsonElement parseResponseStringToJson(String stringToParse) throws IOException {
         try {
             return JsonParser.parseString(stringToParse);

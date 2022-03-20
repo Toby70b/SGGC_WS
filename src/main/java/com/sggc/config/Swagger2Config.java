@@ -11,6 +11,9 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * Represents the configuration for swaggers
+ */
 @Configuration
 @EnableSwagger2
 public class Swagger2Config {
@@ -24,6 +27,11 @@ public class Swagger2Config {
                 .build().apiInfo(apiEndPointsInfo());
     }
 
+    /**
+     * Collects non-technical information about the API such as title, description and author details
+     *
+     * @return an object containing non-technical information about the API
+     */
     private ApiInfo apiEndPointsInfo() {
         return new ApiInfoBuilder().title("SGGC - REST API")
                 .description("REST API for the Steam Group Game Checker")

@@ -25,7 +25,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,7 +52,7 @@ class SGGCControllerTest {
     void IfProvidedWithAValidRequestItWillReturnASuccessfulResponseWhoseBodyIncludesAListOfGames() throws UserHasNoGamesException, SecretRetrievalException {
         when(userService.getIdsOfGamesOwnedByAllUsers(any())).thenReturn(new HashSet<>());
         Game exampleGame = new Game();
-        when(gameService.getCommonGames(any(), anyBoolean())).thenReturn(Set.of(exampleGame));
+        when(gameService.findGamesById(any(), anyBoolean())).thenReturn(Set.of(exampleGame));
         ResponseEntity<Set<Game>> response = sggcController.getGamesAllUsersOwn(new GetCommonGamesRequest());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(Set.of(exampleGame), response.getBody());
