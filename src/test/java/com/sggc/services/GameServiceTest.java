@@ -167,7 +167,7 @@ class GameServiceTest {
         exampleGame.setAppid(appid);
         exampleGame.setMultiplayer(multiplayer);
         exampleGame.setName(name);
-        exampleGame.setId(10);
+        exampleGame.setId("10");
         return exampleGame;
     }
 

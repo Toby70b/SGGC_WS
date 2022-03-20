@@ -32,10 +32,10 @@ public class UserService {
         logger.debug("Attempting to find user with id: " + userId);
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
-            logger.debug("User with matching id has been found in Mongo Repo");
+            logger.debug("User with matching id has been found in DB");
             return user.get().getOwnedGameIds();
         } else {
-            logger.debug("User with matching id hasnt been found in Mongo Repo, will request details from Steam API");
+            logger.debug("User with matching id hasn't been found in DB, will request details from Steam API");
             Set<String> usersOwnedGameIds = new HashSet<>();
             try {
                 usersOwnedGameIds = getUsersOwnedGameIds(userId);
@@ -51,6 +51,7 @@ public class UserService {
                 to catch changes in users owned games
             */
             userRepository.save(new User(userId, usersOwnedGameIds,calculateUserRemovalDate()));
+            userRepository.findAll();
             return usersOwnedGameIds;
         }
     }

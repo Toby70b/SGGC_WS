@@ -28,13 +28,13 @@ public class SteamRequestHandler {
     public GetOwnedGamesResponse requestUsersOwnedGamesFromSteamApi(String userId) throws SecretRetrievalException {
         String requestUri = GET_OWNED_GAMES_ENDPOINT+"?key=" + getSteamApiKey() + "&steamid=" + userId;
         logger.debug("Contacting " + requestUri + " to get owned games of user " + userId);
-        return restTemplate.getForObject(GET_OWNED_GAMES_ENDPOINT,GetOwnedGamesResponse.class);
+        return restTemplate.getForObject(requestUri,GetOwnedGamesResponse.class);
     }
 
     public String requestAppDetailsFromSteamApi(String appId) {
         String URI = GET_APP_DETAILS_ENDPOINT + "?appids=" + appId;
         logger.debug("Contacting " + URI + " to get details of game " + appId);
-        return restTemplate.getForObject(GET_APP_DETAILS_ENDPOINT,String.class);
+        return restTemplate.getForObject(URI,String.class);
     }
 
     public GameData parseGameDetailsList(String stringToParse) throws IOException {
