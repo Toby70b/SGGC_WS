@@ -1,9 +1,6 @@
 package com.sggc.config;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.*;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
@@ -19,19 +16,8 @@ import org.springframework.context.annotation.Configuration;
 @EnableDynamoDBRepositories(basePackages = "com.sggc.repositories")
 public class DynamoDbConfig {
 
-    @Value("${amazon.aws.accesskey}")
-    private String amazonAWSAccessKey;
-
-    @Value("${amazon.aws.secretkey}")
-    private String amazonAWSSecretKey;
-
     public AWSCredentialsProvider amazonAWSCredentialsProvider() {
-        return new AWSStaticCredentialsProvider(amazonAWSCredentials());
-    }
-
-    @Bean
-    public AWSCredentials amazonAWSCredentials() {
-        return new BasicAWSCredentials(amazonAWSAccessKey, amazonAWSSecretKey);
+        return new DefaultAWSCredentialsProviderChain();
     }
 
     @Bean
