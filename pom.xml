@@ -20,7 +20,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.12</version>
+            <version>1.18.22</version>
         </dependency>
         <!-- ********** Spring Boot ********** -->
         <dependency>
@@ -42,7 +42,7 @@
         <dependency>
             <groupId>com.google.http-client</groupId>
             <artifactId>google-http-client</artifactId>
-            <version>1.34.1</version>
+            <version>1.41.5</version>
         </dependency>
         <!-- ********** Swagger ********** -->
         <dependency>
@@ -54,17 +54,6 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.9.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
-        </dependency>
-        <!-- ********** Spring Reactor ********** -->
-        <!-- Is this still used?-->
-        <dependency>
-            <groupId>org.projectreactor</groupId>
-            <artifactId>reactor-spring</artifactId>
-            <version>1.0.1.RELEASE</version>
         </dependency>
         <!-- ********** AWS DynamoDB ********** -->
         <dependency>
@@ -92,6 +81,17 @@
                 <configuration>
                     <source>11</source>
                     <target>11</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <ignoredUnusedDeclaredDependencies>
+                        <ignoredUnusedDeclaredDependency>org.springframework*:*</ignoredUnusedDeclaredDependency>
+                        <ignoredUnusedDeclaredDependency>com.google.http-client:google-http-client:*</ignoredUnusedDeclaredDependency>
+                        <ignoredUnusedDeclaredDependency>io.springfox:springfox-swagger-ui:*</ignoredUnusedDeclaredDependency>
+                    </ignoredUnusedDeclaredDependencies>
                 </configuration>
             </plugin>
         </plugins>
