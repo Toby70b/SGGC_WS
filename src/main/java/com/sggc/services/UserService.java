@@ -127,12 +127,12 @@ public class UserService {
     }
 
     /**
-     * Sets the removalDate to be 24 hours from current time represented in milliseconds
+     * Calculates the time 24 hours from current time represented in seconds
      *
-     * @return the time 24 hours from now represented in milliseconds
+     * @return the time 24 hours from now represented in seconds
      */
     private long calculateUserRemovalDate() {
         DateUtil dateUtil = new DateUtil(systemClock);
-        return dateUtil.getTimeOneDayFromNow().toEpochMilli();
+        return dateUtil.getTimeOneDayFromNow().getEpochSecond();
     }
 }

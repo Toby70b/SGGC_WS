@@ -194,7 +194,7 @@ class UserServiceTest {
             User expectedUserObject =  new User();
             expectedUserObject.setId("12");
             expectedUserObject.setOwnedGameIds(Set.of("2"));
-            expectedUserObject.setRemovalDate(1535018400000L);
+            expectedUserObject.setRemovalDate(1535018400L);
 
             verify(userRepository, times(1)).save(expectedUserObject);
 
