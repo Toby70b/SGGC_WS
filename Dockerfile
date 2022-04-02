@@ -7,5 +7,6 @@ RUN mvn clean package -DskipTests
 
 FROM openjdk:11-jdk-slim
 WORKDIR /app
-COPY --from=MAVEN_BUILD /build/target/sggcws-1.1.0.jar /app/
-ENTRYPOINT ["java","-jar","sggcws-1.1.0.jar"]
+COPY --from=MAVEN_BUILD /build/target/sggcws-1.1.1.jar /app/
+ENTRYPOINT ["java","-jar","sggcws-1.1.1.jar"]
+
