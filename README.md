@@ -2,7 +2,7 @@
 
 ⛔ PLEASE NOTE: This should be obvious but none of the code here should be considered "production ready" by a business standard.
 
-:wave:: a working version of this can be found hosted on AWS <a href="https://www.steamgroupgamechecker.co.uk/">here</a>. For maximum cost-effectiveness (and because I'm cheap :smile:) the API is running on Spot EC2 instances, so it could go down if the AZ its running on is in particular demand
+:wave:: a working version of this can be found hosted on AWS [here](https://www.steamgroupgamechecker.co.uk/). For maximum cost-effectiveness (and because I'm cheap :smile:) the API is running on Spot EC2 instances, so it could go down if the AZ its running on is in particular demand
 
 ## AWS architecture diagram
 
@@ -48,7 +48,7 @@ The code for the UI is stored within another repo [here](https://github.com/Toby
 
 ## Docker
 
-The API has a docker images ready for containerization
+The API has a docker image ready for containerization
 
 tobypeel/steam_group_game_checker_api:prod
 
@@ -57,7 +57,7 @@ tobypeel/steam_group_game_checker_api:prod
 - [ ] Creation and documentation of SGGCXXXX error codes errors returned from the API, for easier consuming
 - [ ] Improve logging framework, especially with AWS
 - [ ] Adding security features
-- [x] integration tests
+- [ ] integration tests
 
 ## Thanks to
 
