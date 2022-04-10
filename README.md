@@ -44,6 +44,8 @@ There is also a swagger endpoint on the root of port 8080 if you want to view do
 
 ## UI
 
+The code for the UI is stored within another repo [here](https://github.com/Toby70b/SGGC_UI)
+
 ## Docker
 
 The API has a docker images ready for containerization
