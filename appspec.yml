@@ -1,0 +1,5 @@
+version: 0.0
+os: linux
+files:
+  - source: ./sggcws-1.1.1.jar
+    destination: /tmp
