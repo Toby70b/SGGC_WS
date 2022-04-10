@@ -1,4 +1,4 @@
-# SteamGroupGameChecker Web Service - A Tool to find out common steam games between users
+# SteamGroupGameChecker Web Service - Tool to find out common steam games between users
 
 ⛔ PLEASE NOTE: This should be obvious but none of the code here should be considered "production ready" by a business standard.
 
