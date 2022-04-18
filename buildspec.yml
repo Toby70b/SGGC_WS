@@ -1,0 +1,24 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto11
+  build:
+    commands:
+      - echo Build started on `date`
+      - mvn surefire-report:report
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - mvn package
+reports:
+  SggcWsUniTestReport:
+    files:
+      - '**/*'
+    base-directory: 'target/surefire-reports'
+artifacts:
+  files:
+    - target/sggcws-1.1.1.jar
+    - appspec.yml
+  discard-paths: yes
