@@ -7,11 +7,16 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - mvn test
+      - mvn surefire-report:report
   post_build:
     commands:
       - echo Build completed on `date`
       - mvn package
+reports:
+  SggcWsUniTestReport:
+    files:
+      - '**/*'
+    base-directory: 'target/surefire-reports'
 artifacts:
   files:
     - target/sggcws-1.1.1.jar
