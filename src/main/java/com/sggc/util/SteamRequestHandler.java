@@ -4,7 +4,7 @@ import com.google.gson.*;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.models.GameCategory;
 import com.sggc.models.GameData;
-import com.sggc.models.GetOwnedGamesResponse;
+import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

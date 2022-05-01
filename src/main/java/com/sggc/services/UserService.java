@@ -3,7 +3,7 @@ package com.sggc.services;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.models.Game;
-import com.sggc.models.GetOwnedGamesResponseDetails;
+import com.sggc.models.steam.response.GetOwnedGamesResponseDetails;
 import com.sggc.models.User;
 import com.sggc.models.ValidationError;
 import com.sggc.repositories.UserRepository;

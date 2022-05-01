@@ -1,6 +1,7 @@
-package com.sggc.models;
+package com.sggc.models.steam.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sggc.models.Game;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 

@@ -1,4 +1,4 @@
-package com.sggc.models;
+package com.sggc.models.sggc;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

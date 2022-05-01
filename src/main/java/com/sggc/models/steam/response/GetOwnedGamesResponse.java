@@ -1,9 +1,8 @@
-package com.sggc.models;
+package com.sggc.models.steam.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import java.util.Set;
 
 /**
  * Represents a response to the SGGC controller to retrieve common games
