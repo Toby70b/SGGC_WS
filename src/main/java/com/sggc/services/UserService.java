@@ -5,18 +5,19 @@ import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.models.Game;
 import com.sggc.models.GetOwnedGamesResponseDetails;
 import com.sggc.models.User;
+import com.sggc.models.ValidationError;
 import com.sggc.repositories.UserRepository;
 import com.sggc.util.DateUtil;
 import com.sggc.util.SteamRequestHandler;
+import com.sggc.validation.SteamIdValidator;
+import com.sggc.validation.SteamVanityUrlValidator;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -92,6 +93,25 @@ public class UserService {
         return combinedGameIds;
     }
 
+    public List<ValidationError> validateSteamIdsAndVanityUrls(Set<String> userIds) {
+        SteamVanityUrlValidator vanityUrlValidator = new SteamVanityUrlValidator();
+        SteamIdValidator idValidator = new SteamIdValidator();
+        List<ValidationError> validationErrors = new ArrayList<>();
+        for (String userId : userIds) {
+            ValidationError validationError;
+            if (isSteamUserId(userId)) {
+                validationError = idValidator.validate(userId);
+            } else {
+                validationError = vanityUrlValidator.validate(userId);
+            }
+            if (validationError != null) {
+                validationErrors.add(validationError);
+            }
+        }
+        return validationErrors;
+    }
+
+
     //TODO: remove exception throwing here
 
     /**
@@ -134,5 +154,15 @@ public class UserService {
     private long calculateUserRemovalDate() {
         DateUtil dateUtil = new DateUtil(systemClock);
         return dateUtil.getTimeOneDayFromNow().getEpochSecond();
+    }
+
+    /**
+     * Checks whether a String is a Steam user id as opposed to a Steam vanity URL. As both a Steam id and vanity URL can be numeric and 17 characters the only way I'm aware to confirm its a Steam id is if it starts with 7, 8 or 9
+     *
+     * @param steamId the String to check
+     * @return true if the String begins with 7, 8 or 9, otherwise false
+     */
+    private boolean isSteamUserId(String steamId) {
+        return steamId.startsWith("7") || steamId.startsWith("8") || steamId.startsWith("9");
     }
 }

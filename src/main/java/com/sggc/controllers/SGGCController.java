@@ -4,6 +4,8 @@ import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.models.Game;
 import com.sggc.models.GetCommonGamesRequest;
+import com.sggc.models.SGGCResponse;
+import com.sggc.models.ValidationError;
 import com.sggc.services.GameService;
 import com.sggc.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Set;
 
 /*
@@ -32,11 +35,16 @@ public class SGGCController {
      */
     @CrossOrigin
     @PostMapping(value = "/")
-    public ResponseEntity<Set<Game>> getGamesAllUsersOwn(@Valid @RequestBody GetCommonGamesRequest request) throws UserHasNoGamesException, SecretRetrievalException {
+    public ResponseEntity<SGGCResponse> getGamesAllUsersOwn(@Valid @RequestBody GetCommonGamesRequest request) throws UserHasNoGamesException, SecretRetrievalException {
         Set<String> steamUserIds = request.getSteamIds();
+        List<ValidationError> validationErrorList = userService.validateSteamIdsAndVanityUrls(steamUserIds);
+        if(!validationErrorList.isEmpty()){
+            return new ResponseEntity<>(new SGGCResponse(false,validationErrorList), HttpStatus.BAD_REQUEST);
+        }
+        //Call resolve id logic
         Set<String> commonGameIdsBetweenUsers = userService.getIdsOfGamesOwnedByAllUsers(steamUserIds);
         Set<Game> commonGames = gameService.findGamesById(commonGameIdsBetweenUsers, request.isMultiplayerOnly());
-        return new ResponseEntity<>(commonGames, HttpStatus.OK);
+        return new ResponseEntity<>(new SGGCResponse(true,commonGames), HttpStatus.OK);
     }
 
 }
