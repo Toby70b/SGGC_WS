@@ -6,6 +6,7 @@ import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.models.Game;
 import com.sggc.models.GetCommonGamesRequest;
+import com.sggc.models.SGGCResponse;
 import com.sggc.services.GameService;
 import com.sggc.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +29,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
@@ -53,9 +54,12 @@ class SGGCControllerTest {
         when(userService.getIdsOfGamesOwnedByAllUsers(any())).thenReturn(new HashSet<>());
         Game exampleGame = new Game();
         when(gameService.findGamesById(any(), anyBoolean())).thenReturn(Set.of(exampleGame));
-        ResponseEntity<Set<Game>> response = sggcController.getGamesAllUsersOwn(new GetCommonGamesRequest());
+        ResponseEntity<SGGCResponse> response = sggcController.getGamesAllUsersOwn(new GetCommonGamesRequest());
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(Set.of(exampleGame), response.getBody());
+        assertNotNull(response.getBody());
+        assertNotNull(response.getBody().getBody());
+        assertEquals(Set.of(exampleGame), response.getBody().getBody());
+        assertTrue(response.getBody().isSuccess());
     }
 
     @Nested
