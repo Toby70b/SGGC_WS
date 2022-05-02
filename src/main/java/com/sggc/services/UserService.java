@@ -170,7 +170,7 @@ public class UserService {
      */
     private String resolveVanityURL(String vanityUrl) throws SecretRetrievalException {
         ResolveVanityUrlResponse.Response response = steamRequestHandler.resolveVanityUrl(vanityUrl).getResponse();
-        return !response.isSuccess() ? response.getSteamId() : null;
+        return response.isSuccess() ? response.getSteamId() : null;
     }
 
 
