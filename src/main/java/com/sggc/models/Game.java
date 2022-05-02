@@ -44,5 +44,6 @@ public class Game {
     public Boolean getMultiplayer() {
         return multiplayer;
     }
+
 }
 

@@ -3,9 +3,10 @@ package com.sggc.services;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.models.Game;
-import com.sggc.models.steam.response.GetOwnedGamesResponseDetails;
 import com.sggc.models.User;
 import com.sggc.models.ValidationError;
+import com.sggc.models.steam.response.GetOwnedGamesResponseDetails;
+import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import com.sggc.repositories.UserRepository;
 import com.sggc.util.DateUtil;
 import com.sggc.util.SteamRequestHandler;
@@ -93,22 +94,48 @@ public class UserService {
         return combinedGameIds;
     }
 
+    /**
+     * Checks whether the Steam user ids and vanity URLs are valid
+     *
+     * @param userIds the Steam user ids and vanity URLs to validate
+     * @return a list of validation errors encountered, will be empty if all input is valid
+     */
     public List<ValidationError> validateSteamIdsAndVanityUrls(Set<String> userIds) {
         SteamVanityUrlValidator vanityUrlValidator = new SteamVanityUrlValidator();
         SteamIdValidator idValidator = new SteamIdValidator();
         List<ValidationError> validationErrors = new ArrayList<>();
-        for (String userId : userIds) {
+        for (String steamId : userIds) {
             ValidationError validationError;
-            if (isSteamUserId(userId)) {
-                validationError = idValidator.validate(userId);
+            if (isSteamUserId(steamId)) {
+                validationError = idValidator.validate(steamId);
             } else {
-                validationError = vanityUrlValidator.validate(userId);
+                validationError = vanityUrlValidator.validate(steamId);
             }
             if (validationError != null) {
                 validationErrors.add(validationError);
             }
         }
         return validationErrors;
+    }
+
+
+    /**
+     * Given a list containing one or more Vanity URLs returns a list of their equivalent Steam user id
+     *
+     * @param steamIds a list containing Steam user ids and vanity URLs
+     * @return a list of Steam user ids with all existing vanity URLs replaced with their equivalent Steam user id
+     * @throws SecretRetrievalException if an error occurs attempting to retrieve the Steam API key secret from AWS
+     *                                  secrets manager
+     */
+    public Set<String> resolveVanityUrls(Set<String> steamIds) throws SecretRetrievalException {
+        Set<String> resolvedIds = new HashSet<>(steamIds);
+        for (String steamId : steamIds) {
+            if (!isSteamUserId(steamId)) {
+                resolvedIds.remove(steamId);
+                resolvedIds.add(resolveVanityURL(steamId));
+            }
+        }
+        return resolvedIds;
     }
 
 
@@ -132,6 +159,20 @@ public class UserService {
         gameIdList = parseGameIdsFromResponse(response);
         return gameIdList;
     }
+
+    /**
+     * Resolves a vanity URL into a Steam user id
+     *
+     * @param vanityUrl the vanity URL to resolve
+     * @return the resolved Steam user id, or null if the request was unsuccessful
+     * @throws SecretRetrievalException if an error occurs attempting to retrieve the Steam API key secret from AWS
+     *                                  secrets manager
+     */
+    private String resolveVanityURL(String vanityUrl) throws SecretRetrievalException {
+        ResolveVanityUrlResponse.Response response = steamRequestHandler.resolveVanityUrl(vanityUrl).getResponse();
+        return !response.isSuccess() ? response.getSteamId() : null;
+    }
+
 
     /**
      * Parses the Steam GetOwnedGamesResponse into a collection of game id's
@@ -165,4 +206,5 @@ public class UserService {
     private boolean isSteamUserId(String steamId) {
         return steamId.startsWith("7") || steamId.startsWith("8") || steamId.startsWith("9");
     }
+
 }

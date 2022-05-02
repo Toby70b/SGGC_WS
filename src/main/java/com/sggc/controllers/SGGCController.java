@@ -36,13 +36,13 @@ public class SGGCController {
     @CrossOrigin
     @PostMapping(value = "/")
     public ResponseEntity<SGGCResponse> getGamesAllUsersOwn(@Valid @RequestBody GetCommonGamesRequest request) throws UserHasNoGamesException, SecretRetrievalException {
-        Set<String> steamUserIds = request.getSteamIds();
-        List<ValidationError> validationErrorList = userService.validateSteamIdsAndVanityUrls(steamUserIds);
+        Set<String> steamIds = request.getSteamIds();
+        List<ValidationError> validationErrorList = userService.validateSteamIdsAndVanityUrls(steamIds);
         if(!validationErrorList.isEmpty()){
             return new ResponseEntity<>(new SGGCResponse(false,validationErrorList), HttpStatus.BAD_REQUEST);
         }
-        //Call resolve id logic
-        Set<String> commonGameIdsBetweenUsers = userService.getIdsOfGamesOwnedByAllUsers(steamUserIds);
+        Set<String> resolvedSteamUserIds = userService.resolveVanityUrls(steamIds);
+        Set<String> commonGameIdsBetweenUsers = userService.getIdsOfGamesOwnedByAllUsers(resolvedSteamUserIds);
         Set<Game> commonGames = gameService.findGamesById(commonGameIdsBetweenUsers, request.isMultiplayerOnly());
         return new ResponseEntity<>(new SGGCResponse(true,commonGames), HttpStatus.OK);
     }
