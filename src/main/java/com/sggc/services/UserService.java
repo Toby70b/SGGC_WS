@@ -4,7 +4,7 @@ import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.models.Game;
 import com.sggc.models.User;
-import com.sggc.models.ValidationError;
+import com.sggc.models.ValidationResult;
 import com.sggc.models.steam.response.GetOwnedGamesResponseDetails;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import com.sggc.repositories.UserRepository;
@@ -100,19 +100,19 @@ public class UserService {
      * @param userIds the Steam user ids and vanity URLs to validate
      * @return a list of validation errors encountered, will be empty if all input is valid
      */
-    public List<ValidationError> validateSteamIdsAndVanityUrls(Set<String> userIds) {
+    public List<ValidationResult> validateSteamIdsAndVanityUrls(Set<String> userIds) {
         SteamVanityUrlValidator vanityUrlValidator = new SteamVanityUrlValidator();
         SteamIdValidator idValidator = new SteamIdValidator();
-        List<ValidationError> validationErrors = new ArrayList<>();
+        List<ValidationResult> validationErrors = new ArrayList<>();
         for (String steamId : userIds) {
-            ValidationError validationError;
+            ValidationResult validationResult;
             if (isSteamUserId(steamId)) {
-                validationError = idValidator.validate(steamId);
+                validationResult = idValidator.validate(steamId);
             } else {
-                validationError = vanityUrlValidator.validate(steamId);
+                validationResult = vanityUrlValidator.validate(steamId);
             }
-            if (validationError != null) {
-                validationErrors.add(validationError);
+            if (validationResult.isError()) {
+                validationErrors.add(validationResult);
             }
         }
         return validationErrors;

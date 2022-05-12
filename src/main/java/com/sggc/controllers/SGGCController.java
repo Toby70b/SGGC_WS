@@ -5,7 +5,7 @@ import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.models.Game;
 import com.sggc.models.steam.request.GetCommonGamesRequest;
 import com.sggc.models.sggc.SGGCResponse;
-import com.sggc.models.ValidationError;
+import com.sggc.models.ValidationResult;
 import com.sggc.services.GameService;
 import com.sggc.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class SGGCController {
     @PostMapping(value = "/")
     public ResponseEntity<SGGCResponse> getGamesAllUsersOwn(@Valid @RequestBody GetCommonGamesRequest request) throws UserHasNoGamesException, SecretRetrievalException {
         Set<String> steamIds = request.getSteamIds();
-        List<ValidationError> validationErrorList = userService.validateSteamIdsAndVanityUrls(steamIds);
+        List<ValidationResult> validationErrorList = userService.validateSteamIdsAndVanityUrls(steamIds);
         if(!validationErrorList.isEmpty()){
             return new ResponseEntity<>(new SGGCResponse(false,validationErrorList), HttpStatus.BAD_REQUEST);
         }

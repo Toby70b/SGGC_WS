@@ -1,6 +1,6 @@
 package com.sggc.validation;
 
-import com.sggc.models.ValidationError;
+import com.sggc.models.ValidationResult;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -13,17 +13,17 @@ public class SteamVanityUrlValidator extends StringValidator {
     public static final String VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE = "Vanity URL must not contain special characters";
 
     @Override
-    public ValidationError validate(String vanityUrl) {
+    public ValidationResult validate(String vanityUrl) {
         if (beginsWithInvalidNumber(vanityUrl)) {
-            return new ValidationError(vanityUrl, VANITY_URL_BEGINS_WITH_AN_INVALID_NUMBER_VALIDATION_ERROR_MESSAGE);
+            return new ValidationResult(true, vanityUrl, VANITY_URL_BEGINS_WITH_AN_INVALID_NUMBER_VALIDATION_ERROR_MESSAGE);
         }
         if (!withinRequiredLength(vanityUrl)) {
-            return new ValidationError(vanityUrl, VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE);
+            return new ValidationResult(true, vanityUrl, VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE);
         }
         if (!StringUtils.isAlphanumeric(vanityUrl)) {
-            return new ValidationError(vanityUrl, VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE);
+            return new ValidationResult(true, vanityUrl, VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE);
         }
-        return null;
+        return new ValidationResult(false);
     }
 
     /**
