@@ -3,11 +3,14 @@ package com.sggc.services;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.models.Game;
+import com.sggc.models.User;
+import com.sggc.models.ValidationResult;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.GetOwnedGamesResponseDetails;
-import com.sggc.models.User;
 import com.sggc.repositories.UserRepository;
 import com.sggc.util.SteamRequestHandler;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,9 +23,12 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.sggc.validation.SteamVanityUrlValidator.VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE;
+import static com.sggc.validation.SteamVanityUrlValidator.VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -60,6 +66,7 @@ class UserServiceTest {
             assertEquals(exception.getUserId(), "1");
 
         }
+
 
         @Nested
         @DisplayName("All users own at least one game")
@@ -191,7 +198,7 @@ class UserServiceTest {
 
             userService.findOwnedGamesByUserId("12");
 
-            User expectedUserObject =  new User();
+            User expectedUserObject = new User();
             expectedUserObject.setId("12");
             expectedUserObject.setOwnedGameIds(Set.of("2"));
             expectedUserObject.setRemovalDate(1535018400L);
@@ -216,6 +223,84 @@ class UserServiceTest {
         }
 
     }
+
+    @Nested
+    class ValidationTests {
+
+        @Nested
+        @DisplayName("If provided with a invalid vanity URL it will return a list of validation errors")
+        class InvalidUserIdValidationTests {
+            @Test
+            @DisplayName("If provided with a vanity URL that is too short it will return a validation error with an appropriate message")
+            void ifProvidedWithAVanityUrlThatIsTooShortItWillReturnAValidationErrorWithAnAppropriateMessage() {
+                String generatedString = RandomStringUtils.random(2, true, true);
+                ValidationResult expectedValidationError = new ValidationResult(true, generatedString, VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE);
+                List<ValidationResult> validationResultList = userService.validateSteamIdsAndVanityUrls(Set.of(generatedString));
+                assertEquals(1,validationResultList.size());
+                assertEquals(expectedValidationError,validationResultList.get(0));
+            }
+
+            @Test
+            @DisplayName("If provided with a vanity URL that is too long it will return a validation error with an appropriate message")
+            void ifProvidedWithAVanityUrlThatIsTooLongItWillReturnAValidationErrorWithAnAppropriateMessage() {
+                String generatedString = RandomStringUtils.random(33, true, true);
+                ValidationResult expectedValidationError = new ValidationResult(true, generatedString, VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE);
+                List<ValidationResult> validationResultList = userService.validateSteamIdsAndVanityUrls(Set.of(generatedString));
+                assertEquals(1,validationResultList.size());
+                assertEquals(expectedValidationError,validationResultList.get(0));
+            }
+
+            @Test
+            @DisplayName("If provided with a vanity URL that contains specical characters it will return a validation error with an appropriate message")
+            void ifProvidedWithAVanityUrlThatContainsSpecialCharactersItWillReturnAValidationErrorWithAnAppropriateMessage() {
+                String generatedString = "abc123%^&";
+                ValidationResult expectedValidationError = new ValidationResult(true, generatedString, VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE);
+                List<ValidationResult> validationResultList = userService.validateSteamIdsAndVanityUrls(Set.of(generatedString));
+                assertEquals(1,validationResultList.size());
+                assertEquals(expectedValidationError,validationResultList.get(0));
+            }
+
+            @Test
+            @DisplayName("If provided with multiple invalid Vanity URLs it will return multiple validation errors with appropriate messages")
+            void IfProvidedWithMultipleInvalidVanityUrlsItWillReturnMultipleValidationErrorsWithAppropriateMessages() {
+                String generatedString1 = "abc123%^&";
+                String generatedString2 = RandomStringUtils.random(33, true, true);
+
+                ValidationResult expectedValidationError1 = new ValidationResult(true, generatedString1, VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE);
+                ValidationResult expectedValidationError2 = new ValidationResult(true, generatedString2, VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE);
+
+                List<ValidationResult> validationResultList = userService.validateSteamIdsAndVanityUrls(Set.of(generatedString1,generatedString2));
+                assertEquals(2,validationResultList.size());
+                assertEquals(expectedValidationError1,validationResultList.get(0));
+                assertEquals(expectedValidationError2,validationResultList.get(1));
+            }
+        }
+
+        @Nested
+        @DisplayName("If provided with a valid user id it will return an empty list")
+        class ValidUserIdValidationTests {
+
+            @Test
+            @DisplayName("If provided with a valid Steam id it will return an empty list")
+            void ifProvidedWithAValidSteamIdItWillReturnAnEmptyList() {
+                assertTrue(userService.validateSteamIdsAndVanityUrls(Set.of("77561198045206297")).isEmpty());
+            }
+
+            @Test
+            @DisplayName("If provided with a valid vanity URL it will return an empty list")
+            void ifProvidedWithAValidVanityUrlItWillReturnAnEmptyList() {
+                assertTrue(userService.validateSteamIdsAndVanityUrls(Set.of("SomeVanityUrl")).isEmpty());
+            }
+
+            @Test
+            @DisplayName("If provided with a mixture of valid vanity URL's and Steam ids it will return an empty list")
+            void ifProvidedWithAMixtureOfValidVanityUrlsAndSteamIdsItWillReturnAnEmptyList() {
+                assertTrue(userService.validateSteamIdsAndVanityUrls(Set.of("SomeVanityUrl", "77561198045206297", "KalmanRobert", "76561197979721079")).isEmpty());
+            }
+        }
+
+    }
+
 
     private Game createExampleGame(String gameId) {
         Game game = new Game();

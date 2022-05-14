@@ -32,7 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.sggc.validation.SteamIdValidator.USER_ID_INVALID_LENGTH;
+import static com.sggc.validation.SteamVanityUrlValidator.VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -114,12 +114,12 @@ class SGGCControllerTest {
         }
 
         @Test
-        @DisplayName("If one of the Steam Ids specified in the request has no games it will return a 400 error with an appropriate message")
+        @DisplayName("If one of the Steam Vanity urls specified in the request is invalid it will return a 400 error with an appropriate message")
         void IfOneOfTheSteamIdsSpecifiedInTheRequestIsInvalidItWillReturnA400ErrorWithAnAppropriateMessage() throws Exception {
             ObjectMapper objectMapper = new ObjectMapper();
 
             List<ValidationResult> validationErrors = List.of(new ValidationResult(true,
-                    "765611980452062222321321", USER_ID_INVALID_LENGTH));
+                    "765611980452$062222321321", VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE));
 
             when(userService.validateSteamIdsAndVanityUrls(Set.of("765611980452062222321321", "76561198045206223")))
                     .thenReturn(validationErrors);
@@ -138,6 +138,36 @@ class SGGCControllerTest {
 
             SGGCResponse expectedResponse = new SGGCResponse(false,new ApiError("ValidationException",
                     "Request body violates validation rules, check error details for more information.", validationErrors));
+            //Convert the expected response to JSON and then convert it back to an object to match actual response
+            String expectedResponseJson  = objectMapper.writeValueAsString(expectedResponse);
+            SGGCResponse expectedResponseObj = objectMapper.readValue(expectedResponseJson, SGGCResponse.class);
+
+            SGGCResponse actualResponse = objectMapper.readValue(result.getResponse().getContentAsString(), SGGCResponse.class);
+            assertEquals(expectedResponseObj, actualResponse);
+        }
+
+        @Test
+        @DisplayName("If an error occurs while trying to retrieve the steam key secret it will return a 500 error with an appropriate message")
+        void IfAnErrorOccursWhileTryingToRetrieveTheSteamKeySecretItWillReturnA500ErrorWithAnAppropriateMessage() throws Exception {
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            when(userService.resolveVanityUrls(Set.of("765611980452062222321321", "76561198045206223")))
+                    .thenThrow(new SecretRetrievalException(new Exception()));
+
+            GetCommonGamesRequest request = new GetCommonGamesRequest();
+            request.setSteamIds(Set.of("765611980452062222321321", "76561198045206223"));
+            request.setMultiplayerOnly(true);
+
+            MvcResult result = this.mockMvc
+                    .perform(MockMvcRequestBuilders.post("/api/sggc/")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isInternalServerError())
+                    .andExpect(MockMvcResultMatchers.status().isInternalServerError())
+                    .andReturn();
+
+            SGGCResponse expectedResponse = new SGGCResponse(false,new ApiError("Exception",
+                    "Internal server error."));
             //Convert the expected response to JSON and then convert it back to an object to match actual response
             String expectedResponseJson  = objectMapper.writeValueAsString(expectedResponse);
             SGGCResponse expectedResponseObj = objectMapper.readValue(expectedResponseJson, SGGCResponse.class);

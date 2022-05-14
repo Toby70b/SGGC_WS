@@ -10,9 +10,9 @@ import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import com.sggc.repositories.UserRepository;
 import com.sggc.util.DateUtil;
 import com.sggc.util.SteamRequestHandler;
-import com.sggc.validation.SteamIdValidator;
 import com.sggc.validation.SteamVanityUrlValidator;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -102,17 +102,14 @@ public class UserService {
      */
     public List<ValidationResult> validateSteamIdsAndVanityUrls(Set<String> userIds) {
         SteamVanityUrlValidator vanityUrlValidator = new SteamVanityUrlValidator();
-        SteamIdValidator idValidator = new SteamIdValidator();
         List<ValidationResult> validationErrors = new ArrayList<>();
         for (String steamId : userIds) {
             ValidationResult validationResult;
-            if (isSteamUserId(steamId)) {
-                validationResult = idValidator.validate(steamId);
-            } else {
+            if (!isSteamUserId(steamId)) {
                 validationResult = vanityUrlValidator.validate(steamId);
-            }
-            if (validationResult.isError()) {
-                validationErrors.add(validationResult);
+                if (validationResult.isError()) {
+                    validationErrors.add(validationResult);
+                }
             }
         }
         return validationErrors;
@@ -198,13 +195,16 @@ public class UserService {
     }
 
     /**
-     * Checks whether a String is a Steam user id as opposed to a Steam vanity URL. As both a Steam id and vanity URL can be numeric and 17 characters the only way I'm aware to confirm its a Steam id is if it starts with 7, 8 or 9
+     * Checks whether a String is a Steam user id as opposed to a Steam vanity URL. A steam id will be numeric, 17 characters long and begins with 7, 8 or 9
      *
      * @param steamId the String to check
-     * @return true if the String begins with 7, 8 or 9, otherwise false
+     * @return true if the String is numeric, 17 characters long and begins with 7, 8 or 9
      */
     private boolean isSteamUserId(String steamId) {
-        return steamId.startsWith("7") || steamId.startsWith("8") || steamId.startsWith("9");
+        boolean beginsWithSteamIdNumber = steamId.startsWith("7") || steamId.startsWith("8") || steamId.startsWith("9");
+        boolean isSeventeenCharactersLong = steamId.length() == 17;
+        boolean isNumeric = StringUtils.isNumeric(steamId);
+        return beginsWithSteamIdNumber && isSeventeenCharactersLong && isNumeric;
     }
 
 }
