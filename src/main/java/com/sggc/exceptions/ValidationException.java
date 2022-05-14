@@ -26,7 +26,7 @@ public class ValidationException extends WebAppException {
     public ApiError toApiError() {
         return  new ApiError(
                 "ValidationException",
-                "Request body violates validation rules, check object for details",
+                "Request body violates validation rules, check error details for details.",
                 validationErrors
         );
     }

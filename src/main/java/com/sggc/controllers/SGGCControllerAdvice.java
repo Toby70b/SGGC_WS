@@ -18,11 +18,10 @@ public class SGGCControllerAdvice extends ResponseEntityExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(SGGCControllerAdvice.class);
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiError> handleIOException(Exception ex) {
+    public ResponseEntity<ApiError> handleGenericException(Exception ex) {
         final ApiError error = new ApiError(
                 "Exception",
-                "Internal server error.",
-                null
+                "Internal server error."
         );
         logger.error("ERROR:", ex);
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);

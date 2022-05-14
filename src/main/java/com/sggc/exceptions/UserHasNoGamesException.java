@@ -24,7 +24,7 @@ public class UserHasNoGamesException extends WebAppException {
     public ApiError toApiError() {
         return new ApiError(
                 "UserHasNoGamesException",
-                "User with Id: " + userId + " has no games associated with their account, or doesn't exist",
+                "User with Id: " + userId + " has no games associated with their account, or doesn't exist.",
                 null
         );
     }
