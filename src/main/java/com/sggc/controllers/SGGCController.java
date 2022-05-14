@@ -2,10 +2,11 @@ package com.sggc.controllers;
 
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.UserHasNoGamesException;
+import com.sggc.exceptions.ValidationException;
 import com.sggc.models.Game;
-import com.sggc.models.steam.request.GetCommonGamesRequest;
-import com.sggc.models.sggc.SGGCResponse;
 import com.sggc.models.ValidationResult;
+import com.sggc.models.sggc.SGGCResponse;
+import com.sggc.models.steam.request.GetCommonGamesRequest;
 import com.sggc.services.GameService;
 import com.sggc.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -35,16 +36,22 @@ public class SGGCController {
      */
     @CrossOrigin
     @PostMapping(value = "/")
-    public ResponseEntity<SGGCResponse> getGamesAllUsersOwn(@Valid @RequestBody GetCommonGamesRequest request) throws UserHasNoGamesException, SecretRetrievalException {
+    public ResponseEntity<SGGCResponse> getGamesAllUsersOwn(@Valid @RequestBody GetCommonGamesRequest request) throws SecretRetrievalException {
         Set<String> steamIds = request.getSteamIds();
         List<ValidationResult> validationErrorList = userService.validateSteamIdsAndVanityUrls(steamIds);
-        if(!validationErrorList.isEmpty()){
-            return new ResponseEntity<>(new SGGCResponse(false,validationErrorList), HttpStatus.BAD_REQUEST);
+        if (!validationErrorList.isEmpty()) {
+            return new ResponseEntity<>(new SGGCResponse(false, new ValidationException(validationErrorList).toApiError()), HttpStatus.BAD_REQUEST);
         }
         Set<String> resolvedSteamUserIds = userService.resolveVanityUrls(steamIds);
-        Set<String> commonGameIdsBetweenUsers = userService.getIdsOfGamesOwnedByAllUsers(resolvedSteamUserIds);
+        Set<String> commonGameIdsBetweenUsers;
+        try {
+            commonGameIdsBetweenUsers = userService.getIdsOfGamesOwnedByAllUsers(resolvedSteamUserIds);
+        } catch (UserHasNoGamesException ex) {
+            return new ResponseEntity<>(new SGGCResponse(false, ex.toApiError()), HttpStatus.NOT_FOUND);
+        }
         Set<Game> commonGames = gameService.findGamesById(commonGameIdsBetweenUsers, request.isMultiplayerOnly());
-        return new ResponseEntity<>(new SGGCResponse(true,commonGames), HttpStatus.OK);
+        return new ResponseEntity<>(new SGGCResponse(true, commonGames), HttpStatus.OK);
     }
+
 
 }
