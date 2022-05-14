@@ -104,7 +104,7 @@ class SGGCControllerTest {
                     .andReturn();
 
             SGGCResponse expectedResponse = new SGGCResponse(false,new ApiError("UserHasNoGamesException",
-                    "User with Id: 76561198045206222 has no games associated with their account, or doesn't exist",null));
+                    "User with Id: 76561198045206222 has no games associated with their account, or doesn't exist.",null));
             //Convert the expected response to JSON and then convert it back to an object to match actual response
             String expectedResponseJson  = objectMapper.writeValueAsString(expectedResponse);
             SGGCResponse expectedResponseObj = objectMapper.readValue(expectedResponseJson, SGGCResponse.class);
@@ -137,7 +137,7 @@ class SGGCControllerTest {
                     .andReturn();
 
             SGGCResponse expectedResponse = new SGGCResponse(false,new ApiError("ValidationException",
-                    "Request body violates validation rules, check object for details", validationErrors));
+                    "Request body violates validation rules, check error details for more information.", validationErrors));
             //Convert the expected response to JSON and then convert it back to an object to match actual response
             String expectedResponseJson  = objectMapper.writeValueAsString(expectedResponse);
             SGGCResponse expectedResponseObj = objectMapper.readValue(expectedResponseJson, SGGCResponse.class);
