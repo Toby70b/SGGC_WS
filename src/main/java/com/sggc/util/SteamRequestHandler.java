@@ -20,7 +20,7 @@ import static com.sggc.util.CommonUtil.*;
 /**
  * Class representing an interface for communicating with the Steam API
  */
-//TODO: Look for any improvements that could be made here
+//TODO: Look for any improvements that could be made here, tests
 @Component
 @RequiredArgsConstructor
 public class SteamRequestHandler {
@@ -42,18 +42,17 @@ public class SteamRequestHandler {
         return restTemplate.getForObject(requestUri, GetOwnedGamesResponse.class);
     }
 
-    //TODO: return parsed response
-
     /**
      * Sends a request to the Steam API's GetAppDetails endpoint to retrieve the details of a specific game
      *
      * @param appId the appid of the game whose details are being requested
-     * @return a String response from the Steam API
+     * @return a GameData object parsed from the response from the Steam API containing the details of the specified app
      */
-    public String requestAppDetailsFromSteamApi(String appId) {
+    public GameData requestAppDetailsFromSteamApi(String appId) throws IOException {
         String requestUri = GET_APP_DETAILS_ENDPOINT + "?appids=" + appId;
         logger.debug("Contacting " + requestUri + " to get details of game " + appId);
-        return restTemplate.getForObject(requestUri, String.class);
+        String response = restTemplate.getForObject(requestUri, String.class);
+        return parseGameDetailsList(response);
     }
 
     /**

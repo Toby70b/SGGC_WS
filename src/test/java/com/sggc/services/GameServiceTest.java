@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Set;
 
+import static com.sggc.util.CommonUtil.MULTIPLAYER_ID;
+import static com.sggc.util.CommonUtil.SINGLEPLAYER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -82,49 +84,12 @@ class GameServiceTest {
             @Test
             @DisplayName("If only multiplayer games are desired, then non-multiplayer games will be filtered out of the returned list of games")
             void IfOnlyMultiplayerGamesAreDesiredThenNonMultiplayerGamesWillBeFilteredOutOfTheReturnedListOfGames() throws IOException {
+                GameCategory singlePlayerCategory = new GameCategory(SINGLEPLAYER_ID);
+                GameCategory multiPlayerCategory = new GameCategory(MULTIPLAYER_ID);
 
-                String multiplayerAppDetailsResponseExampleJson1 = "{\n" +
-                        "  \"573100\": {\n" +
-                        "    \"success\": true,\n" +
-                        "    \"categories\": [\n" +
-                        "      {\n" +
-                        "        \"id\": 2,\n" +
-                        "        \"description\": \"Single-player\"\n" +
-                        "      },\n" +
-                        "      {\n" +
-                        "        \"id\": 1,\n" +
-                        "        \"description\": \"Multi-player\"\n" +
-                        "      }\n" +
-                        "    ]\n" +
-                        "  }\n" +
-                        "}";
-                String multiplayerAppDetailsResponseExampleJson2 = "{\n" +
-                        "  \"573101\": {\n" +
-                        "    \"success\": true,\n" +
-                        "    \"categories\": [\n" +
-                        "      {\n" +
-                        "        \"id\": 2,\n" +
-                        "        \"description\": \"Single-player\"\n" +
-                        "      },\n" +
-                        "      {\n" +
-                        "        \"id\": 1,\n" +
-                        "        \"description\": \"Multi-player\"\n" +
-                        "      }\n" +
-                        "    ]\n" +
-                        "  }\n" +
-                        "}";
-
-                String singlePlayerAppDetailsResponseExampleJson = "{\n" +
-                        "  \"573100\": {\n" +
-                        "    \"success\": true,\n" +
-                        "    \"categories\": [\n" +
-                        "      {\n" +
-                        "        \"id\": 2,\n" +
-                        "        \"description\": \"Single-player\"\n" +
-                        "      }\n" +
-                        "    ]\n" +
-                        "  }\n" +
-                        "}";
+                GameData multiplayerAppDetailsResponseExample1 = new GameData(Set.of(singlePlayerCategory,multiPlayerCategory));
+                GameData multiplayerAppDetailsResponseExample2 = new GameData(Set.of(singlePlayerCategory,multiPlayerCategory));
+                GameData multiplayerAppDetailsResponseExample3 = new GameData(Set.of(singlePlayerCategory));
 
                 Game exampleGame1 = createExampleGame("573100", null, "Some game name");
                 Game exampleGame2 = createExampleGame("573101", null, "Some game name");
@@ -133,24 +98,17 @@ class GameServiceTest {
                 when(gameRepository.findGameByAppid("573101")).thenReturn(exampleGame2);
                 when(gameRepository.findGameByAppid("573102")).thenReturn(exampleGame3);
 
-                when(steamRequestHandler.requestAppDetailsFromSteamApi("573100")).thenReturn(multiplayerAppDetailsResponseExampleJson1);
-                when(steamRequestHandler.requestAppDetailsFromSteamApi("573101")).thenReturn(singlePlayerAppDetailsResponseExampleJson);
-                when(steamRequestHandler.requestAppDetailsFromSteamApi("573102")).thenReturn(multiplayerAppDetailsResponseExampleJson2);
+                when(steamRequestHandler.requestAppDetailsFromSteamApi("573100")).thenReturn(multiplayerAppDetailsResponseExample1);
+                when(steamRequestHandler.requestAppDetailsFromSteamApi("573101")).thenReturn(multiplayerAppDetailsResponseExample3);
+                when(steamRequestHandler.requestAppDetailsFromSteamApi("573102")).thenReturn(multiplayerAppDetailsResponseExample2);
 
-                GameData multiplayerGameData1 =  new GameData(Set.of(new GameCategory(1)));
-                GameData multiplayerGameData2 =  new GameData(Set.of(new GameCategory(1)));
-                GameData singlePlayerGameData1 =  new GameData(Set.of(new GameCategory(2)));
-
-                when(steamRequestHandler.parseGameDetailsList(multiplayerAppDetailsResponseExampleJson1)).thenReturn(multiplayerGameData1);
-                when(steamRequestHandler.parseGameDetailsList(singlePlayerAppDetailsResponseExampleJson)).thenReturn(singlePlayerGameData1);
-                when(steamRequestHandler.parseGameDetailsList(multiplayerAppDetailsResponseExampleJson2)).thenReturn(multiplayerGameData2);
                 assertEquals(Set.of(exampleGame1, exampleGame3), gameService.findGamesById(Set.of("573100","573101" ,"573102"), true));
             }
 
             @Test
             @DisplayName("If an exception is thrown while trying to determine whether a game is multiplayer it will throw an exception with an appropriate message")
             void IfAnExceptionIsThrownWhileTryingToDetermineWhetherAGameIsMultiplayerItWillThrowAnExceptionWithAnAppropriateMessage() throws IOException {
-                when(steamRequestHandler.parseGameDetailsList(any())).thenThrow(new IOException());
+                when(steamRequestHandler.requestAppDetailsFromSteamApi(any())).thenThrow(new IOException());
                 Game exampleGame1 = createExampleGame("12", null, "Some game name");
                 when(gameRepository.findGameByAppid("12")).thenReturn(exampleGame1);
                 assertThrows(UncheckedIOException.class, () -> gameService.findGamesById(Set.of("12"), true));

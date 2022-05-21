@@ -165,6 +165,7 @@ public class UserService {
      * @throws SecretRetrievalException if an error occurs attempting to retrieve the Steam API key secret from AWS
      *                                  secrets manager
      */
+    //TODO dont return null here, instead throw a vanityUrlResolutionException even on key retrieval failure
     private String resolveVanityURL(String vanityUrl) throws SecretRetrievalException {
         ResolveVanityUrlResponse.Response response = steamRequestHandler.resolveVanityUrl(vanityUrl).getResponse();
         return response.isSuccess() ? response.getSteamId() : null;

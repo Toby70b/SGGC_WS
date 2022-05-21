@@ -62,11 +62,7 @@ public class GameService {
         if (game.getMultiplayer() != null) {
             return game.getMultiplayer();
         } else {
-
-            //TODO parse should be done implicitly
-            String response = steamRequestHandler.requestAppDetailsFromSteamApi(game.getAppid());
-
-            GameData parsedResponse = steamRequestHandler.parseGameDetailsList(response);
+            GameData parsedResponse = steamRequestHandler.requestAppDetailsFromSteamApi(game.getAppid());
             //Check for presence of multiplayer category
             for (GameCategory category : parsedResponse.getCategories()) {
                 if (category.getId() == MULTIPLAYER_ID) {
