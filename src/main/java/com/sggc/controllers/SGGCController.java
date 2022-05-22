@@ -3,6 +3,7 @@ package com.sggc.controllers;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.exceptions.ValidationException;
+import com.sggc.exceptions.VanityUrlResolutionException;
 import com.sggc.models.Game;
 import com.sggc.models.ValidationResult;
 import com.sggc.models.sggc.SGGCResponse;
@@ -42,7 +43,12 @@ public class SGGCController {
         if (!validationErrorList.isEmpty()) {
             return new ResponseEntity<>(new SGGCResponse(false, new ValidationException(validationErrorList).toApiError()), HttpStatus.BAD_REQUEST);
         }
-        Set<String> resolvedSteamUserIds = userService.resolveVanityUrls(steamIds);
+        Set<String> resolvedSteamUserIds;
+        try {
+            resolvedSteamUserIds = userService.resolveVanityUrls(steamIds);
+        } catch (VanityUrlResolutionException ex) {
+            return new ResponseEntity<>(new SGGCResponse(false, ex.toApiError()), HttpStatus.NOT_FOUND);
+        }
         Set<String> commonGameIdsBetweenUsers;
         try {
             commonGameIdsBetweenUsers = userService.getIdsOfGamesOwnedByAllUsers(resolvedSteamUserIds);

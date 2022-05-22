@@ -40,7 +40,6 @@ public class GameService {
             commonGames = commonGames.stream().filter(game -> {
                 try {
                     return isGameMultiplayer(game);
-                    //TODO improve error handling here
                 } catch (IOException e) {
                     throw new UncheckedIOException(e);
                 }

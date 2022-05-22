@@ -15,8 +15,18 @@ public class ResolveVanityUrlResponse {
     @Data
     @NoArgsConstructor
     public static class Response {
-        private boolean success;
+        private static final int SUCCESS_CODE = 1;
+
+        private int success;
         @JsonProperty("steamid")
         private String steamId;
+
+        /**
+         * Determines whether the ResolveVanityUrl request was successful by checking the success code in the response
+         * @return true if the success code equals 1 otherwise false
+         */
+        public boolean isSuccess(){
+            return success == SUCCESS_CODE;
+        }
     }
 }
