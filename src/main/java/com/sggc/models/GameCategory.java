@@ -12,7 +12,5 @@ import lombok.RequiredArgsConstructor;
 public class GameCategory {
 
     private final SteamGameCategory id;
-
-
-
+    
 }
