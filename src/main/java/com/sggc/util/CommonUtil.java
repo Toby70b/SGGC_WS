@@ -3,7 +3,6 @@ package com.sggc.util;
 /**
  * Utility class for common methods and constants
  */
-//TODO: remove this class in a cleanup ticket
 public class CommonUtil {
     public static final int MULTIPLAYER_ID = 1;
     public static final int SINGLEPLAYER_ID = 2;

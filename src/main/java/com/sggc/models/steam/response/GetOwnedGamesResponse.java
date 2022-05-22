@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
-//TODO move details in here as inner class
 
 /**
  * Represents a response to the SGGC controller to retrieve common games
