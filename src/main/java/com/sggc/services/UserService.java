@@ -5,7 +5,7 @@ import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.models.Game;
 import com.sggc.models.User;
 import com.sggc.models.ValidationResult;
-import com.sggc.models.steam.response.GetOwnedGamesResponseDetails;
+import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import com.sggc.repositories.UserRepository;
 import com.sggc.util.DateUtil;
@@ -149,7 +149,7 @@ public class UserService {
      */
     private Set<String> getUsersOwnedGameIds(String userId) throws UserHasNoGamesException, SecretRetrievalException {
         Set<String> gameIdList;
-        GetOwnedGamesResponseDetails response = steamRequestHandler.requestUsersOwnedGamesFromSteamApi(userId).getResponse();
+        GetOwnedGamesResponse.Response response = steamRequestHandler.requestUsersOwnedGamesFromSteamApi(userId).getResponse();
         if (response.getGameCount() == 0) {
             throw new UserHasNoGamesException();
         }
@@ -178,7 +178,7 @@ public class UserService {
      * @param response the Steam GetOwnedGameResponse
      * @return a collection of strings representing ids of Steam games
      */
-    private Set<String> parseGameIdsFromResponse(GetOwnedGamesResponseDetails response) {
+    private Set<String> parseGameIdsFromResponse(GetOwnedGamesResponse.Response response) {
         return response.getGames()
                 .stream()
                 .map(Game::getAppid)

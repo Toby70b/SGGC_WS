@@ -6,7 +6,6 @@ import com.sggc.models.Game;
 import com.sggc.models.User;
 import com.sggc.models.ValidationResult;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
-import com.sggc.models.steam.response.GetOwnedGamesResponseDetails;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import com.sggc.repositories.UserRepository;
 import com.sggc.util.SteamRequestHandler;
@@ -57,7 +56,7 @@ class UserServiceTest {
             when(userRepository.findById("1")).thenReturn(Optional.empty());
 
             GetOwnedGamesResponse mockGetOwnedGamesResponse = new GetOwnedGamesResponse();
-            GetOwnedGamesResponseDetails getOwnedGamesResponseDetails = new GetOwnedGamesResponseDetails();
+            GetOwnedGamesResponse.Response getOwnedGamesResponseDetails = new GetOwnedGamesResponse.Response();
             getOwnedGamesResponseDetails.setGameCount(0);
             mockGetOwnedGamesResponse.setResponse(getOwnedGamesResponseDetails);
             when(steamRequestHandler.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse);
@@ -168,7 +167,7 @@ class UserServiceTest {
             when(clock.instant()).thenReturn(Clock.systemUTC().instant());
             when(userRepository.findById("1")).thenReturn(Optional.empty());
             GetOwnedGamesResponse mockGetOwnedGamesResponse = new GetOwnedGamesResponse();
-            GetOwnedGamesResponseDetails getOwnedGamesResponseDetails = new GetOwnedGamesResponseDetails();
+            GetOwnedGamesResponse.Response getOwnedGamesResponseDetails = new GetOwnedGamesResponse.Response();
             getOwnedGamesResponseDetails.setGameCount(3);
 
             Game game1 = createExampleGame("2");
@@ -186,7 +185,7 @@ class UserServiceTest {
         void ifTheUserProvidedDoesNotExistWithinTheDatabaseIfTheUserOwnsAtLeastOneGameANewUserWillBeSavedToTheDatabase() throws UserHasNoGamesException, SecretRetrievalException {
             when(userRepository.findById("12")).thenReturn(Optional.empty());
             GetOwnedGamesResponse mockGetOwnedGamesResponse = new GetOwnedGamesResponse();
-            GetOwnedGamesResponseDetails getOwnedGamesResponseDetails = new GetOwnedGamesResponseDetails();
+            GetOwnedGamesResponse.Response getOwnedGamesResponseDetails = new GetOwnedGamesResponse.Response();
             getOwnedGamesResponseDetails.setGameCount(1);
             Game game1 = createExampleGame("2");
             getOwnedGamesResponseDetails.setGames(Set.of(game1));
@@ -213,7 +212,7 @@ class UserServiceTest {
         void ifTheUserFoundViaTheSteamApiDoesNotOwnAnyGamesItWillThrowAnExceptionWithAnAppropriateMessage() throws SecretRetrievalException {
             when(userRepository.findById("1")).thenReturn(Optional.empty());
             GetOwnedGamesResponse mockGetOwnedGamesResponse = new GetOwnedGamesResponse();
-            GetOwnedGamesResponseDetails getOwnedGamesResponseDetails = new GetOwnedGamesResponseDetails();
+            GetOwnedGamesResponse.Response getOwnedGamesResponseDetails = new GetOwnedGamesResponse.Response();
             getOwnedGamesResponseDetails.setGameCount(0);
             mockGetOwnedGamesResponse.setResponse(getOwnedGamesResponseDetails);
             when(steamRequestHandler.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse);
