@@ -20,14 +20,12 @@ import static com.sggc.util.CommonUtil.*;
 /**
  * Class representing an interface for communicating with the Steam API
  */
-//TODO: Look for any improvements that could be made here, tests
 @Component
 @RequiredArgsConstructor
 public class SteamRequestHandler {
     private final Logger logger = LoggerFactory.getLogger(SteamRequestHandler.class);
 
     private final RestTemplate restTemplate;
-    private static final String STEAM_API_KEY_NAME = "SteamAPIKey";
 
     /**
      * Sends a request to the Steam API's GetOwnedGames endpoint to retrieve the details of a specific game
@@ -67,8 +65,6 @@ public class SteamRequestHandler {
         return restTemplate.getForObject(requestUri, ResolveVanityUrlResponse.class);
     }
 
-    //TODO: should this be in game service?
-
     /**
      * Parses the game details list from Steam GetAppDetails endpoint into a model object
      *
@@ -83,7 +79,8 @@ public class SteamRequestHandler {
         // The root of the response is a id of the game thus get the responses root value
         String gameId = obj.keySet().iterator().next();
         obj = obj.getAsJsonObject(gameId);
-        boolean responseSuccess = Boolean.parseBoolean(obj.get("success").toString());
+        String successField = "success";
+        boolean responseSuccess = Boolean.parseBoolean(obj.get(successField).toString());
         /*
         Sometimes steam no longer has info on the Game Id e.g. 33910 ARMA II, this is probably because the devs of the games
         in question may have created a new steam product for the exact same game (demo perhaps?), so to avoid crashing if the game no longer
@@ -92,7 +89,8 @@ public class SteamRequestHandler {
         if (!responseSuccess) {
             return new GameData(Collections.singleton(new GameCategory(MULTIPLAYER_ID)));
         }
-        obj = obj.getAsJsonObject("data");
+        String dataField = "data";
+        obj = obj.getAsJsonObject(dataField);
         return gson.fromJson(obj.toString(), GameData.class);
     }
 
