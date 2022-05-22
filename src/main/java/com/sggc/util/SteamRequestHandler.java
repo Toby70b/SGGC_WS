@@ -2,8 +2,10 @@ package com.sggc.util;
 
 import com.google.gson.*;
 import com.sggc.exceptions.SecretRetrievalException;
+import com.sggc.models.Game;
 import com.sggc.models.GameCategory;
 import com.sggc.models.GameData;
+import com.sggc.models.SteamGameCategory;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.util.Collections;
 
-import static com.sggc.util.CommonUtil.*;
-
 /**
  * Class representing an interface for communicating with the Steam API
  */
@@ -26,6 +26,10 @@ public class SteamRequestHandler {
     private final Logger logger = LoggerFactory.getLogger(SteamRequestHandler.class);
 
     private final RestTemplate restTemplate;
+
+    public static final String GET_OWNED_GAMES_ENDPOINT = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/";
+    public static final String GET_APP_DETAILS_ENDPOINT = "https://store.steampowered.com/api/appdetails/";
+    public static final String RESOLVE_VANITY_URL_ENDPOINT = "https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/";
 
     /**
      * Sends a request to the Steam API's GetOwnedGames endpoint to retrieve the details of a specific game
@@ -87,7 +91,7 @@ public class SteamRequestHandler {
         has any details, we'll pass it through as a multiplayer game, better than excluding games that could be multiplayer
         */
         if (!responseSuccess) {
-            return new GameData(Collections.singleton(new GameCategory(MULTIPLAYER_ID)));
+            return new GameData(Collections.singleton(new GameCategory(SteamGameCategory.MULTIPLAYER)));
         }
         String dataField = "data";
         obj = obj.getAsJsonObject(dataField);

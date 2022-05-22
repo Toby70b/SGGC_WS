@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 /**
- * Represents a model of a a GameData object returned by the Steam API.
+ * Represents a model of a GameData object returned by the Steam API.
  */
 @Data
 @RequiredArgsConstructor

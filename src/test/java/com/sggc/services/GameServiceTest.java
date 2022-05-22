@@ -3,6 +3,7 @@ package com.sggc.services;
 import com.sggc.models.Game;
 import com.sggc.models.GameCategory;
 import com.sggc.models.GameData;
+import com.sggc.models.SteamGameCategory;
 import com.sggc.repositories.GameRepository;
 import com.sggc.util.SteamRequestHandler;
 import org.junit.jupiter.api.DisplayName;
@@ -17,8 +18,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Set;
 
-import static com.sggc.util.CommonUtil.MULTIPLAYER_ID;
-import static com.sggc.util.CommonUtil.SINGLEPLAYER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -84,8 +83,8 @@ class GameServiceTest {
             @Test
             @DisplayName("If only multiplayer games are desired, then non-multiplayer games will be filtered out of the returned list of games")
             void IfOnlyMultiplayerGamesAreDesiredThenNonMultiplayerGamesWillBeFilteredOutOfTheReturnedListOfGames() throws IOException {
-                GameCategory singlePlayerCategory = new GameCategory(SINGLEPLAYER_ID);
-                GameCategory multiPlayerCategory = new GameCategory(MULTIPLAYER_ID);
+                GameCategory singlePlayerCategory = new GameCategory(SteamGameCategory.SINGLE_PLAYER);;
+                GameCategory multiPlayerCategory = new GameCategory(SteamGameCategory.MULTIPLAYER);
 
                 GameData multiplayerAppDetailsResponseExample1 = new GameData(Set.of(singlePlayerCategory,multiPlayerCategory));
                 GameData multiplayerAppDetailsResponseExample2 = new GameData(Set.of(singlePlayerCategory,multiPlayerCategory));
