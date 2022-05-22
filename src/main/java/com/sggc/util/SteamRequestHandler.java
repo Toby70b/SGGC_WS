@@ -15,8 +15,6 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.util.Collections;
 
-import static com.sggc.util.CommonUtil.*;
-
 /**
  * Class representing an interface for communicating with the Steam API
  */
@@ -26,6 +24,10 @@ public class SteamRequestHandler {
     private final Logger logger = LoggerFactory.getLogger(SteamRequestHandler.class);
 
     private final RestTemplate restTemplate;
+
+    public static final String GET_OWNED_GAMES_ENDPOINT = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/";
+    public static final String GET_APP_DETAILS_ENDPOINT = "https://store.steampowered.com/api/appdetails/";
+    public static final String RESOLVE_VANITY_URL_ENDPOINT = "https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/";
 
     /**
      * Sends a request to the Steam API's GetOwnedGames endpoint to retrieve the details of a specific game
