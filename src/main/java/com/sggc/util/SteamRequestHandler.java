@@ -2,8 +2,10 @@ package com.sggc.util;
 
 import com.google.gson.*;
 import com.sggc.exceptions.SecretRetrievalException;
+import com.sggc.models.Game;
 import com.sggc.models.GameCategory;
 import com.sggc.models.GameData;
+import com.sggc.models.SteamGameCategory;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import lombok.RequiredArgsConstructor;
@@ -89,7 +91,7 @@ public class SteamRequestHandler {
         has any details, we'll pass it through as a multiplayer game, better than excluding games that could be multiplayer
         */
         if (!responseSuccess) {
-            return new GameData(Collections.singleton(new GameCategory(MULTIPLAYER_ID)));
+            return new GameData(Collections.singleton(new GameCategory(SteamGameCategory.MULTIPLAYER)));
         }
         String dataField = "data";
         obj = obj.getAsJsonObject(dataField);

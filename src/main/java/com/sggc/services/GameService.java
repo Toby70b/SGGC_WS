@@ -3,6 +3,7 @@ package com.sggc.services;
 import com.sggc.models.Game;
 import com.sggc.models.GameCategory;
 import com.sggc.models.GameData;
+import com.sggc.models.SteamGameCategory;
 import com.sggc.repositories.GameRepository;
 import com.sggc.util.SteamRequestHandler;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.sggc.util.CommonUtil.MULTIPLAYER_ID;
 
 /**
  * Represents a service for interacting with Game objects
@@ -64,7 +64,7 @@ public class GameService {
             GameData parsedResponse = steamRequestHandler.requestAppDetailsFromSteamApi(game.getAppid());
             //Check for presence of multiplayer category
             for (GameCategory category : parsedResponse.getCategories()) {
-                if (category.getId() == MULTIPLAYER_ID) {
+                if (category.getId() == SteamGameCategory.MULTIPLAYER) {
                     game.setMultiplayer(true);
                     gameRepository.save(game);
                     return true;
