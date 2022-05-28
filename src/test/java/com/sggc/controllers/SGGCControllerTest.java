@@ -5,6 +5,7 @@ import com.sggc.errors.ApiError;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.exceptions.ValidationException;
+import com.sggc.exceptions.VanityUrlResolutionException;
 import com.sggc.models.Game;
 import com.sggc.models.ValidationResult;
 import com.sggc.models.sggc.SGGCResponse;
@@ -168,6 +169,36 @@ class SGGCControllerTest {
 
             SGGCResponse expectedResponse = new SGGCResponse(false,new ApiError("Exception",
                     "Internal server error."));
+            //Convert the expected response to JSON and then convert it back to an object to match actual response
+            String expectedResponseJson  = objectMapper.writeValueAsString(expectedResponse);
+            SGGCResponse expectedResponseObj = objectMapper.readValue(expectedResponseJson, SGGCResponse.class);
+
+            SGGCResponse actualResponse = objectMapper.readValue(result.getResponse().getContentAsString(), SGGCResponse.class);
+            assertEquals(expectedResponseObj, actualResponse);
+        }
+
+        @Test
+        @DisplayName("If an error occurs while trying to resolve a vanity URL into a steam user id then the controller will return a 404 error with an appropriate message")
+        void IfAnErrorOccursWhileTryingToResolveAVanityUrlIntoASteamUserIdThenTheControllerWillReturnA404ErrorWithAnAppropriateMessage() throws Exception {
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            when(userService.resolveVanityUrls(Set.of("SomeVanityUrl","76561198045206223")))
+                    .thenThrow(new VanityUrlResolutionException("SomeVanityUrl"));
+
+            GetCommonGamesRequest request = new GetCommonGamesRequest();
+            request.setSteamIds(Set.of("SomeVanityUrl","76561198045206223"));
+            request.setMultiplayerOnly(true);
+
+            MvcResult result = this.mockMvc
+                    .perform(MockMvcRequestBuilders.post("/api/sggc/")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isNotFound())
+                    .andExpect(MockMvcResultMatchers.status().isNotFound())
+                    .andReturn();
+
+            SGGCResponse expectedResponse = new SGGCResponse(false,new ApiError("VanityUrlResolutionException",
+                    "Vanity Url: SomeVanityUrl could not be resolved to a steam id"));
             //Convert the expected response to JSON and then convert it back to an object to match actual response
             String expectedResponseJson  = objectMapper.writeValueAsString(expectedResponse);
             SGGCResponse expectedResponseObj = objectMapper.readValue(expectedResponseJson, SGGCResponse.class);

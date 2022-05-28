@@ -13,7 +13,7 @@ public class VanityUrlResolutionException extends WebAppException{
     public ApiError toApiError() {
         return new ApiError(
                 "VanityUrlResolutionException",
-                "Vanity Url: " + vanityUrl + "could not be resolved to a steam id",
+                "Vanity Url: " + vanityUrl + " could not be resolved to a steam id",
                 null
         );
     }
