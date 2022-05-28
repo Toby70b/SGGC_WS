@@ -1,6 +1,7 @@
 package com.sggc.services;
 
 import com.sggc.exceptions.SecretRetrievalException;
+import com.sggc.exceptions.TooFewSteamIdsException;
 import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.exceptions.VanityUrlResolutionException;
 import com.sggc.models.Game;
@@ -52,17 +53,41 @@ class UserServiceTest {
     class GetIdsOfGamesOwnedByAllUsersTests {
 
         @Test
+        @DisplayName("If provided with an empty list it will throw an exception")
+        void ifProvidedWithAnEmptyListItWillThrowAnExceptionWithAnAppropriateMessage() {
+            assertThrows(TooFewSteamIdsException.class, () -> userService.getIdsOfGamesOwnedByAllUsers(new HashSet<>()));
+        }
+
+        @Test
+        @DisplayName("If less than two users are provided it will throw an exception")
+        void IfLessThanTwoUsersAreProvidedItWillThrowAnExceptionWithAnAppropriateMessage() {
+            assertThrows(TooFewSteamIdsException.class, () -> userService.getIdsOfGamesOwnedByAllUsers(Set.of("1")));
+        }
+
+        @Test
         @DisplayName("If one of the users provided does not own any games it will throw an exception with an appropriate message")
         void ifOneOfTheUsersProvidedDoesNotOwnAnyGamesItWillThrowAnExceptionWithAnAppropriateMessage() throws SecretRetrievalException {
-            when(userRepository.findById("1")).thenReturn(Optional.empty());
 
-            GetOwnedGamesResponse mockGetOwnedGamesResponse = new GetOwnedGamesResponse();
+            User user2 = new User();
+            HashSet<String> set2 = new HashSet<>();
+            set2.add("4");
+            set2.add("2");
+            set2.add("6");
+            user2.setOwnedGameIds(set2);
+
+            //Depending on which id is used first Mockito could throw a UnnecessaryStubbingException, since we don't care
+            //about order make the below mocks lenient
+            lenient().when(userRepository.findById("1")).thenReturn(Optional.empty());
+            lenient().when(userRepository.findById("2")).thenReturn(Optional.of(user2));
+
+            GetOwnedGamesResponse mockGetOwnedGamesResponse1 = new GetOwnedGamesResponse();
             GetOwnedGamesResponse.Response getOwnedGamesResponseDetails = new GetOwnedGamesResponse.Response();
             getOwnedGamesResponseDetails.setGameCount(0);
-            mockGetOwnedGamesResponse.setResponse(getOwnedGamesResponseDetails);
-            when(steamRequestHandler.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse);
+            mockGetOwnedGamesResponse1.setResponse(getOwnedGamesResponseDetails);
+
+            when(steamRequestHandler.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse1);
             UserHasNoGamesException exception =
-                    assertThrows(UserHasNoGamesException.class, () -> userService.getIdsOfGamesOwnedByAllUsers(Set.of("1")));
+                    assertThrows(UserHasNoGamesException.class, () -> userService.getIdsOfGamesOwnedByAllUsers(Set.of("1", "2")));
             assertEquals(exception.getUserId(), "1");
 
         }
@@ -73,7 +98,7 @@ class UserServiceTest {
         class AllUsersOwnOneGameTests {
             @Test
             @DisplayName("If provided with a list of users who own one common game it will return a list of common games")
-            void ifProvidedWithAListOfUsersWhoOwnOneCommonGameItWillReturnThatGame() throws UserHasNoGamesException, SecretRetrievalException {
+            void ifProvidedWithAListOfUsersWhoOwnOneCommonGameItWillReturnThatGame() throws UserHasNoGamesException, SecretRetrievalException, TooFewSteamIdsException {
 
                 User user1 = new User();
                 HashSet<String> set1 = new HashSet<>();
@@ -98,7 +123,7 @@ class UserServiceTest {
 
             @Test
             @DisplayName("If provided with a list of users who own multiple common games it will return a list of common games")
-            void ifProvidedWithAListOfUsersWhoOwnMultipleCommonGameItWillReturnThoseGames() throws UserHasNoGamesException, SecretRetrievalException {
+            void ifProvidedWithAListOfUsersWhoOwnMultipleCommonGameItWillReturnThoseGames() throws UserHasNoGamesException, SecretRetrievalException, TooFewSteamIdsException {
                 User user1 = new User();
                 HashSet<String> set1 = new HashSet<>();
                 set1.add("1");
@@ -121,7 +146,7 @@ class UserServiceTest {
 
             @Test
             @DisplayName("If provided with a list of users who no multiple common games it will return an empty list")
-            void ifProvidedWithAListOfUsersWhoDontOwnAnyCommonGamesItWillReturnAnEmptyList() throws UserHasNoGamesException, SecretRetrievalException {
+            void ifProvidedWithAListOfUsersWhoDontOwnAnyCommonGamesItWillReturnAnEmptyList() throws UserHasNoGamesException, SecretRetrievalException, TooFewSteamIdsException {
                 User user1 = new User();
                 HashSet<String> set1 = new HashSet<>();
                 set1.add("1");
@@ -355,7 +380,7 @@ class UserServiceTest {
                 vanityUrlResponse.setResponse(response);
                 when(steamRequestHandler.resolveVanityUrl(randomVanityUrl)).thenReturn(vanityUrlResponse);
                 VanityUrlResolutionException ex = assertThrows(VanityUrlResolutionException.class, () -> userService.resolveVanityUrls(Set.of(randomVanityUrl)));
-                assertEquals(randomVanityUrl,ex.getVanityUrl());
+                assertEquals(randomVanityUrl, ex.getVanityUrl());
             }
 
         }

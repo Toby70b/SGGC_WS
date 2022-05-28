@@ -1,6 +1,7 @@
 package com.sggc.services;
 
 import com.sggc.exceptions.SecretRetrievalException;
+import com.sggc.exceptions.TooFewSteamIdsException;
 import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.exceptions.VanityUrlResolutionException;
 import com.sggc.models.Game;
@@ -73,18 +74,23 @@ public class UserService {
      * @throws UserHasNoGamesException  if the user does not own any games
      * @throws SecretRetrievalException if an error occurs attempting to retrieve the Steam API key secret from AWS
      *                                  secrets manager
+     * @throws TooFewSteamIdsException if userIds contains less than two entries
      */
-    public Set<String> getIdsOfGamesOwnedByAllUsers(Set<String> userIds) throws UserHasNoGamesException, SecretRetrievalException {
-        Set<String> combinedGameIds = new HashSet<>();
-        for (String userId : userIds) {
-            Set<String> usersOwnedGameIds = findOwnedGamesByUserId(userId);
-            if (combinedGameIds.isEmpty()) {
-                combinedGameIds = usersOwnedGameIds;
-            } else {
-                combinedGameIds.retainAll(usersOwnedGameIds);
+    public Set<String> getIdsOfGamesOwnedByAllUsers(Set<String> userIds) throws UserHasNoGamesException, SecretRetrievalException, TooFewSteamIdsException {
+        if(userIds.size() > 1) {
+            Set<String> combinedGameIds = new HashSet<>();
+            for (String userId : userIds) {
+                Set<String> usersOwnedGameIds = findOwnedGamesByUserId(userId);
+                if (combinedGameIds.isEmpty()) {
+                    combinedGameIds = usersOwnedGameIds;
+                } else {
+                    combinedGameIds.retainAll(usersOwnedGameIds);
+                }
             }
+            return combinedGameIds;
         }
-        return combinedGameIds;
+        log.error("Collection of user ids contains less than two entries, throwing exception");
+        throw new TooFewSteamIdsException();
     }
 
     /**

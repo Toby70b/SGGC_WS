@@ -1,9 +1,6 @@
 package com.sggc.controllers;
 
-import com.sggc.exceptions.SecretRetrievalException;
-import com.sggc.exceptions.UserHasNoGamesException;
-import com.sggc.exceptions.ValidationException;
-import com.sggc.exceptions.VanityUrlResolutionException;
+import com.sggc.exceptions.*;
 import com.sggc.models.Game;
 import com.sggc.models.ValidationResult;
 import com.sggc.models.sggc.SGGCResponse;
@@ -59,9 +56,9 @@ public class SGGCController {
         Set<String> commonGameIdsBetweenUsers;
         try {
             commonGameIdsBetweenUsers = userService.getIdsOfGamesOwnedByAllUsers(resolvedSteamUserIds);
-        } catch (UserHasNoGamesException ex) {
+        } catch (UserHasNoGamesException | TooFewSteamIdsException ex) {
             SGGCResponse response = new SGGCResponse(false, ex.toApiError());
-            log.info("Error occurred while trying to find user's owned games Vanity url returning 404 error response with body [{}]", response);
+            log.info("Error occurred while trying to find user's owned games returning 404 error response with body [{}]", response);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
         Set<Game> commonGames = gameService.findGamesById(commonGameIdsBetweenUsers, request.isMultiplayerOnly());
