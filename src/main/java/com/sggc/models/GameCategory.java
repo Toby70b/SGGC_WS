@@ -1,6 +1,5 @@
 package com.sggc.models;
 
-import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 

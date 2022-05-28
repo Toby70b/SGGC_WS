@@ -251,7 +251,7 @@ class UserServiceTest {
             }
 
             @Test
-            @DisplayName("If provided with a vanity URL that contains specical characters it will return a validation error with an appropriate message")
+            @DisplayName("If provided with a vanity URL that contains special characters it will return a validation error with an appropriate message")
             void ifProvidedWithAVanityUrlThatContainsSpecialCharactersItWillReturnAValidationErrorWithAnAppropriateMessage() {
                 String generatedString = "abc123%^&";
                 ValidationResult expectedValidationError = new ValidationResult(true, generatedString, VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE);
