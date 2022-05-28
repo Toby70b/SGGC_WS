@@ -115,7 +115,7 @@ class SGGCControllerTest {
         }
 
         @Test
-        @DisplayName("If one of the Steam Vanity urls specified in the request is invalid it will return a 400 error with an appropriate message")
+        @DisplayName("If one of the Steam vanity URLs specified in the request is invalid it will return a 400 error with an appropriate message")
         void IfOneOfTheSteamIdsSpecifiedInTheRequestIsInvalidItWillReturnA400ErrorWithAnAppropriateMessage() throws Exception {
             ObjectMapper objectMapper = new ObjectMapper();
 
