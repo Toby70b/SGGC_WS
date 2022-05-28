@@ -2,15 +2,13 @@ package com.sggc.util;
 
 import com.google.gson.*;
 import com.sggc.exceptions.SecretRetrievalException;
-import com.sggc.models.Game;
 import com.sggc.models.GameCategory;
 import com.sggc.models.GameData;
 import com.sggc.models.SteamGameCategory;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,10 +18,10 @@ import java.util.Collections;
 /**
  * Class representing an interface for communicating with the Steam API
  */
+@Log4j2
 @Component
 @RequiredArgsConstructor
 public class SteamRequestHandler {
-    private final Logger logger = LoggerFactory.getLogger(SteamRequestHandler.class);
 
     private final RestTemplate restTemplate;
 
@@ -40,7 +38,7 @@ public class SteamRequestHandler {
      */
     public GetOwnedGamesResponse requestUsersOwnedGamesFromSteamApi(String userId) throws SecretRetrievalException {
         String requestUri = GET_OWNED_GAMES_ENDPOINT + "?key=" + getSteamApiKey() + "&steamid=" + userId;
-        logger.debug("Contacting " + requestUri + " to get owned games of user " + userId);
+        log.debug("Contacting [{}] to get owned games of user [{}]",requestUri,userId);
         return restTemplate.getForObject(requestUri, GetOwnedGamesResponse.class);
     }
 
@@ -52,7 +50,7 @@ public class SteamRequestHandler {
      */
     public GameData requestAppDetailsFromSteamApi(String appId) throws IOException {
         String requestUri = GET_APP_DETAILS_ENDPOINT + "?appids=" + appId;
-        logger.debug("Contacting " + requestUri + " to get details of game " + appId);
+        log.debug("Contacting [{}] to get details of game [{}]",requestUri,appId);
         String response = restTemplate.getForObject(requestUri, String.class);
         return parseGameDetailsList(response);
     }
@@ -65,7 +63,7 @@ public class SteamRequestHandler {
      */
     public ResolveVanityUrlResponse resolveVanityUrl(String vanityUrl) throws SecretRetrievalException {
         String requestUri = RESOLVE_VANITY_URL_ENDPOINT + "?key=" + getSteamApiKey() + "&vanityurl=" + vanityUrl;
-        logger.debug("Contacting " + requestUri + " to resolve vanity URL " + vanityUrl);
+        log.debug("Contacting [{}] to resolve vanity URL [{}]" ,requestUri,vanityUrl);
         return restTemplate.getForObject(requestUri, ResolveVanityUrlResponse.class);
     }
 
@@ -91,6 +89,7 @@ public class SteamRequestHandler {
         has any details, we'll pass it through as a multiplayer game, better than excluding games that could be multiplayer
         */
         if (!responseSuccess) {
+            log.debug("Could not determine whether game was multiplayer. Will be treated as multiplayer.");
             return new GameData(Collections.singleton(new GameCategory(SteamGameCategory.MULTIPLAYER)));
         }
         String dataField = "data";

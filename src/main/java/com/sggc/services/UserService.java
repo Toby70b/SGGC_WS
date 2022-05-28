@@ -13,9 +13,8 @@ import com.sggc.util.DateUtil;
 import com.sggc.util.SteamRequestHandler;
 import com.sggc.validation.SteamVanityUrlValidator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -25,12 +24,12 @@ import java.util.stream.Collectors;
 /**
  * Represents a service for interacting with User objects
  */
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-    private final static Logger logger = LoggerFactory.getLogger(UserService.class);
     private final SteamRequestHandler steamRequestHandler;
     private final Clock systemClock;
 
@@ -44,17 +43,16 @@ public class UserService {
      *                                  secrets manager
      */
     public Set<String> findOwnedGamesByUserId(String userId) throws SecretRetrievalException, UserHasNoGamesException {
-        logger.debug("Attempting to find user with id: " + userId);
+        log.debug("Attempting to find user with id: " + userId);
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
-            logger.debug("User with matching id has been found in DB");
+            log.debug("User with matching id has been found in DB");
             return user.get().getOwnedGameIds();
         } else {
-            logger.debug("User with matching id hasn't been found in DB, will request details from Steam API");
-            Set<String> usersOwnedGameIds = new HashSet<>();
-            usersOwnedGameIds = getUsersOwnedGameIds(userId);
+            log.debug("User with matching id hasn't been found in DB, will request details from Steam API");
+            Set<String> usersOwnedGameIds = getUsersOwnedGameIds(userId);
             if (usersOwnedGameIds.isEmpty()) {
-                logger.error("User: [{}] owns no Steam games, throwing exception", userId);
+                log.error("User: [{}] owns no Steam games, throwing exception", userId);
                 throw new UserHasNoGamesException(userId);
             }
             /*
