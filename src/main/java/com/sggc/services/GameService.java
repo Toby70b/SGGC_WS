@@ -3,9 +3,11 @@ package com.sggc.services;
 import com.sggc.models.Game;
 import com.sggc.models.GameCategory;
 import com.sggc.models.GameData;
+import com.sggc.models.SteamGameCategory;
 import com.sggc.repositories.GameRepository;
 import com.sggc.util.SteamRequestHandler;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -14,11 +16,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.sggc.util.CommonUtil.MULTIPLAYER_ID;
 
 /**
  * Represents a service for interacting with Game objects
  */
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class GameService {
@@ -40,8 +42,8 @@ public class GameService {
             commonGames = commonGames.stream().filter(game -> {
                 try {
                     return isGameMultiplayer(game);
-                    //TODO improve error handling here
                 } catch (IOException e) {
+                    log.error("Error occurred while trying to determine whether game is multiplayer",e);
                     throw new UncheckedIOException(e);
                 }
             }).collect(Collectors.toSet());
@@ -59,22 +61,23 @@ public class GameService {
      * @throws IOException if an error occurs requesting the games details from the Steam API
      */
     private boolean isGameMultiplayer(Game game) throws IOException {
+        log.debug("Attempting to determine whether game [{}] is multiplayer", game.getAppid());
         if (game.getMultiplayer() != null) {
+            log.debug("Game's multiplayer status is known, returning");
             return game.getMultiplayer();
         } else {
-
-            //TODO parse should be done implicitly
-            String response = steamRequestHandler.requestAppDetailsFromSteamApi(game.getAppid());
-
-            GameData parsedResponse = steamRequestHandler.parseGameDetailsList(response);
+            log.debug("Game's multiplayer status is unknown, contacting Steam API");
+            GameData parsedResponse = steamRequestHandler.requestAppDetailsFromSteamApi(game.getAppid());
             //Check for presence of multiplayer category
             for (GameCategory category : parsedResponse.getCategories()) {
-                if (category.getId() == MULTIPLAYER_ID) {
+                if (category.getId() == SteamGameCategory.MULTIPLAYER) {
+                    log.debug("Game is multiplayer, store in DB for future reference");
                     game.setMultiplayer(true);
                     gameRepository.save(game);
                     return true;
                 }
             }
+            log.debug("Game is not multiplayer, store in DB for future reference");
             game.setMultiplayer(false);
             gameRepository.save(game);
             return false;

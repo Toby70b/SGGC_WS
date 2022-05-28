@@ -6,7 +6,6 @@ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueReques
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueResponse;
 
 /**
- *
  * Utility class containing methods for interacting with AWS Secrets Manager
  */
 public class SecretManagerUtil {

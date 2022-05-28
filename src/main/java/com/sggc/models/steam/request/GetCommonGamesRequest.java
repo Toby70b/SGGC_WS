@@ -1,4 +1,4 @@
-package com.sggc.models;
+package com.sggc.models.steam.request;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +18,6 @@ import java.util.Set;
 public class GetCommonGamesRequest {
     @NonNull
     @Size(min = 2, message = "{com.sggc.lessThanTwoGameIds.message}")
-    private Set<@Pattern(regexp = "^\\d{17}$", message = "{com.sggc.invalidSteamId.message}") String> steamIds;
+    private Set<String> steamIds;
     private boolean multiplayerOnly;
 }

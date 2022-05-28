@@ -1,22 +1,26 @@
 package com.sggc.controllers;
 
-import com.sggc.exceptions.SecretRetrievalException;
-import com.sggc.exceptions.UserHasNoGamesException;
+import com.sggc.exceptions.*;
 import com.sggc.models.Game;
-import com.sggc.models.GetCommonGamesRequest;
+import com.sggc.models.ValidationResult;
+import com.sggc.models.sggc.SGGCResponse;
+import com.sggc.models.steam.request.GetCommonGamesRequest;
 import com.sggc.services.GameService;
 import com.sggc.services.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Set;
 
 /*
  * Represents the controller for the SGGC api. Under the URL api/sggc. Currently the only controller to provide functionality
  */
+@Log4j2
 @RestController
 @RequestMapping("api/sggc")
 @RequiredArgsConstructor
@@ -32,11 +36,35 @@ public class SGGCController {
      */
     @CrossOrigin
     @PostMapping(value = "/")
-    public ResponseEntity<Set<Game>> getGamesAllUsersOwn(@Valid @RequestBody GetCommonGamesRequest request) throws UserHasNoGamesException, SecretRetrievalException {
-        Set<String> steamUserIds = request.getSteamIds();
-        Set<String> commonGameIdsBetweenUsers = userService.getIdsOfGamesOwnedByAllUsers(steamUserIds);
+    public ResponseEntity<SGGCResponse> getGamesAllUsersOwn(@Valid @RequestBody GetCommonGamesRequest request) throws SecretRetrievalException {
+        log.info("Request received [{}]", request);
+        Set<String> steamIds = request.getSteamIds();
+        List<ValidationResult> validationErrorList = userService.validateSteamIdsAndVanityUrls(steamIds);
+        if (!validationErrorList.isEmpty()) {
+            SGGCResponse response = new SGGCResponse(false, new ValidationException(validationErrorList).toApiError());
+            log.info("Error occurred when validation request object returning 400 error response with body [{}]", response);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        Set<String> resolvedSteamUserIds;
+        try {
+            resolvedSteamUserIds = userService.resolveVanityUrls(steamIds);
+        } catch (VanityUrlResolutionException ex) {
+            SGGCResponse response = new SGGCResponse(false, ex.toApiError());
+            log.info("Error occurred while trying to resolve Vanity url returning 404 error response with body [{}]", response);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+        Set<String> commonGameIdsBetweenUsers;
+        try {
+            commonGameIdsBetweenUsers = userService.getIdsOfGamesOwnedByAllUsers(resolvedSteamUserIds);
+        } catch (UserHasNoGamesException | TooFewSteamIdsException ex) {
+            SGGCResponse response = new SGGCResponse(false, ex.toApiError());
+            log.info("Error occurred while trying to find user's owned games returning 404 error response with body [{}]", response);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
         Set<Game> commonGames = gameService.findGamesById(commonGameIdsBetweenUsers, request.isMultiplayerOnly());
-        return new ResponseEntity<>(commonGames, HttpStatus.OK);
+        log.info("Response successful");
+        return new ResponseEntity<>(new SGGCResponse(true, commonGames), HttpStatus.OK);
     }
+
 
 }
