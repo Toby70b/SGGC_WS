@@ -11,7 +11,6 @@ import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import com.sggc.repositories.UserRepository;
 import com.sggc.util.DateUtil;
-import com.sggc.util.SteamRequestHandler;
 import com.sggc.validation.SteamVanityUrlValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,7 +30,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final SteamRequestHandler steamRequestHandler;
+    private final SteamRequestService steamRequestHandler;
     private final Clock systemClock;
 
     /**

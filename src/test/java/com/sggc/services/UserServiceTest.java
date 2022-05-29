@@ -10,7 +10,6 @@ import com.sggc.models.ValidationResult;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import com.sggc.repositories.UserRepository;
-import com.sggc.util.SteamRequestHandler;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -40,7 +39,7 @@ class UserServiceTest {
     private UserRepository userRepository;
 
     @Mock
-    private SteamRequestHandler steamRequestHandler;
+    private SteamRequestService steamRequestService;
 
     @Mock
     private Clock clock;
@@ -85,7 +84,7 @@ class UserServiceTest {
             getOwnedGamesResponseDetails.setGameCount(0);
             mockGetOwnedGamesResponse1.setResponse(getOwnedGamesResponseDetails);
 
-            when(steamRequestHandler.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse1);
+            when(steamRequestService.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse1);
             UserHasNoGamesException exception =
                     assertThrows(UserHasNoGamesException.class, () -> userService.getIdsOfGamesOwnedByAllUsers(Set.of("1", "2")));
             assertEquals(exception.getUserId(), "1");
@@ -202,7 +201,7 @@ class UserServiceTest {
 
             getOwnedGamesResponseDetails.setGames(Set.of(game1, game2, game3));
             mockGetOwnedGamesResponse.setResponse(getOwnedGamesResponseDetails);
-            when(steamRequestHandler.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse);
+            when(steamRequestService.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse);
             assertEquals(Set.of("2", "1342", "10"), userService.findOwnedGamesByUserId("1"));
         }
 
@@ -216,7 +215,7 @@ class UserServiceTest {
             Game game1 = createExampleGame("2");
             getOwnedGamesResponseDetails.setGames(Set.of(game1));
             mockGetOwnedGamesResponse.setResponse(getOwnedGamesResponseDetails);
-            when(steamRequestHandler.requestUsersOwnedGamesFromSteamApi("12")).thenReturn(mockGetOwnedGamesResponse);
+            when(steamRequestService.requestUsersOwnedGamesFromSteamApi("12")).thenReturn(mockGetOwnedGamesResponse);
 
             Clock fixedClock = Clock.fixed(Instant.parse("2018-08-22T10:00:00Z"), ZoneOffset.UTC);
             when(clock.instant()).thenReturn(fixedClock.instant());
@@ -241,7 +240,7 @@ class UserServiceTest {
             GetOwnedGamesResponse.Response getOwnedGamesResponseDetails = new GetOwnedGamesResponse.Response();
             getOwnedGamesResponseDetails.setGameCount(0);
             mockGetOwnedGamesResponse.setResponse(getOwnedGamesResponseDetails);
-            when(steamRequestHandler.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse);
+            when(steamRequestService.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse);
             UserHasNoGamesException exception =
                     assertThrows(UserHasNoGamesException.class, () -> userService.findOwnedGamesByUserId("1"));
             assertEquals(exception.getUserId(), "1");
@@ -317,7 +316,7 @@ class UserServiceTest {
                 ResolveVanityUrlResponse vanityUrlResponse = new ResolveVanityUrlResponse();
                 vanityUrlResponse.setResponse(response);
 
-                when(steamRequestHandler.resolveVanityUrl("VanityUrl1")).thenReturn(vanityUrlResponse);
+                when(steamRequestService.resolveVanityUrl("VanityUrl1")).thenReturn(vanityUrlResponse);
                 assertEquals(userService.resolveVanityUrls(Set.of("VanityUrl1")), Set.of(randomSteamId));
             }
 
@@ -339,8 +338,8 @@ class UserServiceTest {
                 ResolveVanityUrlResponse vanityUrlResponse2 = new ResolveVanityUrlResponse();
                 vanityUrlResponse2.setResponse(response2);
 
-                when(steamRequestHandler.resolveVanityUrl("VanityUrl1")).thenReturn(vanityUrlResponse1);
-                when(steamRequestHandler.resolveVanityUrl("VanityUrl2")).thenReturn(vanityUrlResponse2);
+                when(steamRequestService.resolveVanityUrl("VanityUrl1")).thenReturn(vanityUrlResponse1);
+                when(steamRequestService.resolveVanityUrl("VanityUrl2")).thenReturn(vanityUrlResponse2);
 
                 assertEquals(userService.resolveVanityUrls(Set.of("VanityUrl1", "VanityUrl2")), Set.of(randomSteamId1, randomSteamId2));
             }
@@ -364,8 +363,8 @@ class UserServiceTest {
                 ResolveVanityUrlResponse vanityUrlResponse2 = new ResolveVanityUrlResponse();
                 vanityUrlResponse2.setResponse(response2);
 
-                when(steamRequestHandler.resolveVanityUrl("VanityUrl1")).thenReturn(vanityUrlResponse1);
-                when(steamRequestHandler.resolveVanityUrl("VanityUrl2")).thenReturn(vanityUrlResponse2);
+                when(steamRequestService.resolveVanityUrl("VanityUrl1")).thenReturn(vanityUrlResponse1);
+                when(steamRequestService.resolveVanityUrl("VanityUrl2")).thenReturn(vanityUrlResponse2);
 
                 assertEquals(userService.resolveVanityUrls(Set.of("VanityUrl1", randomSteamId3, "VanityUrl2")), Set.of(randomSteamId1, randomSteamId3, randomSteamId2));
             }
@@ -378,7 +377,7 @@ class UserServiceTest {
                 response.setSuccess(42);
                 ResolveVanityUrlResponse vanityUrlResponse = new ResolveVanityUrlResponse();
                 vanityUrlResponse.setResponse(response);
-                when(steamRequestHandler.resolveVanityUrl(randomVanityUrl)).thenReturn(vanityUrlResponse);
+                when(steamRequestService.resolveVanityUrl(randomVanityUrl)).thenReturn(vanityUrlResponse);
                 VanityUrlResolutionException ex = assertThrows(VanityUrlResolutionException.class, () -> userService.resolveVanityUrls(Set.of(randomVanityUrl)));
                 assertEquals(randomVanityUrl, ex.getVanityUrl());
             }
