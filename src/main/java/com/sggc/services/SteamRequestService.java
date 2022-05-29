@@ -26,7 +26,7 @@ import java.util.Collections;
 public class SteamRequestService {
     private final RestTemplate restTemplate;
     private final AwsSecretManagerService secretManagerService;
-    private String steamKey;
+    private String steamKey ;
 
     public static final String STEAM_API_KEY_NAME = "SteamAPIKey";
     public static final String GET_OWNED_GAMES_ENDPOINT = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/";
@@ -65,7 +65,6 @@ public class SteamRequestService {
                 .build()
                 .toUri();
 
-
         log.debug("Contacting [{}] to get details of game [{}]", requestUri, appId);
         String response = restTemplate.getForObject(requestUri, String.class);
         return parseGameDetailsList(response);
@@ -84,6 +83,7 @@ public class SteamRequestService {
                 .queryParam("vanityurl", vanityUrl)
                 .build()
                 .toUri();
+
         log.debug("Contacting [{}] to resolve vanity URL [{}]", requestUri, vanityUrl);
         return restTemplate.getForObject(requestUri, ResolveVanityUrlResponse.class);
     }
@@ -130,7 +130,7 @@ public class SteamRequestService {
             return JsonParser.parseString(stringToParse);
 
         } catch (JsonSyntaxException e) {
-            throw new IOException("Error when parsing response string into JSON object, this is likely due an invalid user id", e);
+            throw new IOException("Error when parsing response string into JSON object", e);
         }
     }
 
