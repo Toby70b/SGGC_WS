@@ -5,10 +5,10 @@ import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 
 public class SteamKeyRetriever {
     private static final String STEAM_API_KEY_NAME = "SteamAPIKey";
-    private String steamKey;
+    private final String steamKey;
     private static SteamKeyRetriever instance;
 
-    private SteamKeyRetriever() throws SecretRetrievalException {
+    private SteamKeyRetriever() {
         SecretsManagerClient secretsManagerClient = SecretManagerUtil.createSecretManagerClient();
         this.steamKey =  SecretManagerUtil.getSecretValue(secretsManagerClient,STEAM_API_KEY_NAME);
         secretsManagerClient.close();
