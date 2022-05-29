@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Set;
 
+import static com.sggc.TestUtils.createExampleGame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -114,15 +115,6 @@ class GameServiceTest {
         }
 
 
-    }
-
-    private Game createExampleGame(String appid, Boolean multiplayer, String name) {
-        Game exampleGame = new Game();
-        exampleGame.setAppid(appid);
-        exampleGame.setMultiplayer(multiplayer);
-        exampleGame.setName(name);
-        exampleGame.setId("10");
-        return exampleGame;
     }
 
 }
