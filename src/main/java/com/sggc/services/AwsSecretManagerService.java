@@ -1,9 +1,10 @@
 package com.sggc.services;
 
 import com.sggc.exceptions.SecretRetrievalException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest;
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueResponse;
@@ -13,9 +14,10 @@ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRespon
  */
 @Service
 @Log4j2
+@RequiredArgsConstructor
 public class AwsSecretManagerService {
 
-    private final SecretsManagerClient client = createSecretManagerClient();
+    private final SecretsManagerClient client;
 
     /**
      * Retrieves the given key from AWS secrets manager
@@ -23,6 +25,7 @@ public class AwsSecretManagerService {
      * @return the specified key stored within AWS secrets manager
      * @throws SecretRetrievalException if an exception occurs trying to retrieve the key from AWS secrets manager
      */
+    @Cacheable("secrets")
     public String getSecretValue(String secretId) throws SecretRetrievalException {
         try {
             log.debug("Attempting to retrieve secret [{}] from AWS Secrets Manager",secretId);
@@ -34,17 +37,6 @@ public class AwsSecretManagerService {
         } catch (Exception e) {
             throw new SecretRetrievalException("Exception occurred when attempting to retrieve Steam API Key from AWS secrets manager", e);
         }
-    }
-
-    /**
-     * Creates a new instance of the AWS Secrets Manager client to perform actions on AWS secrets
-     *
-     * @return a new instance of the AWS Secrets Manager client
-     */
-    private SecretsManagerClient createSecretManagerClient() {
-        return SecretsManagerClient.builder()
-                .region(Region.EU_WEST_2)
-                .build();
     }
 
 }
