@@ -43,7 +43,7 @@ public class UserService {
      *                                  secrets manager
      */
     public Set<String> findOwnedGamesByUserId(String userId) throws SecretRetrievalException, UserHasNoGamesException {
-        log.debug("Attempting to find user with id: " + userId);
+        log.debug("Attempting to find user with id [{}]",userId);
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             log.debug("User with matching id has been found in DB");
