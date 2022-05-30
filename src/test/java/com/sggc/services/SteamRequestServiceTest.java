@@ -149,25 +149,4 @@ class SteamRequestServiceTest {
 
         assertEquals(mockResponse, steamRequestService.resolveVanityUrl("SomeVanityUrl"));
     }
-
-    @Test
-    @DisplayName("Given that a Steam API key has been retrieved, when subsequent calls are made to the Steam API no further " +
-            "request for the Steam API key will be sent")
-    void givenThatASteamAPIKeyHasBeenRetrievedWhenSubsequentCallsAreMadeToTheSteamAPINoFurtherRequestForTheSteamAPIKeyWillBeSent() throws SecretRetrievalException {
-        URI mockURI = URI.create("https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=SomeKey&vanityurl=SomeVanityUrl");
-
-        ResolveVanityUrlResponse mockResponse = new ResolveVanityUrlResponse();
-        ResolveVanityUrlResponse.Response mockResponseDetails = new ResolveVanityUrlResponse.Response();
-        mockResponseDetails.setSteamId("12345678910");
-        mockResponseDetails.setSuccess(1);
-        when(restTemplate.getForObject(mockURI, ResolveVanityUrlResponse.class)).thenReturn(mockResponse);
-        when(secretManagerService.getSecretValue(STEAM_API_KEY_NAME)).thenReturn("SomeKey");
-
-        assertEquals(mockResponse, steamRequestService.resolveVanityUrl("SomeVanityUrl"));
-        assertEquals(mockResponse, steamRequestService.resolveVanityUrl("SomeVanityUrl"));
-        verify(secretManagerService, times(1)).getSecretValue((anyString()));
-
-    }
-
-
 }

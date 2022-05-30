@@ -9,6 +9,7 @@ import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -26,7 +27,6 @@ import java.util.Collections;
 public class SteamRequestService {
     private final RestTemplate restTemplate;
     private final AwsSecretManagerService secretManagerService;
-    private String steamKey ;
 
     public static final String STEAM_API_KEY_NAME = "SteamAPIKey";
     public static final String GET_OWNED_GAMES_ENDPOINT = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/";
@@ -139,14 +139,10 @@ public class SteamRequestService {
      *
      * @return a Steam API key stored within AWS secrets manager
      */
+
     private String getSteamApiKey() throws SecretRetrievalException {
-        if(steamKey == null) {
-           steamKey = secretManagerService.getSecretValue(STEAM_API_KEY_NAME);
-        }
-        return steamKey;
+       return secretManagerService.getSecretValue(STEAM_API_KEY_NAME);
     }
-
-
 
 }
 
