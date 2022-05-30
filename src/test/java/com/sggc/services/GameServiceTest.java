@@ -5,7 +5,6 @@ import com.sggc.models.GameCategory;
 import com.sggc.models.GameData;
 import com.sggc.models.SteamGameCategory;
 import com.sggc.repositories.GameRepository;
-import com.sggc.util.SteamRequestHandler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,6 +17,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Set;
 
+import static com.sggc.TestUtils.createExampleGame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,7 +29,7 @@ class GameServiceTest {
     private GameRepository gameRepository;
 
     @Mock
-    private SteamRequestHandler steamRequestHandler;
+    private SteamRequestService steamRequestService;
 
     @InjectMocks
     private GameService gameService;
@@ -97,9 +97,9 @@ class GameServiceTest {
                 when(gameRepository.findGameByAppid("573101")).thenReturn(exampleGame2);
                 when(gameRepository.findGameByAppid("573102")).thenReturn(exampleGame3);
 
-                when(steamRequestHandler.requestAppDetailsFromSteamApi("573100")).thenReturn(multiplayerAppDetailsResponseExample1);
-                when(steamRequestHandler.requestAppDetailsFromSteamApi("573101")).thenReturn(multiplayerAppDetailsResponseExample3);
-                when(steamRequestHandler.requestAppDetailsFromSteamApi("573102")).thenReturn(multiplayerAppDetailsResponseExample2);
+                when(steamRequestService.requestAppDetailsFromSteamApi("573100")).thenReturn(multiplayerAppDetailsResponseExample1);
+                when(steamRequestService.requestAppDetailsFromSteamApi("573101")).thenReturn(multiplayerAppDetailsResponseExample3);
+                when(steamRequestService.requestAppDetailsFromSteamApi("573102")).thenReturn(multiplayerAppDetailsResponseExample2);
 
                 assertEquals(Set.of(exampleGame1, exampleGame3), gameService.findGamesById(Set.of("573100","573101" ,"573102"), true));
             }
@@ -107,7 +107,7 @@ class GameServiceTest {
             @Test
             @DisplayName("If an exception is thrown while trying to determine whether a game is multiplayer it will throw an exception with an appropriate message")
             void IfAnExceptionIsThrownWhileTryingToDetermineWhetherAGameIsMultiplayerItWillThrowAnExceptionWithAnAppropriateMessage() throws IOException {
-                when(steamRequestHandler.requestAppDetailsFromSteamApi(any())).thenThrow(new IOException());
+                when(steamRequestService.requestAppDetailsFromSteamApi(any())).thenThrow(new IOException());
                 Game exampleGame1 = createExampleGame("12", null, "Some game name");
                 when(gameRepository.findGameByAppid("12")).thenReturn(exampleGame1);
                 assertThrows(UncheckedIOException.class, () -> gameService.findGamesById(Set.of("12"), true));
@@ -115,15 +115,6 @@ class GameServiceTest {
         }
 
 
-    }
-
-    private Game createExampleGame(String appid, Boolean multiplayer, String name) {
-        Game exampleGame = new Game();
-        exampleGame.setAppid(appid);
-        exampleGame.setMultiplayer(multiplayer);
-        exampleGame.setName(name);
-        exampleGame.setId("10");
-        return exampleGame;
     }
 
 }

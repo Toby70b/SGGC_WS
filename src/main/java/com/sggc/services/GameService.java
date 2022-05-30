@@ -5,7 +5,6 @@ import com.sggc.models.GameCategory;
 import com.sggc.models.GameData;
 import com.sggc.models.SteamGameCategory;
 import com.sggc.repositories.GameRepository;
-import com.sggc.util.SteamRequestHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,7 @@ import java.util.stream.Collectors;
 public class GameService {
 
     private final GameRepository gameRepository;
-    private final SteamRequestHandler steamRequestHandler;
+    private final SteamRequestService steamRequestHandler;
 
     /**
      * Retrieve details of games from the DB via the game's app id

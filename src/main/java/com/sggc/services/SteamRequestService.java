@@ -1,4 +1,4 @@
-package com.sggc.util;
+package com.sggc.services;
 
 import com.google.gson.*;
 import com.sggc.exceptions.SecretRetrievalException;
@@ -9,22 +9,26 @@ import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Component;
+import org.springframework.cache.CacheManager;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Collections;
 
 /**
  * Class representing an interface for communicating with the Steam API
  */
 @Log4j2
-@Component
+@Service
 @RequiredArgsConstructor
-public class SteamRequestHandler {
-
+public class SteamRequestService {
     private final RestTemplate restTemplate;
+    private final AwsSecretManagerService secretManagerService;
 
+    public static final String STEAM_API_KEY_NAME = "SteamAPIKey";
     public static final String GET_OWNED_GAMES_ENDPOINT = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/";
     public static final String GET_APP_DETAILS_ENDPOINT = "https://store.steampowered.com/api/appdetails/";
     public static final String RESOLVE_VANITY_URL_ENDPOINT = "https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/";
@@ -37,8 +41,14 @@ public class SteamRequestHandler {
      * @throws SecretRetrievalException if an error occurs retrieving the Steam API key secret from AWS secrets manager
      */
     public GetOwnedGamesResponse requestUsersOwnedGamesFromSteamApi(String userId) throws SecretRetrievalException {
-        String requestUri = GET_OWNED_GAMES_ENDPOINT + "?key=" + getSteamApiKey() + "&steamid=" + userId;
-        log.debug("Contacting [{}] to get owned games of user [{}]",requestUri,userId);
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(GET_OWNED_GAMES_ENDPOINT);
+        URI requestUri = uriComponentsBuilder
+                .queryParam("key", getSteamApiKey())
+                .queryParam("steamid", userId)
+                .build()
+                .toUri();
+
+        log.debug("Contacting [{}] to get owned games of user [{}]", requestUri, userId);
         return restTemplate.getForObject(requestUri, GetOwnedGamesResponse.class);
     }
 
@@ -49,8 +59,13 @@ public class SteamRequestHandler {
      * @return a GameData object parsed from the response from the Steam API containing the details of the specified app
      */
     public GameData requestAppDetailsFromSteamApi(String appId) throws IOException {
-        String requestUri = GET_APP_DETAILS_ENDPOINT + "?appids=" + appId;
-        log.debug("Contacting [{}] to get details of game [{}]",requestUri,appId);
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(GET_APP_DETAILS_ENDPOINT);
+        URI requestUri = uriComponentsBuilder
+                .queryParam("appids", appId)
+                .build()
+                .toUri();
+
+        log.debug("Contacting [{}] to get details of game [{}]", requestUri, appId);
         String response = restTemplate.getForObject(requestUri, String.class);
         return parseGameDetailsList(response);
     }
@@ -62,8 +77,14 @@ public class SteamRequestHandler {
      * @return a response from the Steam API containing the resolved Steam user id
      */
     public ResolveVanityUrlResponse resolveVanityUrl(String vanityUrl) throws SecretRetrievalException {
-        String requestUri = RESOLVE_VANITY_URL_ENDPOINT + "?key=" + getSteamApiKey() + "&vanityurl=" + vanityUrl;
-        log.debug("Contacting [{}] to resolve vanity URL [{}]" ,requestUri,vanityUrl);
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(RESOLVE_VANITY_URL_ENDPOINT);
+        URI requestUri = uriComponentsBuilder
+                .queryParam("key", getSteamApiKey())
+                .queryParam("vanityurl", vanityUrl)
+                .build()
+                .toUri();
+
+        log.debug("Contacting [{}] to resolve vanity URL [{}]", requestUri, vanityUrl);
         return restTemplate.getForObject(requestUri, ResolveVanityUrlResponse.class);
     }
 
@@ -74,11 +95,11 @@ public class SteamRequestHandler {
      * @return a {@link GameData} object serialized from the response from the Steam API
      * @throws IOException if an error occurs while serializing the string into JSON
      */
-    public GameData parseGameDetailsList(String stringToParse) throws IOException {
+    private GameData parseGameDetailsList(String stringToParse) throws IOException {
         Gson gson = new Gson();
         JsonElement jsonTree = parseResponseStringToJson(stringToParse);
         JsonObject obj = jsonTree.getAsJsonObject();
-        // The root of the response is a id of the game thus get the responses root value
+        // The root of the response is an id of the game thus get the responses root value
         String gameId = obj.keySet().iterator().next();
         obj = obj.getAsJsonObject(gameId);
         String successField = "success";
@@ -109,20 +130,19 @@ public class SteamRequestHandler {
             return JsonParser.parseString(stringToParse);
 
         } catch (JsonSyntaxException e) {
-            throw new IOException("Error when parsing response string into JSON object, this is likely due an invalid user id", e);
+            throw new IOException("Error when parsing response string into JSON object", e);
         }
     }
 
     /**
-     * Retrieves the Steam API key from AWS secrets manager
+     * Retrieves a Steam API key from AWS secrets manager
      *
-     * @return the Steam API key stored within AWS secrets manager
-     * @throws SecretRetrievalException if an exception occurs trying to retrieve the Steam API key from AWS secrets manager
+     * @return a Steam API key stored within AWS secrets manager
      */
-    private String getSteamApiKey() throws SecretRetrievalException {
-        return SteamKeyRetriever.getInstance().getSteamKey();
-    }
 
+    private String getSteamApiKey() throws SecretRetrievalException {
+       return secretManagerService.getSecretValue(STEAM_API_KEY_NAME);
+    }
 
 }
 

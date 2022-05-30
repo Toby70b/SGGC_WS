@@ -11,7 +11,6 @@ import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import com.sggc.repositories.UserRepository;
 import com.sggc.util.DateUtil;
-import com.sggc.util.SteamRequestHandler;
 import com.sggc.validation.SteamVanityUrlValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,7 +30,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final SteamRequestHandler steamRequestHandler;
+    private final SteamRequestService steamRequestHandler;
     private final Clock systemClock;
 
     /**
@@ -44,7 +43,7 @@ public class UserService {
      *                                  secrets manager
      */
     public Set<String> findOwnedGamesByUserId(String userId) throws SecretRetrievalException, UserHasNoGamesException {
-        log.debug("Attempting to find user with id: " + userId);
+        log.debug("Attempting to find user with id [{}]",userId);
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             log.debug("User with matching id has been found in DB");
