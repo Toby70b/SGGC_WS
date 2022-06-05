@@ -9,18 +9,33 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-@Log4j2
-@RestControllerAdvice
+import java.net.BindException;
+
 /**
  * Controller advice to the SGGC controller used to provide the controller with a standardized method of returning errors back to the client
  */
-public class SGGCControllerAdvice extends ResponseEntityExceptionHandler {
+@Log4j2
+@RestControllerAdvice
+public class SGGCRestExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<SGGCResponse> handleBindException(BindException ex) {
+        log.error("BindException occurred, this will be caused by a validation error with the request body", ex);
+        final ApiError error = new ApiError(
+                "ValidationException",
+                ""
+
+        );
+        SGGCResponse response = new SGGCResponse(false,error);
+        log.info("Error occurred when validation request object returning 400 error response with body [{}]", response);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
 
-    @ExceptionHandler(Exception.class)
     /**
      * Catch-all method to catch all uncaught exceptions and wrap them in an SGGCResponse object for easier consuming
      */
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<SGGCResponse> handleGenericException(Exception ex) {
         log.error("Internal server error occurred", ex);
         final ApiError error = new ApiError(

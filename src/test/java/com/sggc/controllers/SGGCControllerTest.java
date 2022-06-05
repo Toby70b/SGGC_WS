@@ -73,7 +73,7 @@ class SGGCControllerTest {
         @BeforeEach
         void setUp() {
             this.mockMvc = MockMvcBuilders.standaloneSetup(new SGGCController(gameService, userService))
-                    .setControllerAdvice(SGGCControllerAdvice.class)
+                    .setControllerAdvice(SGGCRestExceptionHandler.class)
                     .build();
         }
 
