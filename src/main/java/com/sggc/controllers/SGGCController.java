@@ -33,6 +33,8 @@ public class SGGCController {
      *
      * @param request the request object containing information such as user id's to search and whether multiplayer games should be excluded
      * @return a response object containing a collection of games that are mutually owned by all users specified in the request
+     * @throws SecretRetrievalException if an error occurs trying to retrieve a secret key from AWS secrets manager in
+     * this case the controller's advice will return a 500 error response
      */
     @CrossOrigin
     @PostMapping(value = "/")
