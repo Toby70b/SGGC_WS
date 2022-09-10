@@ -21,11 +21,10 @@ that could compare multiple users lists for common games I decided to make this 
 
 ## REST API
 
-The REST API is a spring boot project (created using spring initializr) run using a Tomcat server. The API is exposed 
-(by default) on port 8080, it currently only has two endpoints. The primary endpoint is a POST endpoint which takes a 
-json object consisting of an array of Strings which correspond to either Steam user ids or vanity URLs
-(these are publicly available, either by using the Steam client or through the Steam API) it also takes a boolean 
-parameter to flag whether only multiplayer games should be returned within the result set
+The REST API is a spring boot projec. The API is exposed (by default) on port 8080, it currently only has two endpoints.
+The primary endpoint is a POST endpoint which takes a json object consisting of an array of Strings which correspond to 
+either Steam user ids or vanity URLs(these are publicly available, either by using the Steam client or through the Steam API) 
+it also takes a boolean parameter to flag whether only multiplayer games should be returned within the result set
 
 An example of the body of the post request is:
 ```
