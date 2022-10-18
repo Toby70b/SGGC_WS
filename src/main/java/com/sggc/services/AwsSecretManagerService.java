@@ -35,7 +35,7 @@ public class AwsSecretManagerService {
             GetSecretValueResponse valueResponse = client.getSecretValue(valueRequest);
             return valueResponse.secretString();
         } catch (Exception e) {
-            throw new SecretRetrievalException("Exception occurred when attempting to retrieve Steam API Key from AWS secrets manager", e);
+            throw new SecretRetrievalException("Exception occurred when attempting to retrieve secret from AWS secrets manager", e);
         }
     }
 
