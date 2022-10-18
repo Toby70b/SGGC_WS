@@ -41,7 +41,7 @@ class AwsSecretManagerServiceTest {
         SecretRetrievalException expectedException =
                 assertThrows(SecretRetrievalException.class, ()->secretManagerService.getSecretValue("secretKey"));
 
-        assertEquals("Exception occurred when attempting to retrieve Steam API Key from AWS secrets manager",
+        assertEquals("Exception occurred when attempting to retrieve secret from AWS secrets manager",
                 expectedException.getMessage());
         assertTrue(expectedException.getCause() instanceof SecretsManagerException);
     }
