@@ -10,11 +10,13 @@ FROM amazon/dynamodb-local:1.20.0
 #Add the AWS CLI from the previous stage here so we can use it to prepopulate tables upon startup
 COPY --from=awscli aws ./
 USER root
-RUN yum -y install sudo \
+RUN yum -y install sudo less \
     && yum -y clean all \
     && rm -rf /var/cache \
     && sudo ./install \
     && rm -rf ./install \
+    && mkdir -p setup
 #Run script to start local dynamodb and populate it with data
-#ENTRYPOINT ["/usr/bin/env"]
-#CMD ["echo", "Hello World!"]
+WORKDIR setup
+COPY setup.sh setup.sh
+ENTRYPOINT ["/bin/bash", "setup.sh"]
