@@ -1,6 +1,7 @@
 package com.sggc.config;
 
 import com.amazonaws.auth.*;
+import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
@@ -22,9 +23,10 @@ public class DynamoDbConfig {
 
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
-        return AmazonDynamoDBClientBuilder.standard().withCredentials(amazonAWSCredentialsProvider())
-                .withRegion(Regions.EU_WEST_2).build();
+        return AmazonDynamoDBClientBuilder.standard()
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration
+                        ("http://localhost:8000/", "local"))
+                .withCredentials(amazonAWSCredentialsProvider())
+                .build();
     }
-
-
 }

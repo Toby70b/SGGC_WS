@@ -1,10 +1,11 @@
 #Get the unzipped AWS CLI
+# TODO can we use the AWS CLI image?
 FROM alpine:3.16 as awscli
 RUN apk update && apk add --no-cache \
     curl \
     unzip \
     && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
-    && unzip awscliv2.zip
+    && unzip awscliv2.zip \
 
 FROM amazon/dynamodb-local:1.20.0
 #Add the AWS CLI from the previous stage here so we can use it to prepopulate tables upon startup
@@ -17,6 +18,6 @@ RUN yum -y install sudo less \
     && rm -rf ./install \
     && mkdir -p setup
 #Run script to start local dynamodb and populate it with data
-WORKDIR setup
-COPY setup.sh setup.sh
-ENTRYPOINT ["/bin/bash", "setup.sh"]
+COPY initDb.sh setup/initDb.sh
+COPY tables setup/tables
+ENTRYPOINT ["/bin/bash" ,"-c", "setup/initDb.sh"]
