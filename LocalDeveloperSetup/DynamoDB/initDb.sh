@@ -1,11 +1,9 @@
 #! /bin/bash
 set -e
-
-DIR=$(cd "$(dirname "$0")" && pwd)
+export AWS_PAGER=""
 DYNAMO_PORT=8000
 
 export DYNAMO_ENDPOINT_URL=http://localhost:$DYNAMO_PORT
-
 
 aws configure \
 set aws_access_key_id "DUMMY_ACCESS_KEY" --profile localuser \
@@ -23,10 +21,10 @@ while ! timeout 1 bash -c "echo > /dev/tcp/localhost/$DYNAMO_PORT" 2> /dev/null;
   sleep 1
 done
 
-echo "$0: Creating table from $f"; aws dynamodb create-table --cli-input-json file:///home/dynamodblocal/setup/tables/Game.json --endpoint-url $DYNAMO_ENDPOINT_URL 
 
-echo "Doing something"
-echo "Doing something"
-echo "Doing something"
-
+echo "Initializing tables"
+for $f in tables/*.json; do
+    echo "$0: Creating table from $f"; aws dynamodb create-table --cli-input-json file:///home/dynamodblocal/setup/tables/Game.json --endpoint-url $DYNAMO_ENDPOINT_URL
+done
+echo "Tables initialized"
 wait $DYNAMO_PID
