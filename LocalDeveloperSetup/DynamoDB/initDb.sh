@@ -23,8 +23,8 @@ done
 
 
 echo "Initializing tables"
-for $f in tables/*.json; do
-    echo "$0: Creating table from $f"; aws dynamodb create-table --cli-input-json file:///home/dynamodblocal/setup/tables/Game.json --endpoint-url $DYNAMO_ENDPOINT_URL
+for f in setup/tables/*.json; do
+    echo "$0: Creating table from $f"; aws dynamodb create-table --cli-input-json file://$f --endpoint-url $DYNAMO_ENDPOINT_URL
 done
 echo "Tables initialized"
 wait $DYNAMO_PID
