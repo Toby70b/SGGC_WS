@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  dynamodb-local:
+    image: tobypeel/steam_group_game_checker_local_db:latest
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
+
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin
+    ports:
+      - "8001:8001"
+    environment:
+      DYNAMO_ENDPOINT: "http://dynamodb-local:8000"
+      AWS_REGION: "local"
+      AWS_ACCESS_KEY_ID: DUMMY_ACCESS_KEY
+      AWS_SECRET_ACCESS_KEY: DUMMY_SECRET_ACCESS_KEY
+    depends_on:
+      - dynamodb-local
+        
+        
