@@ -8,8 +8,12 @@ requires for local development
 A local DynamoDB instance can be setup by using the tobypeel/steam_group_game_checker_local_db docker image found 
 [here](https://hub.docker.com/r/tobypeel/steam_group_game_checker_local_db). This docker image is created from the 
 Dockerfile under [DynamoDB](DynamoDB/Dockerfile). As you can see its based off of the amazon/dynamodb-local image found 
-[here](https://hub.docker.com/r/amazon/dynamodb-local) with the aws cli added also for extra flexibility, for example 
+[here](https://hub.docker.com/r/amazon/dynamodb-local) with the aws cli added also for added flexibility, for example 
 adding new tables.
+
+Through the Dockerfile, the DynamoDB instance is bootstrapped with the tables required by the SGGC WS. Bootstrapping is done by
+copying over the JSON representation of the tables required, a Shell script is then run which starts the DynamoDB instance
+and then loops through the copied JSON files and calls the AWS CLI to create a table with each JSON file as the input.
 
 As some find the CLI suboptimal for certain tasks there is also a docker-compose file [here](DynamoDB/docker-compose.yml),
 this includes a container for the [aaronshaf/dynamodb-admin](https://hub.docker.com/r/aaronshaf/dynamodb-admin/) image
