@@ -16,9 +16,9 @@ RUN yum -y install sudo less \
     && rm -rf /var/cache \
     && sudo ./install \
     && rm -rf ./install \
-    && mkdir -p setup
+    && mkdir -p sggc-setup
 #Run script to start local dynamodb and populate it with data
-COPY initDb.sh setup/initDb.sh
-COPY tables setup/tables
-ENTRYPOINT ["/bin/bash" ,"-c", "setup/initDb.sh"]
+COPY init-db.sh sggc-setup/init-db.sh
+COPY tables sggc-setup/tables
+ENTRYPOINT ["/bin/bash" ,"-c", "sggc-setup/init-db.sh"]
 
