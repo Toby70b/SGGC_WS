@@ -141,7 +141,11 @@ public class SteamRequestService {
      */
 
     private String getSteamApiKey() throws SecretRetrievalException {
-       return secretManagerService.getSecretValue(STEAM_API_KEY_NAME);
+        String steamApiKey = secretManagerService.getSecretValue(STEAM_API_KEY_NAME);
+        if (steamApiKey == null) {
+            throw new SecretRetrievalException("Steam API key could not be retrieved from the AWS Secrets Manager");
+        }
+        return steamApiKey;
     }
 
 }

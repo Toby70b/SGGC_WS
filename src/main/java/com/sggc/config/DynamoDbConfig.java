@@ -1,12 +1,11 @@
 package com.sggc.config;
 
-import com.amazonaws.auth.*;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,6 +20,8 @@ public class DynamoDbConfig {
         return new DefaultAWSCredentialsProviderChain();
     }
 
+    //TODO add spring beans for different profiles
+    //TODO javadoc
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
         return AmazonDynamoDBClientBuilder.standard()

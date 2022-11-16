@@ -65,6 +65,7 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.9.2</version>
         </dependency>
+        <!-- TODO Should the below be in a dependency management? -->
         <!-- ********** AWS DynamoDB ********** -->
         <dependency>
             <groupId>io.github.boostchicken</groupId>
@@ -73,9 +74,9 @@
         </dependency>
         <!-- ********** AWS Secrets Manager ********** -->
         <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>secretsmanager</artifactId>
-            <version>2.17.130</version>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-secretsmanager</artifactId>
+            <version>1.12.342</version>
         </dependency>
     </dependencies>
 

@@ -1,22 +1,32 @@
 package com.sggc.config;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.secretsmanager.AWSSecretsManager;
+import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 
 @Configuration
 public class SecretManagerConfig {
+
+    public AWSCredentialsProvider amazonAWSCredentialsProvider() {
+        return new DefaultAWSCredentialsProviderChain();
+    }
 
     /**
      * Creates a new instance of the AWS Secrets Manager client to perform actions on AWS secrets
      *
      * @return a new instance of the AWS Secrets Manager client
      */
+    //TODO add spring beans for different profiles
     @Bean
-    public SecretsManagerClient secretManagerClient() {
-        return SecretsManagerClient.builder()
-                .region(Region.EU_WEST_2)
+    public AWSSecretsManager secretManagerClient() {
+        return AWSSecretsManagerClientBuilder.standard()
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration
+                        ("http://localhost:5000/", "local"))
+                .withCredentials(amazonAWSCredentialsProvider())
                 .build();
     }
 }
