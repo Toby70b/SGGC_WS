@@ -1,4 +1,4 @@
-# SteamGroupGameChecker Web Service - Tool to find out common steam games between users
+# Steam Group Game Checker (SGGC) Web Service - Tool to find out common steam games between users
 
 ⛔ PLEASE NOTE: This should be obvious but none of the code here should be considered "production ready" by a business standard.
 
@@ -34,8 +34,8 @@ An example of the body of the post request is:
 }
 ```
 
-Upon success the API will return a json object consisting of game objects that contain the game's Application Id on 
-the Steam db as well as the game's name. The returned games are multiplyer games the users entered in the input 
+Upon success the API will return a json object consisting of game objects that contain the game's Application ID on 
+the Steam db as well as the game's name. The returned games are multiplayer games the users requested
 have in common.
 
 An example of the output of ther API is:
@@ -52,23 +52,27 @@ An example of the output of ther API is:
 ]
 ```
 
-A swagger endpoint on the root of port 8080 if you want to view documentation in swagger format
+A Swagger endpoint on the root of port 8080 if you want to view documentation in Swagger format.
 
 ## UI
 
-The code for the UI is stored within another repo [here](https://github.com/Toby70b/SGGC_UI)
+The code for the UI is stored within another repo [here](https://github.com/Toby70b/SGGC_UI).
 
 ## Docker
 
-The API has a docker image ready for containerization
+The API has a docker image ready for containerization.
 
 tobypeel/steam_group_game_checker_api:prod
+
+## Local development
+Please see the relevant README on local development setup [here](LocalDeveloperSetup/README.md).
 
 ## Things to improve
 * Improved handling of the various responses from Steam
 * Move from REST to a Queue-based API
 * Integration tests
-
+* E2E tests
+* Development Environments
 
 ## Thanks to
 https://steamcommunity.com/dev (without it this wouldn't exist, and I wouldn't have had the practice) 
