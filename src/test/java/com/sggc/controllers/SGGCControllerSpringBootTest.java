@@ -36,19 +36,16 @@ public class SGGCControllerSpringBootTest {
         sggcRequest.setSteamIds(Collections.singleton("someSteamId"));
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(om.writeValueAsString(sggcRequest),headers);
-        ResponseEntity<String> response = restTemplate.exchange("http://localhost:"+port+"/api/sggc/", HttpMethod.POST, entity, String.class);
+        HttpEntity<String> entity = new HttpEntity<>(om.writeValueAsString(sggcRequest), headers);
+        ResponseEntity<String> response = restTemplate.exchange("http://localhost:" + port + "/api/sggc/", HttpMethod.POST, entity, String.class);
 
         final ApiError error = new ApiError(
                 "Exception",
                 "Request body violates validation rules, check error details for more information.",
                 Collections.singleton("More than one Steam id must be included")
         );
-        SGGCResponse expectedResponse = new SGGCResponse(false,error);
-        assertEquals(HttpStatus.BAD_REQUEST,response.getStatusCode());
-        assertEquals(om.writeValueAsString(expectedResponse),response.getBody());
-
-
-
+        SGGCResponse expectedResponse = new SGGCResponse(false, error);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(om.writeValueAsString(expectedResponse), response.getBody());
     }
 }
