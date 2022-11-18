@@ -10,8 +10,7 @@ public class SecretRetrievalException extends Exception {
         super(EXCEPTION_MESSAGE, cause);
     }
 
-    public SecretRetrievalException(String message, Throwable cause) {
-        super(message, cause);
+    public SecretRetrievalException(String s, Exception e) {
     }
 }
 
