@@ -11,7 +11,7 @@ export DYNAMO_ENDPOINT_URL=http://localhost:$DYNAMO_PORT
 aws configure \
 set aws_access_key_id "DUMMY_ACCESS_KEY" --profile localuser \
 && aws configure set aws_secret_access_key "DUMMY_SECRET_ACCESS_KEY" --profile localuser \
-&& aws configure set region "local" --profile localuser
+&& aws configure set region "eu-west-2" --profile localuser
 
 # Set the default profile to the one just created to prevent having to provide it for subsequent AWS commands
 export AWS_PROFILE=localuser

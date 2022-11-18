@@ -25,7 +25,7 @@ public class SecretManagerConfig {
     public AWSSecretsManager secretManagerClient() {
         return AWSSecretsManagerClientBuilder.standard()
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration
-                        ("http://localhost:5000/", "local"))
+                        ("http://localhost:4566/", "eu-west-2"))
                 .withCredentials(amazonAWSCredentialsProvider())
                 .build();
     }
