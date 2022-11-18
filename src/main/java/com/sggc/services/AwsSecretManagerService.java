@@ -19,18 +19,24 @@ public class AwsSecretManagerService {
 
     private final AWSSecretsManager client;
 
+    //TODO can the below return null?
     /**
      * Retrieves the given key from AWS secrets manager
      *
-     * @return the specified key stored within AWS secrets manager if found, otherwise nill
+     * @return the specified key stored within AWS secrets manager
+     * @throws SecretRetrievalException if an exception occurs trying to retrieve the key from AWS secrets manager
      */
     @Cacheable("secrets")
-    public String getSecretValue(String secretId)  {
-        log.debug("Attempting to retrieve secret [{}] from AWS Secrets Manager",secretId);
-        GetSecretValueRequest valueRequest = new GetSecretValueRequest()
-                .withSecretId(secretId);
-        GetSecretValueResult valueResponse = client.getSecretValue(valueRequest);
-        return valueResponse.getSecretString();
+    public String getSecretValue(String secretId) throws SecretRetrievalException {
+        try {
+            log.debug("Attempting to retrieve secret [{}] from AWS Secrets Manager",secretId);
+            GetSecretValueRequest valueRequest = new GetSecretValueRequest()
+                    .withSecretId(secretId);
+            GetSecretValueResult valueResponse = client.getSecretValue(valueRequest);
+            return valueResponse.getSecretString();
+        } catch (Exception e) {
+            throw new SecretRetrievalException("Exception occurred when attempting to retrieve secret from AWS secrets manager", e);
+        }
     }
 
 }

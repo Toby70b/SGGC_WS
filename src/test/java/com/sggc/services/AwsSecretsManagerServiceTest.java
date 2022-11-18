@@ -1,6 +1,7 @@
 package com.sggc.services;
 
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
+import com.amazonaws.services.secretsmanager.model.AWSSecretsManagerException;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
 import com.sggc.exceptions.SecretRetrievalException;
 import org.junit.jupiter.api.DisplayName;
@@ -22,23 +23,20 @@ class AwsSecretsManagerServiceTest {
     @InjectMocks
     private AwsSecretManagerService secretManagerService;
 
-    //TODO is the below test still valid?
-    /*
+
     @Test
     @DisplayName("Given a request is made to retrieve a secret when an error occurs attempting to retrieve a secret, then throw a appropriate exception")
     void GivenRequestToRetrieveSecretWhenAnErrorOccursRetrievingSecretThenThrowException() {
-
-
         GetSecretValueRequest valueRequest = new GetSecretValueRequest()
                 .withSecretId("secretKey");
 
-        when(client.getSecretValue(valueRequest)).thenThrow(SecretsManagerException.class);
+        when(client.getSecretValue(valueRequest)).thenThrow(AWSSecretsManagerException.class);
         SecretRetrievalException expectedException =
                 assertThrows(SecretRetrievalException.class, ()->secretManagerService.getSecretValue("secretKey"));
 
         assertEquals("Exception occurred when attempting to retrieve secret from AWS secrets manager",
                 expectedException.getMessage());
-        assertTrue(expectedException.getCause() instanceof SecretsManagerException);
+        assertTrue(expectedException.getCause() instanceof AWSSecretsManagerException);
     }
-    */
+
 }
