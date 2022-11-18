@@ -14,10 +14,11 @@ set aws_access_key_id "DUMMY_ACCESS_KEY" --profile localuser \
 # Set the default profile to the one just created to prevent having to provide it for subsequent AWS commands
 export AWS_PROFILE=localuser
 
-echo "Initializing secrets"
+echo "########## Initializing secrets ##########"
+
 aws secretsmanager create-secret \
     --name SteamAPIKey \
-    --secret-string "DUMMY_STEAM_API_KEY"
+    --secret-string "DUMMY_STEAM_API_KEY" \
 	  --endpoint-url $LOCALSTACK_ENDPOINT_URL
 
-echo "Secrets Initialized"
+echo "########## Secrets Initialized ##########"
