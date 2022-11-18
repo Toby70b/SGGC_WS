@@ -5,7 +5,7 @@ LOCALSTACK_PORT=4566
 
 export LOCALSTACK_ENDPOINT_URL=http://localhost:$LOCALSTACK_PORT
 
-#Local stack throws an error when using a unsupported region e.g. "local" so just use eu-west-2
+#LocalStack throws an error when using a unsupported region e.g. "local" so just use eu-west-2
 aws configure \
 set aws_access_key_id "DUMMY_ACCESS_KEY" --profile localuser \
 && aws configure set aws_secret_access_key "DUMMY_SECRET_ACCESS_KEY" --profile localuser \
