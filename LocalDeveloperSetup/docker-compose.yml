@@ -1,5 +1,13 @@
 version: '3.8'
 services:
+  localstack:
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"
+    volumes:
+      - ./AwsSecretsManager/init-scripts:/docker-entrypoint-initaws.d
+      - /var/run/docker.sock:/var/run/docker.sock
+
   dynamodb-local:
     image: tobypeel/steam_group_game_checker_local_db:latest
     container_name: dynamodb-local
@@ -17,5 +25,3 @@ services:
       AWS_SECRET_ACCESS_KEY: DUMMY_SECRET_ACCESS_KEY
     depends_on:
       - dynamodb-local
-        
-        
