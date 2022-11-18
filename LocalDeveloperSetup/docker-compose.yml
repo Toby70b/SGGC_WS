@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  localstack:
+  localstack-aws-secrets-manager:
     image: localstack/localstack:latest
     ports:
       - "4566:4566"
