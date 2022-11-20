@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/ISteamUser/ResolveVanityURL/v1/",
+    "queryParameters": {
+      "vanityurl": {
+        "equalTo": "DummySteamId2"
+      },
+      "key": {
+        "equalTo": "DUMMY_STEAM_API_KEY"
+      }
+    }
+  },
+  "response": {
+    "body": " \"response\": {\n        \"steamid\": \"DummySteamId2\",\n        \"success\": 1\n    }",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200
+  }
+}
