@@ -5,6 +5,8 @@ requires for local development
 
 ## DynamoDB
 
+The SGGC's persistence layer uses DynamoDB to function, when running in a dev environment we use a local DynamoDB instance
+
 A local DynamoDB instance can be setup by using the tobypeel/steam_group_game_checker_local_db docker image found 
 [here](https://hub.docker.com/r/tobypeel/steam_group_game_checker_local_db). This docker image is created from the 
 Dockerfile under [DynamoDB](DynamoDb/Dockerfile). As you can see its based off of the amazon/dynamodb-local image found 
@@ -21,3 +23,13 @@ DynamoDB instance
 
 For more details on how tobypeel/steam_group_game_checker_local_db can be run please check the Dockerhub page 
 [here](https://hub.docker.com/r/tobypeel/steam_group_game_checker_local_db).
+
+## AWS Secrets Manager
+
+A key is required be able to query the Steam API, the SGGC utilizes AWS Secrets Manager (ASM) to store and retrieve this key.
+Within a development environment we run a local ASM instance via [LocalStack](https://localstack.cloud/)
+
+A local LocalStack instance can be created from the [localstack/localstack](docker pull localstack/localstack) docker image.
+When running via the docker compose file a mount location has been added to <i>/docker-entrypoint-initaws.d</i> and includes a 
+script which initializes the secret(s) required by the SGGC. As per the documentation any scripts mounted to this location
+will be run on startup.
