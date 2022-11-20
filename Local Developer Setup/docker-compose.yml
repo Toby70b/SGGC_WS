@@ -32,4 +32,4 @@ services:
     image: wiremock/wiremock
     container_name: sggc-local-steam-api-mock
     ports:
-      - "9000:8000"
+      - "9000:8080"
