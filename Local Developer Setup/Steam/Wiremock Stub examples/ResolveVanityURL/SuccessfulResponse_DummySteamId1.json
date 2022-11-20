@@ -12,7 +12,7 @@
     }
   },
   "response": {
-    "body": " \"response\": {\n        \"steamid\": \"DummySteamId1\",\n        \"success\": 1\n    }",
+    "body": "{\n    \"response\": {\n        \"steamid\": \"DummySteamId1\",\n        \"success\": 1\n    }\n}",
     "headers": {
       "Content-Type": "application/json"
     },
