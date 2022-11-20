@@ -2,6 +2,7 @@ version: '3.8'
 services:
   localstack-aws-secrets-manager:
     image: localstack/localstack:latest
+    container_name: sggc-local-aws-secrets-manager
     ports:
       - "4566:4566"
     volumes:
@@ -10,12 +11,13 @@ services:
 
   dynamodb-local:
     image: tobypeel/steam_group_game_checker_local_db:latest
-    container_name: dynamodb-local
+    container_name: sggc-local-dynamodb
     ports:
       - "8000:8000"
 
   dynamodb-admin:
     image: aaronshaf/dynamodb-admin
+    container_name: sggc-local-dynamodb-admin
     ports:
       - "8001:8001"
     environment:
@@ -25,3 +27,9 @@ services:
       AWS_SECRET_ACCESS_KEY: DUMMY_SECRET_ACCESS_KEY
     depends_on:
       - dynamodb-local
+
+  steam-wiremock:
+    image: wiremock/wiremock
+    container_name: sggc-local-steam-api-mock
+    ports:
+      - "9000:8000"
