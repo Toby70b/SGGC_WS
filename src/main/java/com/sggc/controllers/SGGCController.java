@@ -36,7 +36,6 @@ public class SGGCController {
      * @throws SecretRetrievalException if an error occurs trying to retrieve a secret key from AWS secrets manager in
      * this case the controller's advice will return a 500 error response
      */
-    @CrossOrigin
     @PostMapping(value = "/")
     public ResponseEntity<SGGCResponse> getGamesAllUsersOwn(@Valid @RequestBody GetCommonGamesRequest request) throws SecretRetrievalException {
         log.info("Request received [{}]", request);
