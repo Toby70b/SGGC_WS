@@ -12,18 +12,23 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
- * Represents the configuration for swaggers
+ * Represents the configuration for Swagger
  */
 @Configuration
 @EnableSwagger2
 public class Swagger2Config {
+
+    public static final String BASE_PACKAGE = "com.sggc.controllers";
+    public static final String PATH_REGEX = "/api.*";
+    public static final String SWAGGER_API_TITLE = "SGGC - REST API";
+    public static final String SWAGGER_API_DESCRIPTION = "REST API for the Steam Group Game Checker";
+
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors
-                        .basePackage("com.sggc.controllers"))
-                .paths(PathSelectors.regex("/api.*"))
+                .apis(RequestHandlerSelectors.basePackage(BASE_PACKAGE))
+                .paths(PathSelectors.regex(PATH_REGEX))
                 .build().apiInfo(apiEndPointsInfo());
     }
 
@@ -33,9 +38,8 @@ public class Swagger2Config {
      * @return an object containing non-technical information about the API
      */
     private ApiInfo apiEndPointsInfo() {
-        return new ApiInfoBuilder().title("SGGC - REST API")
-                .description("REST API for the Steam Group Game Checker")
-                .contact(new Contact("Toby Peel", "", ""))
+        return new ApiInfoBuilder().title(SWAGGER_API_TITLE)
+                .description(SWAGGER_API_DESCRIPTION)
                 .build();
     }
 }
