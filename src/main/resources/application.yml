@@ -1,0 +1,23 @@
+amazon:
+  aws:
+    accesskey: ${AWS_ACCESS_KEY}
+    secretkey: ${AWS_SECRET_KEY}
+logging:
+  level:
+    org:
+      springframework: ERROR
+    com:
+      sggc: DEBUG
+  file:
+    path: ./SGGC - webapp
+sggc:
+  api:
+    version: 1.1.1
+
+environment: ${ENVIRONMENT}
+
+dynamodb:
+  address: ${DYNAMO_DB_URL}
+  region: ${DYNAMO_DB_REGION}
+
+
