@@ -138,7 +138,7 @@ class SteamRequestServiceTest {
     @DisplayName("Given a valid vanity url, when a successful request is made to resolve the vanity url then the service " +
             "should return a parsed response")
     void givenAValidVanityUrlWhenASuccessfulRequestIsMadeToResolveTheVanityUrlThenTheServiceShouldReturnAParsedResponse() throws SecretRetrievalException {
-        URI mockURI = URI.create("https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=SomeKey&vanityurl=SomeVanityUrl");
+        URI mockURI = URI.create("https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=SomeKey&vanityurl=SomeVanityUrl");
 
         ResolveVanityUrlResponse mockResponse = new ResolveVanityUrlResponse();
         ResolveVanityUrlResponse.Response mockResponseDetails = new ResolveVanityUrlResponse.Response();

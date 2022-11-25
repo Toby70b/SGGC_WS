@@ -24,7 +24,7 @@ class AwsSecretManagerServiceSpringBootTest {
 
     @Test
     @DisplayName("Given a previously cached secret, when subsequently retrieving the secret, then use the secret in the cache")
-    void givenCachedKeyWhenRetrievingAKeyThenUseCache() {
+    void givenCachedKeyWhenRetrievingAKeyThenUseCache() throws SecretRetrievalException {
 
         GetSecretValueRequest valueRequest = new GetSecretValueRequest()
                 .withSecretId("someSecretKey");
