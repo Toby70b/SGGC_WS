@@ -9,6 +9,6 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("dynamodb")
 @Data
 public class DynamoDbProperties {
-    private String url;
+    private String address;
     private String region;
 }

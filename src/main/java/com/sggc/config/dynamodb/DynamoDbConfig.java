@@ -36,7 +36,7 @@ public class DynamoDbConfig {
         AmazonDynamoDBClientBuilder clientBuilder = AmazonDynamoDBClientBuilder.standard();
         if (LOCAL_ENVIRONMENT_NAME.equalsIgnoreCase(environment)) {
             clientBuilder.withEndpointConfiguration(
-                    new AwsClientBuilder.EndpointConfiguration(dynamoDbProperties.getUrl(), dynamoDbProperties.getRegion()));
+                    new AwsClientBuilder.EndpointConfiguration(dynamoDbProperties.getAddress(), dynamoDbProperties.getRegion()));
         } else {
             clientBuilder.withRegion(dynamoDbProperties.getRegion()).build();
         }
