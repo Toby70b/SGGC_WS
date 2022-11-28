@@ -25,10 +25,18 @@ while ! timeout 1 bash -c "echo > /dev/tcp/localhost/$DYNAMO_PORT" 2> /dev/null;
   sleep 1
 done
 
-
 echo "########## Initializing tables ##########"
-for f in sggc-setup/tables/*.json; do
-    echo "$0: Creating table from $f"; aws dynamodb create-table --cli-input-json file://$f --endpoint-url $DYNAMO_ENDPOINT_URL
+for file in sggc-setup/tables/*.json; do
+    # Assumes all JSON files are named after the tables they create. Currently, this is a very safe assumption.
+    FILE_WITHOUT_PATH=${file##*/}
+    TABLE_NAME=${FILE_WITHOUT_PATH%%.*}
+    if aws dynamodb describe-table --table-name "$TABLE_NAME" --endpoint-url $DYNAMO_ENDPOINT_URL 2> /dev/null; then
+        echo "Table [$TABLE_NAME] already exists."
+    else
+        echo "Table [$TABLE_NAME] does not already exist. Will be created now."
+        echo "$0: Creating table [$TABLE_NAME] from [$file]";
+        aws dynamodb create-table --cli-input-json file://"$file" --endpoint-url $DYNAMO_ENDPOINT_URL
+    fi
 done
 echo "########## Tables initialized ##########"
 echo "########## DB boostrap completed! ##########"
