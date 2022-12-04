@@ -4,7 +4,7 @@
 
 :wave:: a working version of this can be found hosted on AWS [here](https://www.steamgroupgamechecker.co.uk/). 
 For maximum cost-effectiveness (and because I'm cheap :smile:) the API is running on Spot EC2 instances, so it could 
-go down if the AZ its running on is in particular demand
+go down if the AZ it's running on is in particular demand
 
 ## AWS architecture diagram
 
@@ -12,30 +12,30 @@ go down if the AZ its running on is in particular demand
 
 ## Rationale for development
 
-I belong to a group of 5-6 20 something friends whose primary hobby is gaming, as such we all have steam accounts with 
-each of us owning at least 200 games. We all prefer to play games together, we don't mind replaying games, including 
+I belong to a group of 5-6 20-something friends whose primary hobby is gaming, as such, we all have steam accounts with 
+each of us owns at least 200 games. We all prefer to play games together, we don't mind replaying games, including 
 older games, if it means we can play together. We would occasionally ask what games we have in common, however since 
 steam only allows users to compare their lists with one other user at a time this task was very tedious. I wanted more 
-excuses to practice on REST API's so I researched Steam's API and once I discovered it was feasible to make a tool 
-that could compare multiple users lists for common games I decided to make this tool.
+excuses to practice on REST APIs so I researched Steam's API and once I discovered it was feasible to make a tool 
+that could compare multiple user’s lists for common games I decided to make this tool.
 
 ## REST API
 
 The REST API is a spring boot project. The API is exposed (by default) on port 8080, it currently only has two endpoints.
-The primary endpoint is a POST endpoint which takes a json object consisting of an array of Strings which correspond to 
+The primary endpoint is a POST endpoint which takes a JSON object consisting of an array of Strings which correspond to 
 either Steam user ids or vanity URLs(these are publicly available, either by using the Steam client or through the Steam API) 
 it also takes a boolean parameter to flag whether only multiplayer games should be returned within the result set
 
 An example of the body of the post request is:
 ```
 {
-	"steamIds" : [76561198045206229,SomeVanityURL,76561198171740181,AnotherVanityUrl],
-	"multiplayerOnly": true
+   "steamIds" : [76561198045206229,SomeVanityURL,76561198171740181,AnotherVanityUrl],
+   "multiplayerOnly": true
 }
 ```
 
-Upon success the API will return a json object consisting of game objects that contain the game's Application ID on 
-the Steam db as well as the game's name. The returned games are multiplayer games the users requested
+Upon success, the API will return a JSON object consisting of game objects that contain the game's Application ID on 
+the Steam DB as well as the game's name. The returned games are multiplayer games the users requested
 have in common.
 
 An example of the output of ther API is:
