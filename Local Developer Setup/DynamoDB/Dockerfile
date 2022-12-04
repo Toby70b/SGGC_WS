@@ -1,5 +1,4 @@
 #Get the unzipped AWS CLI
-# TODO can we use the AWS CLI image?
 FROM alpine:3.16 as awscli
 RUN apk update && apk add --no-cache \
     curl \
