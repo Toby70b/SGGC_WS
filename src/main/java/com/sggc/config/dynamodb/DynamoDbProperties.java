@@ -4,7 +4,9 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-//todo javadoc
+/**
+ * Represents the configuration properties for DynamoDB
+ */
 @Component
 @ConfigurationProperties("dynamodb")
 @Data

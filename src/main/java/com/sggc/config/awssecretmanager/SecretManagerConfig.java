@@ -30,7 +30,10 @@ public class SecretManagerConfig {
     private final SecretManagerProperties secretManagerProperties;
 
     /**
-     * Creates a new instance of the AWS Secrets Manager client to perform actions on AWS secrets
+     * Creates a new instance of the AWS Secrets Manager client to perform actions on AWS secrets.
+     * <p/>
+     * If the 'ENVIRONMENT' environment variable is equal to 'local' then the instance will be configured to connect to
+     * a local AWS Secret Manager instance running on the host machine.
      *
      * @return a new instance of the AWS Secrets Manager client
      */
