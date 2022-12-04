@@ -27,7 +27,6 @@ public class SGGCControllerSpringBootTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-
     @Test
     @DisplayName("Given a request with less than two steam id's when the service validates the request body then a 400 error will be returned with an appropriate message")
     public void givenRequestWithLessThanTwoSteamIdsWhenServicesValidatesA400ErrorWillBeReturnedWithAnAppropriateMessage() throws Exception {

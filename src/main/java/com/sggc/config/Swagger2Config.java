@@ -14,7 +14,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 /**
  * Represents the configuration for Swagger
  */
-//Todo configure endpoint
 @Configuration
 @EnableSwagger2
 public class Swagger2Config {
