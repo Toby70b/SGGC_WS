@@ -22,10 +22,10 @@ import java.util.Set;
  */
 @Log4j2
 @RestController
-@RequestMapping(SGGCController.SGGC_API_URI_PATH)
+@RequestMapping(SGGCController.SGGC_API_URI)
 @RequiredArgsConstructor
 public class SGGCController {
-    public static final String SGGC_API_URI_PATH = "api/sggc";
+    public static final String SGGC_API_URI = "api/sggc";
     private final GameService gameService;
     private final UserService userService;
 
