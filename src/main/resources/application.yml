@@ -1,0 +1,28 @@
+environment: ${ENVIRONMENT}
+
+# Allow the passing of keys through env variables this is not recommended though.
+amazon:
+  aws:
+    accesskey: ${AWS_ACCESS_KEY}
+    secretkey: ${AWS_SECRET_KEY}
+
+logging:
+  level:
+    org:
+      springframework: ERROR
+    com:
+      sggc: ${SGGC_LOGGING_LEVEL:DEBUG}
+  file:
+    path: ./SGGC - webapp
+
+dynamodb:
+  address: ${DYNAMO_DB_ADDRESS}
+  region: ${DYNAMO_DB_REGION}
+
+secrets_manager:
+  address: ${SECRETS_MANAGER_ADDRESS}
+  region: ${SECRETS_MANAGER_REGION}
+
+steam:
+  api_address: ${STEAM_API_ADDRESS}
+  store_address: ${STEAM_STORE_ADDRESS}

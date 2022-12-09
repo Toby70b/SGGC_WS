@@ -1,6 +1,7 @@
 package com.sggc.services;
 
 import com.google.gson.*;
+import com.sggc.config.SteamProperties;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.models.GameCategory;
 import com.sggc.models.GameData;
@@ -9,7 +10,7 @@ import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.cache.CacheManager;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -25,26 +26,33 @@ import java.util.Collections;
 @Service
 @RequiredArgsConstructor
 public class SteamRequestService {
+    public static final String STEAM_KEY_QUERY_PARAM_KEY = "key";
+    public static final String STEAM_ID_QUERY_PARAM_KEY = "steamid";
+    public static final String STEAM_APP_IDS_QUERY_PARAM_KEY = "appids";
+    public static final String VANITY_URL_QUERY_PARAM_KEY = "vanityurl";
+
+    public static final String STEAM_API_KEY_NAME = "SteamAPIKey";
+    public static final String GET_OWNED_GAMES_ENDPOINT = "/IPlayerService/GetOwnedGames/v1/";
+    public static final String RESOLVE_VANITY_URL_ENDPOINT = "/ISteamUser/ResolveVanityURL/v1/";
+    public static final String GET_APP_DETAILS_ENDPOINT = "/api/appdetails/";
+
     private final RestTemplate restTemplate;
     private final AwsSecretManagerService secretManagerService;
 
-    public static final String STEAM_API_KEY_NAME = "SteamAPIKey";
-    public static final String GET_OWNED_GAMES_ENDPOINT = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/";
-    public static final String GET_APP_DETAILS_ENDPOINT = "https://store.steampowered.com/api/appdetails/";
-    public static final String RESOLVE_VANITY_URL_ENDPOINT = "https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/";
+    private final SteamProperties steamProperties;
 
     /**
-     * Sends a request to the Steam API's GetOwnedGames endpoint to retrieve the details of a specific game
+     * Retrieves the games owned by a specified user via the Steam API
      *
-     * @param userId the user id whose being queries
+     * @param userId the id of the user whose owned games will be retrieved
      * @return the response from the Steam API parsed into a {@link GetOwnedGamesResponse} object
      * @throws SecretRetrievalException if an error occurs retrieving the Steam API key secret from AWS secrets manager
      */
     public GetOwnedGamesResponse requestUsersOwnedGamesFromSteamApi(String userId) throws SecretRetrievalException {
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(GET_OWNED_GAMES_ENDPOINT);
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(steamProperties.getApiAddress() + GET_OWNED_GAMES_ENDPOINT);
         URI requestUri = uriComponentsBuilder
-                .queryParam("key", getSteamApiKey())
-                .queryParam("steamid", userId)
+                .queryParam(STEAM_KEY_QUERY_PARAM_KEY, getSteamApiKey())
+                .queryParam(STEAM_ID_QUERY_PARAM_KEY, userId)
                 .build()
                 .toUri();
 
@@ -53,15 +61,15 @@ public class SteamRequestService {
     }
 
     /**
-     * Sends a request to the Steam API's GetAppDetails endpoint to retrieve the details of a specific game
+     * Retrieves the details of a specific game's details via the Steam Store's API
      *
      * @param appId the appid of the game whose details are being requested
      * @return a GameData object parsed from the response from the Steam API containing the details of the specified app
      */
     public GameData requestAppDetailsFromSteamApi(String appId) throws IOException {
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(GET_APP_DETAILS_ENDPOINT);
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(steamProperties.getStoreAddress() + GET_APP_DETAILS_ENDPOINT);
         URI requestUri = uriComponentsBuilder
-                .queryParam("appids", appId)
+                .queryParam(STEAM_APP_IDS_QUERY_PARAM_KEY, appId)
                 .build()
                 .toUri();
 
@@ -77,10 +85,10 @@ public class SteamRequestService {
      * @return a response from the Steam API containing the resolved Steam user id
      */
     public ResolveVanityUrlResponse resolveVanityUrl(String vanityUrl) throws SecretRetrievalException {
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(RESOLVE_VANITY_URL_ENDPOINT);
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(steamProperties.getApiAddress() + RESOLVE_VANITY_URL_ENDPOINT);
         URI requestUri = uriComponentsBuilder
-                .queryParam("key", getSteamApiKey())
-                .queryParam("vanityurl", vanityUrl)
+                .queryParam(STEAM_KEY_QUERY_PARAM_KEY, getSteamApiKey())
+                .queryParam(VANITY_URL_QUERY_PARAM_KEY, vanityUrl)
                 .build()
                 .toUri();
 
@@ -107,7 +115,7 @@ public class SteamRequestService {
         /*
         Sometimes steam no longer has info on the Game Id e.g. 33910 ARMA II, this is probably because the devs of the games
         in question may have created a new steam product for the exact same game (demo perhaps?), so to avoid crashing if the game no longer
-        has any details, we'll pass it through as a multiplayer game, better than excluding games that could be multiplayer
+        has any details, we'll pass it through as a multiplayer game. Which is better than excluding games that could be multiplayer
         */
         if (!responseSuccess) {
             log.debug("Could not determine whether game was multiplayer. Will be treated as multiplayer.");
@@ -141,7 +149,7 @@ public class SteamRequestService {
      */
 
     private String getSteamApiKey() throws SecretRetrievalException {
-       return secretManagerService.getSecretValue(STEAM_API_KEY_NAME);
+        return secretManagerService.getSecretValue(STEAM_API_KEY_NAME);
     }
 
 }

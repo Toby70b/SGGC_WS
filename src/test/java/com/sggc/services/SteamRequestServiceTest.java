@@ -1,16 +1,17 @@
 package com.sggc.services;
 
+import com.sggc.config.SteamProperties;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.models.GameCategory;
 import com.sggc.models.GameData;
 import com.sggc.models.SteamGameCategory;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
@@ -24,25 +25,32 @@ import static com.sggc.TestUtils.createExampleGame;
 import static com.sggc.services.SteamRequestService.STEAM_API_KEY_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SteamRequestServiceTest {
 
+    public static final String MOCK_API_ADDRESS = "mockApiAddress";
+    public static final String MOCK_STORE_ADDRESS = "mockStoreAddress";
     @Mock
     private RestTemplate restTemplate;
 
     @Mock
     private AwsSecretManagerService secretManagerService;
 
-    @InjectMocks
     private SteamRequestService steamRequestService;
+
+    @BeforeEach
+    public void setup() {
+        SteamProperties mockSteamProperties = new SteamProperties(MOCK_API_ADDRESS, MOCK_STORE_ADDRESS);
+        steamRequestService = new SteamRequestService(restTemplate, secretManagerService, mockSteamProperties);
+    }
 
     @Test
     @DisplayName("Given a valid user id, when a successful request is made to retrieve a user's owned games then the " +
             "service should return a parsed response")
     void givenAValidUserIdWhenASuccessfulRequestIsMadeToRetrieveAUsersOwnedGamesThenTheServiceShouldReturnAParsedResponse() throws SecretRetrievalException {
-        URI mockURI = URI.create("https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=SomeKey&steamid=12345678910");
+        URI mockURI = URI.create(MOCK_API_ADDRESS + "/IPlayerService/GetOwnedGames/v1/?key=SomeKey&steamid=12345678910");
 
         GetOwnedGamesResponse mockResponse = new GetOwnedGamesResponse();
         GetOwnedGamesResponse.Response mockResponseDetails = new GetOwnedGamesResponse.Response();
@@ -64,7 +72,7 @@ class SteamRequestServiceTest {
         @DisplayName("Given a application id which doesnt exist, when a successful request is made to retrieve an " +
                 "application's details then the service should return a parsed response")
         void givenAValidApplicationIdWhenASuccessfulRequestIsMadeToRetrieveAnApplicationDetailsThenTheServiceShouldReturnAParsedResponse() throws IOException {
-            URI mockURI = URI.create("https://store.steampowered.com/api/appdetails/?appids=SomeAppId");
+            URI mockURI = URI.create(MOCK_STORE_ADDRESS + "/api/appdetails/?appids=SomeAppId");
             String mockResponseJson = "{\n" +
                     "  \"SomeAppId\": {\n" +
                     "    \"success\": true,\n" +
@@ -105,7 +113,7 @@ class SteamRequestServiceTest {
         @DisplayName("Given a valid application id which doesnt exist, when a successful request is made to retrieve an " +
                 "application's details then the service assume the game is multiplayer")
         void givenAValidApplicationIdWhichDoesntExistWhenASuccessfulRequestIsMadeToRetrieveAnApplicationDetailsThenTheServiceShouldAssumeTheGameIsMultiplayer() throws SecretRetrievalException, IOException {
-            URI mockURI = URI.create("https://store.steampowered.com/api/appdetails/?appids=SomeAppId");
+            URI mockURI = URI.create(MOCK_STORE_ADDRESS + "/api/appdetails/?appids=SomeAppId");
             String mockResponseJson = "{\n" +
                     "    \"SomeAppId\": {\n" +
                     "        \"success\": false\n" +
@@ -122,7 +130,7 @@ class SteamRequestServiceTest {
         @DisplayName("Given invalid response json, when the service attempts to parse the response into an object " +
                 "then an exception will be thrown ")
         void givenInvalidRepsonseJsonWhenTheServiceAttemptsToParseTheResponseIntoAnObjectThenAnExceptionWillBeThrown() throws SecretRetrievalException, IOException {
-            URI mockURI = URI.create("https://store.steampowered.com/api/appdetails/?appids=SomeAppId");
+            URI mockURI = URI.create(MOCK_STORE_ADDRESS + "/api/appdetails/?appids=SomeAppId");
             String mockResponseJson = "{\n" +
                     "    \"SomeAppId\": {\n" +
                     "        \"success\" false\n" +
@@ -130,7 +138,7 @@ class SteamRequestServiceTest {
                     "}";
 
             when(restTemplate.getForObject(mockURI, String.class)).thenReturn(mockResponseJson);
-            assertThrows(IOException.class, ()->steamRequestService.requestAppDetailsFromSteamApi("SomeAppId"));
+            assertThrows(IOException.class, () -> steamRequestService.requestAppDetailsFromSteamApi("SomeAppId"));
         }
     }
 
@@ -138,7 +146,7 @@ class SteamRequestServiceTest {
     @DisplayName("Given a valid vanity url, when a successful request is made to resolve the vanity url then the service " +
             "should return a parsed response")
     void givenAValidVanityUrlWhenASuccessfulRequestIsMadeToResolveTheVanityUrlThenTheServiceShouldReturnAParsedResponse() throws SecretRetrievalException {
-        URI mockURI = URI.create("https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=SomeKey&vanityurl=SomeVanityUrl");
+        URI mockURI = URI.create(MOCK_API_ADDRESS + "/ISteamUser/ResolveVanityURL/v1/?key=SomeKey&vanityurl=SomeVanityUrl");
 
         ResolveVanityUrlResponse mockResponse = new ResolveVanityUrlResponse();
         ResolveVanityUrlResponse.Response mockResponseDetails = new ResolveVanityUrlResponse.Response();

@@ -18,13 +18,14 @@ import java.util.List;
 import java.util.Set;
 
 /*
- * Represents the controller for the SGGC api. Under the URL api/sggc. Currently the only controller to provide functionality
+ * Represents the controller for the SGGC api. Under the URL api/sggc.
  */
 @Log4j2
 @RestController
-@RequestMapping("api/sggc")
+@RequestMapping(SGGCController.SGGC_API_URI)
 @RequiredArgsConstructor
 public class SGGCController {
+    public static final String SGGC_API_URI = "api/sggc";
     private final GameService gameService;
     private final UserService userService;
 
@@ -66,6 +67,4 @@ public class SGGCController {
         log.info("Response successful");
         return new ResponseEntity<>(new SGGCResponse(true, commonGames), HttpStatus.OK);
     }
-
-
 }
