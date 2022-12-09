@@ -1,20 +1,19 @@
+environment: ${ENVIRONMENT}
+
+# Allow the passing of keys through env variables this is not recommended though.
 amazon:
   aws:
     accesskey: ${AWS_ACCESS_KEY}
     secretkey: ${AWS_SECRET_KEY}
+
 logging:
   level:
     org:
       springframework: ERROR
     com:
-      sggc: DEBUG
+      sggc: ${SGGC_LOGGING_LEVEL:DEBUG}
   file:
     path: ./SGGC - webapp
-sggc:
-  api:
-    version: 1.1.1
-
-environment: ${ENVIRONMENT}
 
 dynamodb:
   address: ${DYNAMO_DB_ADDRESS}
