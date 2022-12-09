@@ -29,7 +29,7 @@ For more details on how tobypeel/steam_group_game_checker_local_db can be run pl
 A key is required to be able to query the Steam API, the SGGC utilizes AWS Secrets Manager (ASM) to store and retrieve this key.
 Within a development environment, we run a local ASM instance via [LocalStack](https://localstack.cloud/)
 
-A local LocalStack instance can be created from the [localstack/localstack](docker pull localstack/localstack) docker image.
+A local LocalStack instance can be created from the [localstack/localstack](localstack/localstack) docker image.
 When running via the docker-compose file a mount location has been added to <i>/docker-entrypoint-initaws.d</i> and includes a 
 script which initializes the secret(s) required by the SGGC. As per the documentation, any scripts mounted to this location
 will be run on startup.
@@ -40,5 +40,5 @@ The SGGC depends on both the Steam API and Store to be able to filter the common
 have not published a mock API for the Steam API the SGGC relies on a Wiremock instance to mock Steam API and Store
 functionality. Stubs are often bespoke to suit the needs of the current feature under development, as such the
 docker-compose file does not pre-configure the instance we any stubs. However, the project does contain some example stubs
-covering each endpoint required for a local SGGC to function these can be found [here](Steam/Wiremock Stub examples)
+covering each endpoint required for a local SGGC to function these can be found [here](Steam/Wiremock-Stub-Examples)
 

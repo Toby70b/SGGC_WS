@@ -65,7 +65,7 @@ The API has a docker image ready for containerization.
 tobypeel/steam_group_game_checker_api:prod
 
 ## Local development
-Please see the relevant README on local development setup [here](Local Developer Setup/README.md).
+Please see the relevant README on local development setup [here](Local-Developer-Setup/README.md).
 
 ## Things to improve
 * Improved handling of the various responses from Steam
