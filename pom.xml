@@ -33,9 +33,6 @@
         </dependencies>
     </dependencyManagement>
 
-
-
-
     <dependencies>
         <!-- ********** Lombok ********** -->
         <dependency>
@@ -114,7 +111,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M6</version>
+                <version>3.0.0-M7</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -125,13 +122,28 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.0.0-M7</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
                     <ignoredUnusedDeclaredDependencies>
                         <ignoredUnusedDeclaredDependency>org.springframework*:*</ignoredUnusedDeclaredDependency>
-                        <ignoredUnusedDeclaredDependency>com.google.http-client:google-http-client:*</ignoredUnusedDeclaredDependency>
-                        <ignoredUnusedDeclaredDependency>io.springfox:springfox-swagger-ui:*</ignoredUnusedDeclaredDependency>
+                        <ignoredUnusedDeclaredDependency>com.google.http-client:google-http-client:*
+                        </ignoredUnusedDeclaredDependency>
+                        <ignoredUnusedDeclaredDependency>io.springfox:springfox-swagger-ui:*
+                        </ignoredUnusedDeclaredDependency>
                     </ignoredUnusedDeclaredDependencies>
                 </configuration>
             </plugin>
