@@ -9,13 +9,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.mockito.Mockito.*;
 
-/*
-TODO: This tests needs to be fixed in the next integration test work
 @SpringBootTest
-class AwsSecretManagerServiceSpringBootTest {
+@TestPropertySource(properties = {
+        "secrets-manager.address = http://localhost:4566",
+        "secrets-manager.region = eu-west-2",
+        "dynamodb.address = http://localhost:8000",
+        "dynamodb.region = eu-west-2"
+})
+class AwsSecretManagerServiceIT {
 
     @MockBean
     private AWSSecretsManager client;
@@ -42,4 +47,3 @@ class AwsSecretManagerServiceSpringBootTest {
     }
 
 }
-*/
