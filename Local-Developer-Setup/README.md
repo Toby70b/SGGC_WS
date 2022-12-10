@@ -37,7 +37,7 @@ will be run on startup.
 ## Steam
 
 The SGGC depends on both the Steam API and Store to be able to filter the common games owned by Steam users. As Valve
-have not published a mock API for the Steam API the SGGC relies on a Wiremock instance to mock Steam API and Store
+have not published a mock API for the Steam API, the SGGC relies on a WireMock instance to mock Steam API and Store
 functionality. Stubs are often bespoke to suit the needs of the current feature under development, as such the
 docker-compose file does not pre-configure the instance we any stubs. However, the project does contain some example stubs
 covering each endpoint required for a local SGGC to function these can be found [here](Steam/Wiremock-Stub-Examples)
