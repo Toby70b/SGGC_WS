@@ -10,7 +10,6 @@ import org.springframework.web.client.RestTemplate;
 import java.time.Clock;
 
 @SpringBootApplication
-@EnableCaching
 @Configuration
 public class SteamGroupGamesApplication {
 
