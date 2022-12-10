@@ -27,10 +27,14 @@ phases:
       - docker push tobypeel/steam_group_game_checker_api:latest
       - docker push tobypeel/steam_group_game_checker_api:prod
 reports:
-  SggcWsUniTestReport:
+  SggcWsUnitTestReport:
     files:
       - '**/*'
     base-directory: 'target/surefire-reports'
+  SggcWsIntegrationTestReport:
+    files:
+      - '**/*'
+    base-directory: 'target/failsafe-reports'
 artifacts:
   files:
     - target/sggcws-1.1.1.jar
