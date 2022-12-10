@@ -4,25 +4,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sggc.errors.ApiError;
 import com.sggc.models.sggc.SGGCResponse;
 import com.sggc.models.steam.request.GetCommonGamesRequest;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.*;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = SGGCController.class)
-public class SGGCControllerSpringBootTest {
+public class SGGCControllerIT {
 
     public static final String SGGC_CONTROLLER_URI = "/api/sggc/";
 
