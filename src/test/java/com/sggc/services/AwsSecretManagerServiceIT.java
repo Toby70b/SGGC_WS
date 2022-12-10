@@ -3,23 +3,18 @@ package com.sggc.services;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
+import com.sggc.config.CachingConfig;
 import com.sggc.exceptions.SecretRetrievalException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.context.annotation.Import;
 
 import static org.mockito.Mockito.*;
-
-@SpringBootTest
-@TestPropertySource(properties = {
-        "secrets-manager.address = http://localhost:4566",
-        "secrets-manager.region = eu-west-2",
-        "dynamodb.address = http://localhost:8000",
-        "dynamodb.region = eu-west-2"
-})
+@SpringBootTest(classes = AwsSecretManagerService.class)
+@Import(CachingConfig.class)
 class AwsSecretManagerServiceIT {
 
     @MockBean
