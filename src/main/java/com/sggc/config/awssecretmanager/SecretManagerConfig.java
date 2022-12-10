@@ -21,12 +21,6 @@ public class SecretManagerConfig {
         return new DefaultAWSCredentialsProviderChain();
     }
 
-    public static final String LOCAL_ENVIRONMENT_NAME = "local";
-
-
-    @Value("${environment}")
-    private String environment;
-
     private final SecretManagerProperties secretManagerProperties;
 
     /**
@@ -40,7 +34,7 @@ public class SecretManagerConfig {
     @Bean
     public AWSSecretsManager secretManagerClient() {
         AWSSecretsManagerClientBuilder clientBuilder = AWSSecretsManagerClientBuilder.standard();
-        if (LOCAL_ENVIRONMENT_NAME.equalsIgnoreCase(environment)) {
+        if (null != secretManagerProperties.getAddress()) {
             clientBuilder.withEndpointConfiguration(
                     new AwsClientBuilder.EndpointConfiguration(secretManagerProperties.getAddress(), secretManagerProperties.getRegion()));
         } else {

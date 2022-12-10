@@ -19,14 +19,9 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class DynamoDbConfig {
 
-    public static final String LOCAL_ENVIRONMENT_NAME = "local";
-
     private AWSCredentialsProvider amazonAWSCredentialsProvider() {
         return new DefaultAWSCredentialsProviderChain();
     }
-
-    @Value("${environment}")
-    private String environment;
 
     private final DynamoDbProperties dynamoDbProperties;
 
@@ -41,7 +36,7 @@ public class DynamoDbConfig {
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
         AmazonDynamoDBClientBuilder clientBuilder = AmazonDynamoDBClientBuilder.standard();
-        if (LOCAL_ENVIRONMENT_NAME.equalsIgnoreCase(environment)) {
+        if (null != dynamoDbProperties.getAddress()) {
             clientBuilder.withEndpointConfiguration(
                     new AwsClientBuilder.EndpointConfiguration(dynamoDbProperties.getAddress(), dynamoDbProperties.getRegion()));
         } else {

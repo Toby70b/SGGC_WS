@@ -1,5 +1,3 @@
-environment: ${ENVIRONMENT}
-
 # Allow the passing of keys through env variables this is not recommended though.
 amazon:
   aws:
