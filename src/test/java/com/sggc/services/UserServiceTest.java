@@ -387,23 +387,21 @@ class UserServiceTest {
     }
 
     @Nested
-    @DisplayName("Given a vanity URL when the service resolves the vanity URL then it will return a Steam user id")
+    @DisplayName("Given valid vanity URL(s) when the service validates the vanity URL(s) then it will return an empty list")
     class resolveVanityUrlTests {
         @Test
-        @DisplayName("Given a list containing a single vanity URL when the service resolves the vanity URL then it will return a list containing the Steam user id")
-        void GivenAListContainingASingleVanityUrlWhenTheServiceResolvesTheVanityUrlThenItWillReturnAListContainingTheSteamUserId() {
-            assertTrue(userService.validateSteamIdsAndVanityUrls(Set.of("SomeVanityUrl", "77561198045206297", "KalmanRobert", "76561197979721079")).isEmpty());
+        @DisplayName("Single Vanity URL")
+        void singleVanityUrl() {
+            assertTrue(userService.validateSteamIdsAndVanityUrls(Set.of("SomeVanityUrl")).isEmpty());
         }
-
         @Test
-        @DisplayName("Given a list containing a multiple vanity URLs when the service resolves the vanity URLs then it will return a list of Steam user ids")
-        void GivenAListContainingAMultipleVanityUrlsWhenTheServiceResolvesTheVanityUrlsThenItWillReturnAListOfSteamUserIds() {
-            assertTrue(userService.validateSteamIdsAndVanityUrls(Set.of("SomeVanityUrl", "77561198045206297", "KalmanRobert", "76561197979721079")).isEmpty());
+        @DisplayName("Multiple Vanity URLs")
+        void multipleVanityUrls() {
+            assertTrue(userService.validateSteamIdsAndVanityUrls(Set.of("SomeVanityUrl", "KalmanRobert")).isEmpty());
         }
-
         @Test
-        @DisplayName("Given a list containing a mix of both vanity URLs and Steam User Ids when the service resolves the vanity URLs then it will return a list of Steam user ids")
-        void GivenAListContainingAMixOfBothVanityUrlsAndSteamUserIdsWhenTheServiceResolvesTheVanityUrlsThenItWillReturnAListOfSteamUserIds() {
+        @DisplayName("Mix of both Vanity URLs and Steam Ids")
+        void mixOfBothVanityUrlsAndSteamIds() {
             assertTrue(userService.validateSteamIdsAndVanityUrls(Set.of("SomeVanityUrl", "77561198045206297", "KalmanRobert", "76561197979721079")).isEmpty());
         }
 
