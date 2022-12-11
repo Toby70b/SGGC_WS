@@ -154,8 +154,8 @@ public class SteamRequestService {
      * Masks the Steam API key within the query params of a  request URI, used to prevent the key being logged.
      *
      * @param requestUri the request URI whose Steam API key should be masked
-     * @return the request URI now containing a masked Steam API key. If the steam id query param cannot be found
-     * within the unmodified request URI then the request uri is returned
+     * @return the request URI, now containing a masked Steam API key. If the steam id query param cannot be found
+     * within the request URI, then the request URI is returned, unmodified
      */
     private String maskSteamApiKey(String requestUri) {
         String steamApiKey;
