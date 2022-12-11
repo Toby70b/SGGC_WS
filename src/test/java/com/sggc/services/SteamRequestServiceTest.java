@@ -1,5 +1,9 @@
 package com.sggc.services;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import com.sggc.config.SteamProperties;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.models.GameCategory;
@@ -14,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -23,8 +28,7 @@ import java.util.Set;
 
 import static com.sggc.TestUtils.createExampleGame;
 import static com.sggc.services.SteamRequestService.STEAM_API_KEY_NAME;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -156,5 +160,43 @@ class SteamRequestServiceTest {
         when(secretManagerService.getSecretValue(STEAM_API_KEY_NAME)).thenReturn("SomeKey");
 
         assertEquals(mockResponse, steamRequestService.resolveVanityUrl("SomeVanityUrl"));
+    }
+    @Nested
+    @DisplayName("Mask Steam API key tests")
+    class MaskSteamApiKey {
+        Logger steamRequestServiceLogger;
+        ListAppender<ILoggingEvent> listAppender;
+
+        @BeforeEach
+        void setup(){
+            steamRequestServiceLogger = (Logger) LoggerFactory.getLogger(SteamRequestService.class);
+            listAppender = new ListAppender<>();
+            listAppender.start();
+            steamRequestServiceLogger.addAppender(listAppender);
+        }
+
+        @Test
+        @DisplayName("Given a request to the Steam API when the request URI is logged then the the request's Steam API key is masked")
+        void givenARequestToTheSteamApiWhenTheRequestUriIsLoggedThenTheRequestsSteamApiKeyIsMasked() throws SecretRetrievalException {
+            URI mockURI = URI.create(MOCK_API_ADDRESS + "/IPlayerService/GetOwnedGames/v1/?key=SomeKey&steamid=SomeUserId");
+
+            String expectedDebugMessage =
+                    "Contacting [mockApiAddress/IPlayerService/GetOwnedGames/v1/?key=*************&steamid=SomeUserId] " +
+                            "to get owned games of user [SomeUserId]";
+
+            GetOwnedGamesResponse mockResponse = new GetOwnedGamesResponse();
+            GetOwnedGamesResponse.Response mockResponseDetails = new GetOwnedGamesResponse.Response();
+            mockResponseDetails.setGameCount(1);
+            mockResponseDetails.setGames(Set.of(createExampleGame("1", true, "someGame")));
+            mockResponse.setResponse(mockResponseDetails);
+
+            when(restTemplate.getForObject(mockURI, GetOwnedGamesResponse.class)).thenReturn(mockResponse);
+            when(secretManagerService.getSecretValue(STEAM_API_KEY_NAME)).thenReturn("SomeKey");
+            steamRequestService.requestUsersOwnedGamesFromSteamApi("SomeUserId");
+
+            assertFalse(listAppender.list.isEmpty());
+            assertEquals(Level.DEBUG, listAppender.list.get(0).getLevel());
+            assertEquals(expectedDebugMessage, listAppender.list.get(0).getMessage());
+        }
     }
 }
