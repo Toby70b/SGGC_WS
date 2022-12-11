@@ -55,12 +55,7 @@ public class UserService {
                 log.error("User: [{}] owns no Steam games, throwing exception", userId);
                 throw new UserHasNoGamesException(userId);
             }
-            /*
-                Cache the user to speed up searches. in a proper prod environment this would be cleaned regularly
-                to catch changes in users owned games
-            */
             userRepository.save(new User(userId, usersOwnedGameIds, calculateUserRemovalDate()));
-            userRepository.findAll();
             return usersOwnedGameIds;
         }
     }
