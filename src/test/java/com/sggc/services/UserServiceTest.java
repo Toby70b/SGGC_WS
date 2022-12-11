@@ -402,7 +402,8 @@ class UserServiceTest {
         @Test
         @DisplayName("Mix of both Vanity URLs and Steam Ids")
         void mixOfBothVanityUrlsAndSteamIds() {
-            assertTrue(userService.validateSteamIdsAndVanityUrls(Set.of("SomeVanityUrl", "77561198045206297", "KalmanRobert", "76561197979721079")).isEmpty());
+            assertTrue(userService.validateSteamIdsAndVanityUrls(Set.of("SomeVanityUrl", "77561198045206297",
+                    "KalmanRobert", "76561197979721079")).isEmpty());
         }
 
     }
