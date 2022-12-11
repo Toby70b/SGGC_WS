@@ -5,12 +5,17 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Represents a validator for deciding whether a Steam vanity URL is valid
  */
-public class SteamVanityUrlValidator extends StringValidator {
+public class SteamVanityUrlValidator {
 
     public static final String VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE = "Vanity URL must be between 3 and 32 characters long";
     public static final String VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE = "Vanity URL must not contain special characters";
 
-    @Override
+    /**
+     * Validate a Steam Vanity URL
+     *
+     * @param vanityUrl the Steam Vanity URL to validate against
+     * @return a ValidationResult object, indicating if the validation failed, and if so, why.
+     */
     public ValidationResult validate(String vanityUrl) {
         if (!withinRequiredLength(vanityUrl)) {
             return new ValidationResult(true, vanityUrl, VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE);
