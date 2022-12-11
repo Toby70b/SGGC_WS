@@ -36,7 +36,7 @@ public class DynamoDbConfig {
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
         AmazonDynamoDBClientBuilder clientBuilder = AmazonDynamoDBClientBuilder.standard();
-        if (null != dynamoDbProperties.getAddress()) {
+        if (!dynamoDbProperties.getAddress().isEmpty()) {
             clientBuilder.withEndpointConfiguration(
                     new AwsClientBuilder.EndpointConfiguration(dynamoDbProperties.getAddress(), dynamoDbProperties.getRegion()));
         } else {

@@ -34,7 +34,7 @@ public class SecretManagerConfig {
     @Bean
     public AWSSecretsManager secretManagerClient() {
         AWSSecretsManagerClientBuilder clientBuilder = AWSSecretsManagerClientBuilder.standard();
-        if (null != secretManagerProperties.getAddress()) {
+        if (!secretManagerProperties.getAddress().isEmpty()) {
             clientBuilder.withEndpointConfiguration(
                     new AwsClientBuilder.EndpointConfiguration(secretManagerProperties.getAddress(), secretManagerProperties.getRegion()));
         } else {

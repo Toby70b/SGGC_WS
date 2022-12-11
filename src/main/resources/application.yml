@@ -14,11 +14,11 @@ logging:
     path: ./SGGC - webapp
 
 dynamodb:
-  address: ${DYNAMO_DB_ADDRESS}
+  address: ${DYNAMO_DB_ADDRESS:}
   region: ${DYNAMO_DB_REGION}
 
 secrets_manager:
-  address: ${SECRETS_MANAGER_ADDRESS}
+  address: ${SECRETS_MANAGER_ADDRESS:}
   region: ${SECRETS_MANAGER_REGION}
 
 steam:
