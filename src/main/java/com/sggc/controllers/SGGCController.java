@@ -2,7 +2,7 @@ package com.sggc.controllers;
 
 import com.sggc.exceptions.*;
 import com.sggc.models.Game;
-import com.sggc.models.ValidationResult;
+import com.sggc.validation.ValidationResult;
 import com.sggc.models.sggc.SGGCResponse;
 import com.sggc.models.steam.request.GetCommonGamesRequest;
 import com.sggc.services.GameService;

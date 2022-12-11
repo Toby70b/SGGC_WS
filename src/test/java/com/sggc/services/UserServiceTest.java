@@ -6,7 +6,7 @@ import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.exceptions.VanityUrlResolutionException;
 import com.sggc.models.Game;
 import com.sggc.models.User;
-import com.sggc.models.ValidationResult;
+import com.sggc.validation.ValidationResult;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import com.sggc.repositories.UserRepository;

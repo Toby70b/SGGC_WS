@@ -1,7 +1,5 @@
 package com.sggc.validation;
 
-import com.sggc.models.ValidationResult;
-
 /**
  * Abstract class representing a hierarchy of classes which validate a string based on some conditions
  */

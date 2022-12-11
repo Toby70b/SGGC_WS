@@ -1,6 +1,5 @@
 package com.sggc.validation;
 
-import com.sggc.models.ValidationResult;
 import org.apache.commons.lang3.StringUtils;
 
 /**
