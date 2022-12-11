@@ -10,7 +10,6 @@ import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -26,6 +25,8 @@ import java.util.Collections;
 @Service
 @RequiredArgsConstructor
 public class SteamRequestService {
+    public static final String STEAM_API_KEY_MASK = "*************";
+
     public static final String STEAM_KEY_QUERY_PARAM_KEY = "key";
     public static final String STEAM_ID_QUERY_PARAM_KEY = "steamid";
     public static final String STEAM_APP_IDS_QUERY_PARAM_KEY = "appids";
@@ -49,14 +50,12 @@ public class SteamRequestService {
      * @throws SecretRetrievalException if an error occurs retrieving the Steam API key secret from AWS secrets manager
      */
     public GetOwnedGamesResponse requestUsersOwnedGamesFromSteamApi(String userId) throws SecretRetrievalException {
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(steamProperties.getApiAddress() + GET_OWNED_GAMES_ENDPOINT);
-        URI requestUri = uriComponentsBuilder
-                .queryParam(STEAM_KEY_QUERY_PARAM_KEY, getSteamApiKey())
+        URI requestUri = SteamApiRequest(GET_OWNED_GAMES_ENDPOINT)
                 .queryParam(STEAM_ID_QUERY_PARAM_KEY, userId)
                 .build()
                 .toUri();
 
-        log.debug("Contacting [{}] to get owned games of user [{}]", requestUri, userId);
+        log.debug("Contacting [{}] to get owned games of user [{}]", sanitizeRequestUri(requestUri), userId);
         return restTemplate.getForObject(requestUri, GetOwnedGamesResponse.class);
     }
 
@@ -73,7 +72,7 @@ public class SteamRequestService {
                 .build()
                 .toUri();
 
-        log.debug("Contacting [{}] to get details of game [{}]", requestUri, appId);
+        log.debug("Contacting [{}] to get details of game [{}]", sanitizeRequestUri(requestUri), appId);
         String response = restTemplate.getForObject(requestUri, String.class);
         return parseGameDetailsList(response);
     }
@@ -85,14 +84,12 @@ public class SteamRequestService {
      * @return a response from the Steam API containing the resolved Steam user id
      */
     public ResolveVanityUrlResponse resolveVanityUrl(String vanityUrl) throws SecretRetrievalException {
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(steamProperties.getApiAddress() + RESOLVE_VANITY_URL_ENDPOINT);
-        URI requestUri = uriComponentsBuilder
-                .queryParam(STEAM_KEY_QUERY_PARAM_KEY, getSteamApiKey())
+        URI requestUri = SteamApiRequest(RESOLVE_VANITY_URL_ENDPOINT)
                 .queryParam(VANITY_URL_QUERY_PARAM_KEY, vanityUrl)
                 .build()
                 .toUri();
 
-        log.debug("Contacting [{}] to resolve vanity URL [{}]", requestUri, vanityUrl);
+        log.debug("Contacting [{}] to resolve vanity URL [{}]", sanitizeRequestUri(requestUri), vanityUrl);
         return restTemplate.getForObject(requestUri, ResolveVanityUrlResponse.class);
     }
 
@@ -152,5 +149,50 @@ public class SteamRequestService {
         return secretManagerService.getSecretValue(STEAM_API_KEY_NAME);
     }
 
+
+    /**
+     * Masks the Steam API key within the query params of a  request URI, used to prevent the key being logged.
+     *
+     * @param requestUri the request URI whose Steam API key should be masked
+     * @return the request URI, now containing a masked Steam API key. If the steam id query param cannot be found
+     * within the request URI, then the request URI is returned, unmodified
+     */
+    private String maskSteamApiKey(String requestUri) {
+        String steamApiKey;
+        int steamKeyIndex = requestUri.indexOf(STEAM_KEY_QUERY_PARAM_KEY);
+        if (steamKeyIndex != -1) {
+            final String steamApiKeyQueryParam = STEAM_KEY_QUERY_PARAM_KEY + "=";
+            steamApiKey = requestUri.substring(steamKeyIndex).substring(steamApiKeyQueryParam.length(),
+                    requestUri.substring(steamKeyIndex).indexOf("&"));
+            return requestUri.replaceAll(steamApiKey, STEAM_API_KEY_MASK);
+        } else {
+            return requestUri;
+        }
+    }
+
+    /**
+     * Sanitizes the URI to the Steam API to prevent sensitive data from being logged
+     *
+     * @param requestUri the request URI to sanitize
+     * @return a sanitized request URI that is safe to log
+     */
+    private String sanitizeRequestUri(URI requestUri) {
+        String requestUriString = requestUri.toString();
+        if (requestUriString.contains(STEAM_KEY_QUERY_PARAM_KEY)) {
+            requestUriString = maskSteamApiKey(requestUriString);
+        }
+        return requestUriString;
+    }
+
+    /**
+     * Entrypoint for constructing a request to the Steam API. Sets all properties for a successful request to the Steam API
+     * @param endpoint the desired Steam API endpoint for the request to be built with
+     * @return a builder object which can be chained to provide more properties that the request will be constructed with
+     * @throws SecretRetrievalException if an error occurs retrieving the Steam API key secret from AWS secrets manager
+     */
+    private UriComponentsBuilder SteamApiRequest(String endpoint) throws SecretRetrievalException {
+        return UriComponentsBuilder.fromUriString(steamProperties.getApiAddress() + endpoint)
+                .queryParam(STEAM_KEY_QUERY_PARAM_KEY, getSteamApiKey());
+    }
 }
 
