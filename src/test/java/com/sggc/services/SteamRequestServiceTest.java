@@ -11,6 +11,7 @@ import com.sggc.models.GameData;
 import com.sggc.models.SteamGameCategory;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
+import com.sggc.util.AwsSecretRetriever;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -40,7 +41,7 @@ class SteamRequestServiceTest {
     private RestTemplate restTemplate;
 
     @Mock
-    private AwsSecretManagerService secretManagerService;
+    private AwsSecretRetriever secretManagerService;
 
     private SteamRequestService steamRequestService;
 
@@ -161,6 +162,7 @@ class SteamRequestServiceTest {
 
         assertEquals(mockResponse, steamRequestService.resolveVanityUrl("SomeVanityUrl"));
     }
+
     @Nested
     @DisplayName("Mask Steam API key tests")
     class MaskSteamApiKey {
@@ -168,7 +170,7 @@ class SteamRequestServiceTest {
         ListAppender<ILoggingEvent> listAppender;
 
         @BeforeEach
-        void setup(){
+        void setup() {
             steamRequestServiceLogger = (Logger) LoggerFactory.getLogger(SteamRequestService.class);
             listAppender = new ListAppender<>();
             listAppender.start();

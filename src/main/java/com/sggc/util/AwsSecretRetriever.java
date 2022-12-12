@@ -1,4 +1,4 @@
-package com.sggc.services;
+package com.sggc.util;
 
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
@@ -7,15 +7,15 @@ import com.sggc.exceptions.SecretRetrievalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
- * Class representing a service used to communicate with AWS Secret Manager
+ * Represents an interface for retrieving secrets required by the application from AWS Secret Manager
  */
-@Service
+@Component
 @Log4j2
 @RequiredArgsConstructor
-public class AwsSecretManagerService {
+public class AwsSecretRetriever {
 
     private final AWSSecretsManager client;
 

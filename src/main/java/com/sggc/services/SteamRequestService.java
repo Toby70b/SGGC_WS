@@ -8,6 +8,7 @@ import com.sggc.models.GameData;
 import com.sggc.models.SteamGameCategory;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
+import com.sggc.util.AwsSecretRetriever;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class SteamRequestService {
     public static final String GET_APP_DETAILS_ENDPOINT = "/api/appdetails/";
 
     private final RestTemplate restTemplate;
-    private final AwsSecretManagerService secretManagerService;
+    private final AwsSecretRetriever secretManagerService;
 
     private final SteamProperties steamProperties;
 

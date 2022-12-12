@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.sggc.validation.SteamVanityUrlValidator.VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE;
-import static com.sggc.validation.SteamVanityUrlValidator.VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE;
+import static com.sggc.services.VanityUrlService.VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE;
+import static com.sggc.services.VanityUrlService.VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -43,6 +43,9 @@ class UserServiceTest {
 
     @Mock
     private Clock clock;
+
+    @Mock
+    private VanityUrlService vanityUrlService;
 
     @InjectMocks
     private UserService userService;
@@ -166,7 +169,6 @@ class UserServiceTest {
                 assertTrue(userService.getIdsOfGamesOwnedByAllUsers(Set.of("1", "2")).isEmpty());
             }
         }
-
     }
 
     @Nested
@@ -228,8 +230,6 @@ class UserServiceTest {
             expectedUserObject.setRemovalDate(1535018400L);
 
             verify(userRepository, times(1)).save(expectedUserObject);
-
-
         }
 
         @Test
@@ -247,168 +247,6 @@ class UserServiceTest {
         }
 
     }
-
-    @Nested
-    class ValidationTests {
-
-        @Nested
-        @DisplayName("If provided with a invalid vanity URL it will return a list of validation errors")
-        class InvalidUserIdValidationTests {
-            @Test
-            @DisplayName("If provided with a vanity URL that is too short it will return a validation error with an appropriate message")
-            void ifProvidedWithAVanityUrlThatIsTooShortItWillReturnAValidationErrorWithAnAppropriateMessage() {
-                String generatedString = RandomStringUtils.random(2, true, true);
-                ValidationResult expectedValidationError = new ValidationResult(true, generatedString, VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE);
-                List<ValidationResult> validationResultList = userService.validateSteamIdsAndVanityUrls(Set.of(generatedString));
-                assertEquals(1, validationResultList.size());
-                assertEquals(expectedValidationError, validationResultList.get(0));
-            }
-
-            @Test
-            @DisplayName("If provided with a vanity URL that is too long it will return a validation error with an appropriate message")
-            void ifProvidedWithAVanityUrlThatIsTooLongItWillReturnAValidationErrorWithAnAppropriateMessage() {
-                String generatedString = RandomStringUtils.random(33, true, true);
-                ValidationResult expectedValidationError = new ValidationResult(true, generatedString, VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE);
-                List<ValidationResult> validationResultList = userService.validateSteamIdsAndVanityUrls(Set.of(generatedString));
-                assertEquals(1, validationResultList.size());
-                assertEquals(expectedValidationError, validationResultList.get(0));
-            }
-
-            @Test
-            @DisplayName("If provided with a vanity URL that contains special characters it will return a validation error with an appropriate message")
-            void ifProvidedWithAVanityUrlThatContainsSpecialCharactersItWillReturnAValidationErrorWithAnAppropriateMessage() {
-                String generatedString = "abc123%^&";
-                ValidationResult expectedValidationError = new ValidationResult(true, generatedString, VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE);
-                List<ValidationResult> validationResultList = userService.validateSteamIdsAndVanityUrls(Set.of(generatedString));
-                assertEquals(1, validationResultList.size());
-                assertEquals(expectedValidationError, validationResultList.get(0));
-            }
-
-            @Test
-            @DisplayName("If provided with multiple invalid Vanity URLs it will return multiple validation errors with appropriate messages")
-            void IfProvidedWithMultipleInvalidVanityUrlsItWillReturnMultipleValidationErrorsWithAppropriateMessages() {
-                String generatedString1 = "abc123%^&";
-                String generatedString2 = RandomStringUtils.random(33, true, true);
-
-                ValidationResult expectedValidationError1 = new ValidationResult(true, generatedString1, VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE);
-                ValidationResult expectedValidationError2 = new ValidationResult(true, generatedString2, VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE);
-
-                List<ValidationResult> validationResultList = userService.validateSteamIdsAndVanityUrls(Set.of(generatedString1, generatedString2));
-
-                assertEquals(2, validationResultList.size());
-                assertTrue(validationResultList.contains(expectedValidationError1));
-                assertTrue(validationResultList.contains(expectedValidationError2));
-            }
-        }
-
-        @Nested
-        @DisplayName("If provided with a valid user id it will return an empty list")
-        class ValidUserIdValidationTests {
-
-            @Test
-            @DisplayName("If provided with a valid Steam id it will return an empty list")
-            void ifProvidedWithAValidSteamIdItWillReturnAnEmptyList() throws SecretRetrievalException, VanityUrlResolutionException {
-                String randomSteamId = RandomStringUtils.random(17, true, true);
-
-                ResolveVanityUrlResponse.Response response = new ResolveVanityUrlResponse.Response();
-                response.setSuccess(1);
-                response.setSteamId(randomSteamId);
-                ResolveVanityUrlResponse vanityUrlResponse = new ResolveVanityUrlResponse();
-                vanityUrlResponse.setResponse(response);
-
-                when(steamRequestService.resolveVanityUrl("VanityUrl1")).thenReturn(vanityUrlResponse);
-                assertEquals(userService.resolveVanityUrls(Set.of("VanityUrl1")), Set.of(randomSteamId));
-            }
-
-            @Test
-            @DisplayName("If provided with a valid vanity URL it will return an empty list")
-            void ifProvidedWithAValidVanityUrlItWillReturnAnEmptyList() throws SecretRetrievalException, VanityUrlResolutionException {
-                String randomSteamId1 = RandomStringUtils.random(22, true, true);
-                String randomSteamId2 = RandomStringUtils.random(17, true, true);
-
-                ResolveVanityUrlResponse.Response response1 = new ResolveVanityUrlResponse.Response();
-                response1.setSuccess(1);
-                response1.setSteamId(randomSteamId1);
-                ResolveVanityUrlResponse vanityUrlResponse1 = new ResolveVanityUrlResponse();
-                vanityUrlResponse1.setResponse(response1);
-
-                ResolveVanityUrlResponse.Response response2 = new ResolveVanityUrlResponse.Response();
-                response2.setSuccess(1);
-                response2.setSteamId(randomSteamId2);
-                ResolveVanityUrlResponse vanityUrlResponse2 = new ResolveVanityUrlResponse();
-                vanityUrlResponse2.setResponse(response2);
-
-                when(steamRequestService.resolveVanityUrl("VanityUrl1")).thenReturn(vanityUrlResponse1);
-                when(steamRequestService.resolveVanityUrl("VanityUrl2")).thenReturn(vanityUrlResponse2);
-
-                assertEquals(userService.resolveVanityUrls(Set.of("VanityUrl1", "VanityUrl2")), Set.of(randomSteamId1, randomSteamId2));
-            }
-
-            @Test
-            @DisplayName("If provided with a mixture of valid vanity URL's and Steam ids it will return an empty list")
-            void ifProvidedWithAMixtureOfValidVanityUrlsAndSteamIdsItWillReturnAnEmptyList() throws SecretRetrievalException, VanityUrlResolutionException {
-                String randomSteamId1 = RandomStringUtils.random(17, true, true);
-                String randomSteamId2 = RandomStringUtils.random(18, true, true);
-                String randomSteamId3 = "7" + RandomStringUtils.random(16, false, true);
-
-                ResolveVanityUrlResponse.Response response1 = new ResolveVanityUrlResponse.Response();
-                response1.setSuccess(1);
-                response1.setSteamId(randomSteamId1);
-                ResolveVanityUrlResponse vanityUrlResponse1 = new ResolveVanityUrlResponse();
-                vanityUrlResponse1.setResponse(response1);
-
-                ResolveVanityUrlResponse.Response response2 = new ResolveVanityUrlResponse.Response();
-                response2.setSuccess(1);
-                response2.setSteamId(randomSteamId2);
-                ResolveVanityUrlResponse vanityUrlResponse2 = new ResolveVanityUrlResponse();
-                vanityUrlResponse2.setResponse(response2);
-
-                when(steamRequestService.resolveVanityUrl("VanityUrl1")).thenReturn(vanityUrlResponse1);
-                when(steamRequestService.resolveVanityUrl("VanityUrl2")).thenReturn(vanityUrlResponse2);
-
-                assertEquals(userService.resolveVanityUrls(Set.of("VanityUrl1", randomSteamId3, "VanityUrl2")), Set.of(randomSteamId1, randomSteamId3, randomSteamId2));
-            }
-
-            @Test
-            @DisplayName("Given a valid Vanity URL that doesn't resolve into a steam id when the service resolves the vanity URL then it will throw a VanityUrlResolutionException including the vanity url")
-            void GivenAValidVanityUrlThatDoesntResolveIntoASteamIdWhenTheServiceResolvesTheVanityUrlThenItWillThrowAVanityUrlResolutionExceptionIncludingTheVanityUrl() throws SecretRetrievalException {
-                String randomVanityUrl = RandomStringUtils.random(17, true, true);
-                ResolveVanityUrlResponse.Response response = new ResolveVanityUrlResponse.Response();
-                response.setSuccess(42);
-                ResolveVanityUrlResponse vanityUrlResponse = new ResolveVanityUrlResponse();
-                vanityUrlResponse.setResponse(response);
-                when(steamRequestService.resolveVanityUrl(randomVanityUrl)).thenReturn(vanityUrlResponse);
-                VanityUrlResolutionException ex = assertThrows(VanityUrlResolutionException.class, () -> userService.resolveVanityUrls(Set.of(randomVanityUrl)));
-                assertEquals(randomVanityUrl, ex.getVanityUrl());
-            }
-
-        }
-
-    }
-
-    @Nested
-    @DisplayName("Given a vanity URL when the service resolves the vanity URL then it will return a Steam user id")
-    class resolveVanityUrlTests {
-        @Test
-        @DisplayName("Given a list containing a single vanity URL when the service resolves the vanity URL then it will return a list containing the Steam user id")
-        void GivenAListContainingASingleVanityUrlWhenTheServiceResolvesTheVanityUrlThenItWillReturnAListContainingTheSteamUserId() {
-            assertTrue(userService.validateSteamIdsAndVanityUrls(Set.of("SomeVanityUrl", "77561198045206297", "KalmanRobert", "76561197979721079")).isEmpty());
-        }
-
-        @Test
-        @DisplayName("Given a list containing a multiple vanity URLs when the service resolves the vanity URLs then it will return a list of Steam user ids")
-        void GivenAListContainingAMultipleVanityUrlsWhenTheServiceResolvesTheVanityUrlsThenItWillReturnAListOfSteamUserIds() {
-            assertTrue(userService.validateSteamIdsAndVanityUrls(Set.of("SomeVanityUrl", "77561198045206297", "KalmanRobert", "76561197979721079")).isEmpty());
-        }
-
-        @Test
-        @DisplayName("Given a list containing a mix of both vanity URLs and Steam User Ids when the service resolves the vanity URLs then it will return a list of Steam user ids")
-        void GivenAListContainingAMixOfBothVanityUrlsAndSteamUserIdsWhenTheServiceResolvesTheVanityUrlsThenItWillReturnAListOfSteamUserIds() {
-            assertTrue(userService.validateSteamIdsAndVanityUrls(Set.of("SomeVanityUrl", "77561198045206297", "KalmanRobert", "76561197979721079")).isEmpty());
-        }
-
-    }
-
 
     private Game createExampleGame(String gameId) {
         Game game = new Game();

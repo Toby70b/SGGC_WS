@@ -11,7 +11,6 @@ import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import com.sggc.repositories.UserRepository;
 import com.sggc.util.DateUtil;
-import com.sggc.validation.SteamVanityUrlValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +30,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final SteamRequestService steamRequestHandler;
+    private final VanityUrlService vanityUrlService;
     private final Clock systemClock;
 
     /**
@@ -88,47 +88,6 @@ public class UserService {
     }
 
     /**
-     * Checks whether the Steam user ids and vanity URLs are valid
-     *
-     * @param userIds the Steam user ids and vanity URLs to validate
-     * @return a list of validation errors encountered, will be empty if all input is valid
-     */
-    public List<ValidationResult> validateSteamIdsAndVanityUrls(Set<String> userIds) {
-        SteamVanityUrlValidator vanityUrlValidator = new SteamVanityUrlValidator();
-        List<ValidationResult> validationErrors = new ArrayList<>();
-        for (String steamId : userIds) {
-            ValidationResult validationResult;
-            if (!isSteamUserId(steamId)) {
-                validationResult = vanityUrlValidator.validate(steamId);
-                if (validationResult.isError()) {
-                    validationErrors.add(validationResult);
-                }
-            }
-        }
-        return validationErrors;
-    }
-
-
-    /**
-     * Given a list containing one or more Vanity URLs returns a list of their equivalent Steam user id
-     *
-     * @param steamIds a list containing Steam user ids and vanity URLs
-     * @return a list of Steam user ids with all existing vanity URLs replaced with their equivalent Steam user id
-     * @throws SecretRetrievalException if an error occurs attempting to retrieve the Steam API key secret from AWS
-     *                                  secrets manager
-     */
-    public Set<String> resolveVanityUrls(Set<String> steamIds) throws SecretRetrievalException, VanityUrlResolutionException {
-        Set<String> resolvedIds = new HashSet<>(steamIds);
-        for (String steamId : steamIds) {
-            if (!isSteamUserId(steamId)) {
-                resolvedIds.remove(steamId);
-                resolvedIds.add(resolveVanityURL(steamId));
-            }
-        }
-        return resolvedIds;
-    }
-
-    /**
      * Returns a collection of the ids of Steam games owned by a user by user id, empty if the user owns no Steam games
      *
      * @param userId the Steam id of the user
@@ -141,24 +100,6 @@ public class UserService {
         GetOwnedGamesResponse.Response response = steamRequestHandler.requestUsersOwnedGamesFromSteamApi(userId).getResponse();
         return response.getGames() != null ? parseGameIdsFromResponse(response) : gameIdList;
     }
-
-    /**
-     * Resolves a vanity URL into a Steam user id
-     *
-     * @param vanityUrl the vanity URL to resolve
-     * @return the resolved Steam user id, or null if the request was unsuccessful
-     * @throws SecretRetrievalException     if an error occurs attempting to retrieve the Steam API key secret from AWS
-     *                                      secrets manager
-     * @throws VanityUrlResolutionException if the resolution request from the Steam API responds other than success
-     */
-    private String resolveVanityURL(String vanityUrl) throws SecretRetrievalException, VanityUrlResolutionException {
-        ResolveVanityUrlResponse.Response response = steamRequestHandler.resolveVanityUrl(vanityUrl).getResponse();
-        if (!response.isSuccess()) {
-            throw new VanityUrlResolutionException(vanityUrl);
-        }
-        return response.getSteamId();
-    }
-
 
     /**
      * Parses the Steam GetOwnedGamesResponse into a collection of game id's
@@ -183,17 +124,5 @@ public class UserService {
         return dateUtil.getTimeOneDayFromNow().getEpochSecond();
     }
 
-    /**
-     * Checks whether a String is a Steam user id as opposed to a Steam vanity URL. A steam id will be numeric, 17 characters long and begins with 7, 8 or 9
-     *
-     * @param steamId the String to check
-     * @return true if the String is numeric, 17 characters long and begins with 7, 8 or 9
-     */
-    private boolean isSteamUserId(String steamId) {
-        boolean beginsWithSteamIdNumber = steamId.startsWith("7") || steamId.startsWith("8") || steamId.startsWith("9");
-        boolean isSeventeenCharactersLong = steamId.length() == 17;
-        boolean isNumeric = StringUtils.isNumeric(steamId);
-        return beginsWithSteamIdNumber && isSeventeenCharactersLong && isNumeric;
-    }
 
 }
