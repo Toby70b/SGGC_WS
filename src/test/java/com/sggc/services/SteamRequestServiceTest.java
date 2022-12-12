@@ -162,6 +162,7 @@ class SteamRequestServiceTest {
 
         assertEquals(mockResponse, steamRequestService.resolveVanityUrl("SomeVanityUrl"));
     }
+
     @Nested
     @DisplayName("Mask Steam API key tests")
     class MaskSteamApiKey {
@@ -169,7 +170,7 @@ class SteamRequestServiceTest {
         ListAppender<ILoggingEvent> listAppender;
 
         @BeforeEach
-        void setup(){
+        void setup() {
             steamRequestServiceLogger = (Logger) LoggerFactory.getLogger(SteamRequestService.class);
             listAppender = new ListAppender<>();
             listAppender.start();
