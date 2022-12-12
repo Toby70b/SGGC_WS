@@ -1,11 +1,18 @@
-package com.sggc.validation;
+package com.sggc.services;
 
+import com.sggc.validation.ValidationResult;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
 
 /**
- * Represents a validator for deciding whether a Steam vanity URL is valid
+ * Represents a service for interacting with Steam Vanity URLs
  */
-public class SteamVanityUrlValidator {
+@Log4j2
+@Service
+@RequiredArgsConstructor
+public class VanityUrlService {
 
     public static final String VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE = "Vanity URL must be between 3 and 32 characters long";
     public static final String VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE = "Vanity URL must not contain special characters";

@@ -11,7 +11,6 @@ import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import com.sggc.repositories.UserRepository;
 import com.sggc.util.DateUtil;
-import com.sggc.validation.SteamVanityUrlValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +30,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final SteamRequestService steamRequestHandler;
+    private final VanityUrlService vanityUrlService;
     private final Clock systemClock;
 
     /**
@@ -94,12 +94,11 @@ public class UserService {
      * @return a list of validation errors encountered, will be empty if all input is valid
      */
     public List<ValidationResult> validateSteamIdsAndVanityUrls(Set<String> userIds) {
-        SteamVanityUrlValidator vanityUrlValidator = new SteamVanityUrlValidator();
         List<ValidationResult> validationErrors = new ArrayList<>();
         for (String steamId : userIds) {
             ValidationResult validationResult;
             if (!isSteamUserId(steamId)) {
-                validationResult = vanityUrlValidator.validate(steamId);
+                validationResult = vanityUrlService.validate(steamId);
                 if (validationResult.isError()) {
                     validationErrors.add(validationResult);
                 }
