@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sggc.errors.ApiError;
 import com.sggc.exceptions.*;
 import com.sggc.models.Game;
-import com.sggc.models.ValidationResult;
+import com.sggc.services.VanityUrlService;
+import com.sggc.validation.ValidationResult;
 import com.sggc.models.sggc.SGGCResponse;
 import com.sggc.models.steam.request.GetCommonGamesRequest;
 import com.sggc.services.GameService;
@@ -30,7 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.sggc.validation.SteamVanityUrlValidator.VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE;
+import static com.sggc.services.VanityUrlService.VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -46,6 +47,9 @@ class SGGCControllerTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private VanityUrlService vanityUrlService;
 
     @InjectMocks
     private SGGCController sggcController;
@@ -72,7 +76,7 @@ class SGGCControllerTest {
 
         @BeforeEach
         void setUp() {
-            this.mockMvc = MockMvcBuilders.standaloneSetup(new SGGCController(gameService, userService))
+            this.mockMvc = MockMvcBuilders.standaloneSetup(new SGGCController(gameService, userService, vanityUrlService))
                     .setControllerAdvice(SGGCRestExceptionHandler.class)
                     .build();
         }
@@ -85,7 +89,7 @@ class SGGCControllerTest {
             when(userService.getIdsOfGamesOwnedByAllUsers(Set.of("76561198045206222", "76561198045206223")))
                     .thenThrow(new UserHasNoGamesException("76561198045206222"));
 
-            when(userService.resolveVanityUrls(Set.of("76561198045206222", "76561198045206223")))
+            when(vanityUrlService.resolveVanityUrls(Set.of("76561198045206222", "76561198045206223")))
                     .thenReturn(Set.of("76561198045206222", "76561198045206223"));
 
 
@@ -101,10 +105,10 @@ class SGGCControllerTest {
                     .andExpect(MockMvcResultMatchers.status().isNotFound())
                     .andReturn();
 
-            SGGCResponse expectedResponse = new SGGCResponse(false,new ApiError("UserHasNoGamesException",
-                    "User with Id: 76561198045206222 has no games associated with their account, or doesn't exist.",null));
+            SGGCResponse expectedResponse = new SGGCResponse(false, new ApiError("UserHasNoGamesException",
+                    "User with Id: 76561198045206222 has no games associated with their account, or doesn't exist.", null));
             //Convert the expected response to JSON and then convert it back to an object to match actual response
-            String expectedResponseJson  = objectMapper.writeValueAsString(expectedResponse);
+            String expectedResponseJson = objectMapper.writeValueAsString(expectedResponse);
             SGGCResponse expectedResponseObj = objectMapper.readValue(expectedResponseJson, SGGCResponse.class);
 
             SGGCResponse actualResponse = objectMapper.readValue(result.getResponse().getContentAsString(), SGGCResponse.class);
@@ -119,7 +123,7 @@ class SGGCControllerTest {
             List<ValidationResult> validationErrors = List.of(new ValidationResult(true,
                     "765611980452$062222321321", VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE));
 
-            when(userService.validateSteamIdsAndVanityUrls(Set.of("765611980452062222321321", "76561198045206223")))
+            when(vanityUrlService.validateSteamIdsAndVanityUrls(Set.of("765611980452062222321321", "76561198045206223")))
                     .thenReturn(validationErrors);
 
             GetCommonGamesRequest request = new GetCommonGamesRequest();
@@ -134,10 +138,10 @@ class SGGCControllerTest {
                     .andExpect(MockMvcResultMatchers.status().isBadRequest())
                     .andReturn();
 
-            SGGCResponse expectedResponse = new SGGCResponse(false,new ApiError("ValidationException",
+            SGGCResponse expectedResponse = new SGGCResponse(false, new ApiError("ValidationException",
                     "Request body violates validation rules, check error details for more information.", validationErrors));
             //Convert the expected response to JSON and then convert it back to an object to match actual response
-            String expectedResponseJson  = objectMapper.writeValueAsString(expectedResponse);
+            String expectedResponseJson = objectMapper.writeValueAsString(expectedResponse);
             SGGCResponse expectedResponseObj = objectMapper.readValue(expectedResponseJson, SGGCResponse.class);
 
             SGGCResponse actualResponse = objectMapper.readValue(result.getResponse().getContentAsString(), SGGCResponse.class);
@@ -149,7 +153,7 @@ class SGGCControllerTest {
         void IfAnErrorOccursWhileTryingToRetrieveTheSteamKeySecretItWillReturnA500ErrorWithAnAppropriateMessage() throws Exception {
             ObjectMapper objectMapper = new ObjectMapper();
 
-            when(userService.resolveVanityUrls(Set.of("765611980452062222321321", "76561198045206223")))
+            when(vanityUrlService.resolveVanityUrls(Set.of("765611980452062222321321", "76561198045206223")))
                     .thenThrow(new SecretRetrievalException(new Exception()));
 
             GetCommonGamesRequest request = new GetCommonGamesRequest();
@@ -164,10 +168,10 @@ class SGGCControllerTest {
                     .andExpect(MockMvcResultMatchers.status().isInternalServerError())
                     .andReturn();
 
-            SGGCResponse expectedResponse = new SGGCResponse(false,new ApiError("Exception",
+            SGGCResponse expectedResponse = new SGGCResponse(false, new ApiError("Exception",
                     "Internal server error."));
             //Convert the expected response to JSON and then convert it back to an object to match actual response
-            String expectedResponseJson  = objectMapper.writeValueAsString(expectedResponse);
+            String expectedResponseJson = objectMapper.writeValueAsString(expectedResponse);
             SGGCResponse expectedResponseObj = objectMapper.readValue(expectedResponseJson, SGGCResponse.class);
 
             SGGCResponse actualResponse = objectMapper.readValue(result.getResponse().getContentAsString(), SGGCResponse.class);
@@ -179,11 +183,11 @@ class SGGCControllerTest {
         void IfAnErrorOccursWhileTryingToResolveAVanityUrlIntoASteamUserIdThenTheControllerWillReturnA404ErrorWithAnAppropriateMessage() throws Exception {
             ObjectMapper objectMapper = new ObjectMapper();
 
-            when(userService.resolveVanityUrls(Set.of("SomeVanityUrl","76561198045206223")))
+            when(vanityUrlService.resolveVanityUrls(Set.of("SomeVanityUrl", "76561198045206223")))
                     .thenThrow(new VanityUrlResolutionException("SomeVanityUrl"));
 
             GetCommonGamesRequest request = new GetCommonGamesRequest();
-            request.setSteamIds(Set.of("SomeVanityUrl","76561198045206223"));
+            request.setSteamIds(Set.of("SomeVanityUrl", "76561198045206223"));
             request.setMultiplayerOnly(true);
 
             MvcResult result = this.mockMvc
@@ -194,10 +198,10 @@ class SGGCControllerTest {
                     .andExpect(MockMvcResultMatchers.status().isNotFound())
                     .andReturn();
 
-            SGGCResponse expectedResponse = new SGGCResponse(false,new ApiError("VanityUrlResolutionException",
+            SGGCResponse expectedResponse = new SGGCResponse(false, new ApiError("VanityUrlResolutionException",
                     "Vanity Url: SomeVanityUrl could not be resolved to a steam id"));
             //Convert the expected response to JSON and then convert it back to an object to match actual response
-            String expectedResponseJson  = objectMapper.writeValueAsString(expectedResponse);
+            String expectedResponseJson = objectMapper.writeValueAsString(expectedResponse);
             SGGCResponse expectedResponseObj = objectMapper.readValue(expectedResponseJson, SGGCResponse.class);
 
             SGGCResponse actualResponse = objectMapper.readValue(result.getResponse().getContentAsString(), SGGCResponse.class);

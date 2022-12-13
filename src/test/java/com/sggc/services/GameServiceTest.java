@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class GameServiceTest {
 
@@ -83,11 +84,12 @@ class GameServiceTest {
             @Test
             @DisplayName("If only multiplayer games are desired, then non-multiplayer games will be filtered out of the returned list of games")
             void IfOnlyMultiplayerGamesAreDesiredThenNonMultiplayerGamesWillBeFilteredOutOfTheReturnedListOfGames() throws IOException {
-                GameCategory singlePlayerCategory = new GameCategory(SteamGameCategory.SINGLE_PLAYER);;
+                GameCategory singlePlayerCategory = new GameCategory(SteamGameCategory.SINGLE_PLAYER);
+                ;
                 GameCategory multiPlayerCategory = new GameCategory(SteamGameCategory.MULTIPLAYER);
 
-                GameData multiplayerAppDetailsResponseExample1 = new GameData(Set.of(singlePlayerCategory,multiPlayerCategory));
-                GameData multiplayerAppDetailsResponseExample2 = new GameData(Set.of(singlePlayerCategory,multiPlayerCategory));
+                GameData multiplayerAppDetailsResponseExample1 = new GameData(Set.of(singlePlayerCategory, multiPlayerCategory));
+                GameData multiplayerAppDetailsResponseExample2 = new GameData(Set.of(singlePlayerCategory, multiPlayerCategory));
                 GameData multiplayerAppDetailsResponseExample3 = new GameData(Set.of(singlePlayerCategory));
 
                 Game exampleGame1 = createExampleGame("573100", null, "Some game name");
@@ -101,7 +103,7 @@ class GameServiceTest {
                 when(steamRequestService.requestAppDetailsFromSteamApi("573101")).thenReturn(multiplayerAppDetailsResponseExample3);
                 when(steamRequestService.requestAppDetailsFromSteamApi("573102")).thenReturn(multiplayerAppDetailsResponseExample2);
 
-                assertEquals(Set.of(exampleGame1, exampleGame3), gameService.findGamesById(Set.of("573100","573101" ,"573102"), true));
+                assertEquals(Set.of(exampleGame1, exampleGame3), gameService.findGamesById(Set.of("573100", "573101", "573102"), true));
             }
 
             @Test

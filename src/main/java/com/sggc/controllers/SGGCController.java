@@ -2,7 +2,8 @@ package com.sggc.controllers;
 
 import com.sggc.exceptions.*;
 import com.sggc.models.Game;
-import com.sggc.models.ValidationResult;
+import com.sggc.services.VanityUrlService;
+import com.sggc.validation.ValidationResult;
 import com.sggc.models.sggc.SGGCResponse;
 import com.sggc.models.steam.request.GetCommonGamesRequest;
 import com.sggc.services.GameService;
@@ -28,6 +29,7 @@ public class SGGCController {
     public static final String SGGC_API_URI = "api/sggc";
     private final GameService gameService;
     private final UserService userService;
+    private final VanityUrlService vanityUrlService;
 
     /**
      * POST endpoint that, when given a list of user id's returns the Steam games owned by all users, contains a flag to exclude multiplayer games
@@ -41,7 +43,7 @@ public class SGGCController {
     public ResponseEntity<SGGCResponse> getGamesAllUsersOwn(@Valid @RequestBody GetCommonGamesRequest request) throws SecretRetrievalException {
         log.info("Request received [{}]", request);
         Set<String> steamIds = request.getSteamIds();
-        List<ValidationResult> validationErrorList = userService.validateSteamIdsAndVanityUrls(steamIds);
+        List<ValidationResult> validationErrorList = vanityUrlService.validateSteamIdsAndVanityUrls(steamIds);
         if (!validationErrorList.isEmpty()) {
             SGGCResponse response = new SGGCResponse(false, new ValidationException(validationErrorList).toApiError());
             log.info("Error occurred when validation request object returning 400 error response with body [{}]", response);
@@ -49,7 +51,7 @@ public class SGGCController {
         }
         Set<String> resolvedSteamUserIds;
         try {
-            resolvedSteamUserIds = userService.resolveVanityUrls(steamIds);
+            resolvedSteamUserIds = vanityUrlService.resolveVanityUrls(steamIds);
         } catch (VanityUrlResolutionException ex) {
             SGGCResponse response = new SGGCResponse(false, ex.toApiError());
             log.info("Error occurred while trying to resolve Vanity url returning 404 error response with body [{}]", response);

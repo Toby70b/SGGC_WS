@@ -1,7 +1,7 @@
 package com.sggc.exceptions;
 
 import com.sggc.errors.ApiError;
-import com.sggc.models.ValidationResult;
+import com.sggc.validation.ValidationResult;
 import lombok.Getter;
 
 import java.util.List;
