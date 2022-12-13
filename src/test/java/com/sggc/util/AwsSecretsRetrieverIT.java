@@ -1,4 +1,4 @@
-package com.sggc.services;
+package com.sggc.util;
 
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
@@ -13,15 +13,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import static org.mockito.Mockito.*;
-@SpringBootTest(classes = AwsSecretManagerService.class)
+
+@SpringBootTest(classes = AwsSecretRetriever.class)
 @Import(CachingConfig.class)
-class AwsSecretManagerServiceIT {
+class AwsSecretsRetrieverIT {
 
     @MockBean
     private AWSSecretsManager client;
 
     @Autowired
-    private AwsSecretManagerService secretManagerService;
+    private AwsSecretRetriever AwsSecretRetriever;
 
     @Test
     @DisplayName("Given a previously cached secret, when subsequently retrieving the secret, then use the secret in the cache")
@@ -33,11 +34,11 @@ class AwsSecretManagerServiceIT {
                 .withSecretString("SomeSecretValue");
 
         when(client.getSecretValue(valueRequest)).thenReturn(valueResponse);
-        secretManagerService.getSecretValue("someSecretKey");
+        AwsSecretRetriever.getSecretValue("someSecretKey");
         verify(client).getSecretValue(valueRequest);
 
-        secretManagerService.getSecretValue("someSecretKey");
-        secretManagerService.getSecretValue("someSecretKey");
+        AwsSecretRetriever.getSecretValue("someSecretKey");
+        AwsSecretRetriever.getSecretValue("someSecretKey");
         verify(client, times(1)).getSecretValue(valueRequest);
     }
 
