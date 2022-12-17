@@ -1,0 +1,11 @@
+dynamodb:
+  address: "http://localhost:8000"
+  region: "eu-west-2"
+
+secrets_manager:
+  address: "http://localhost:4566"
+  region: "eu-west-2"
+
+steam:
+  api_address: "http://localhost:9000"
+  store_address: "http://localhost:9000"
