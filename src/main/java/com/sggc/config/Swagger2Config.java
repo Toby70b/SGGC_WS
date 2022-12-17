@@ -1,5 +1,6 @@
 package com.sggc.config;
 
+/* TODO upgrade to swagger 3.0.0
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -14,6 +15,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 /**
  * Represents the configuration for Swagger
  */
+/*
 @Configuration
 @EnableSwagger2
 public class Swagger2Config {
@@ -37,10 +39,11 @@ public class Swagger2Config {
      *
      * @return an object containing non-technical information about the API
      */
+/**
     private ApiInfo apiEndPointsInfo() {
         return new ApiInfoBuilder().title(SWAGGER_API_TITLE)
                 .description(SWAGGER_API_DESCRIPTION)
                 .build();
     }
 }
-
+*/
