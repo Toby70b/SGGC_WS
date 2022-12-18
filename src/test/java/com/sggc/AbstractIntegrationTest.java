@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,15 +40,16 @@ public abstract class AbstractIntegrationTest {
 
     static final SggcDynamoDbLocalContainer sggcDynamoDbContainer;
     static final GenericContainer<?> localStackContainer;
-    static final GenericContainer<?> wiremockContainer;
+    static final WiremockContainer wiremockContainer;
 
-    static AmazonDynamoDB amazonDynamoDB;
-    static AWSSecretsManager awsSecretsManager;
+    static AmazonDynamoDB dynamoDbClient;
+    static AWSSecretsManager secretsManagerClient;
+    static WireMock wiremockClient;
 
 
     static {
         sggcDynamoDbContainer = new SggcDynamoDbLocalContainer();
-
+        wiremockContainer = new WiremockContainer();
         localStackContainer =
                 new LocalStackContainer(DockerImageName.parse(LOCALSTACK_DOCKER_FULL_NAME))
                         .withExposedPorts(LOCALSTACK_EXPOSED_PORT)
@@ -55,25 +57,21 @@ public abstract class AbstractIntegrationTest {
                         .withClasspathResourceMapping("/localstack", "/docker-entrypoint-initaws.d", BindMode.READ_ONLY)
                         .waitingFor(Wait.forLogMessage(LOCALSTACK_SUCCESS_LOG_MESSAGE_REGEX, 1));
 
-        wiremockContainer =
-                new GenericContainer<>(DockerImageName.parse("wiremock/wiremock:latest"))
-                        .withExposedPorts(8080)
-                        .withClasspathResourceMapping("/wiremock", "/home/wiremock", BindMode.READ_ONLY);
-
-
         sggcDynamoDbContainer.start();
         localStackContainer.start();
         wiremockContainer.start();
 
-        amazonDynamoDB = AmazonDynamoDBClientBuilder.standard()
+        dynamoDbClient = AmazonDynamoDBClientBuilder.standard()
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:"+sggcDynamoDbContainer.getFirstMappedPort().toString(), "eu-west-2"))
                 .withCredentials(new DefaultAWSCredentialsProviderChain())
                 .build();
 
-        awsSecretsManager = AWSSecretsManagerClientBuilder.standard()
+        secretsManagerClient = AWSSecretsManagerClientBuilder.standard()
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:"+localStackContainer.getFirstMappedPort().toString(), "eu-west-2"))
                 .withCredentials(new DefaultAWSCredentialsProviderChain())
                 .build();
+
+        wiremockClient = new WireMock("localhost", wiremockContainer.getFirstMappedPort());
 
     }
 
@@ -100,7 +98,8 @@ public abstract class AbstractIntegrationTest {
 
     @AfterEach
     void cleanup() throws IOException {
-        sggcDynamoDbContainer.reset(amazonDynamoDB);
+        sggcDynamoDbContainer.reset(dynamoDbClient);
+        wiremockContainer.reset(wiremockClient);
         //TODO call cleanup methods on other containers, move dynamodb logic into aws cleanup class hierarchy
     }
 
