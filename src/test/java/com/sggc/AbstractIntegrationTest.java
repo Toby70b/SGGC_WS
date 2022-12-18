@@ -15,8 +15,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.io.IOException;
-
 //TODO cleanup for V2
 @SpringBootTest(classes = SteamGroupGamesApplication.class)
 @TestPropertySource(properties = {"spring.config.location = classpath:app-test.yml"})
@@ -76,7 +74,7 @@ public abstract class AbstractIntegrationTest {
     }
 
     @AfterEach
-    void cleanup() throws IOException {
+    void cleanup() {
         sggcDynamoDbContainer.reset();
         wiremockContainer.reset();
         localStackContainer.reset();
