@@ -13,33 +13,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
-import org.testcontainers.containers.BindMode;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.localstack.LocalStackContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import java.io.IOException;
 
+//TODO cleanup for V2
 @SpringBootTest(classes = SteamGroupGamesApplication.class)
 @TestPropertySource(properties = {"spring.config.location = classpath:app-test.yml"})
 @Testcontainers
 @EnableConfigurationProperties
 public abstract class AbstractIntegrationTest {
 
-    public static final int LOCALSTACK_EXPOSED_PORT = 4566;
-
-    public static final String LOCALSTACK_DOCKER_IMAGE_NAME = "localstack/localstack:latest";
-
-    public static final String LATEST_DOCKER_IMAGE_TAG = "latest";
-
-    public static final String LOCALSTACK_DOCKER_FULL_NAME = LOCALSTACK_DOCKER_IMAGE_NAME + ":" + LATEST_DOCKER_IMAGE_TAG;
-
-    public static final String LOCALSTACK_SUCCESS_LOG_MESSAGE_REGEX = ".*########## Secrets Initialized ##########.*\\n";
-
     static final SggcDynamoDbLocalContainer sggcDynamoDbContainer;
-    static final GenericContainer<?> localStackContainer;
+    static final SggcLocalStackContainer localStackContainer;
     static final WiremockContainer wiremockContainer;
 
     static AmazonDynamoDB dynamoDbClient;
@@ -50,12 +36,7 @@ public abstract class AbstractIntegrationTest {
     static {
         sggcDynamoDbContainer = new SggcDynamoDbLocalContainer();
         wiremockContainer = new WiremockContainer();
-        localStackContainer =
-                new LocalStackContainer(DockerImageName.parse(LOCALSTACK_DOCKER_FULL_NAME))
-                        .withExposedPorts(LOCALSTACK_EXPOSED_PORT)
-                        .withServices(LocalStackContainer.Service.SECRETSMANAGER)
-                        .withClasspathResourceMapping("/localstack", "/docker-entrypoint-initaws.d", BindMode.READ_ONLY)
-                        .waitingFor(Wait.forLogMessage(LOCALSTACK_SUCCESS_LOG_MESSAGE_REGEX, 1));
+        localStackContainer = new SggcLocalStackContainer();
 
         sggcDynamoDbContainer.start();
         localStackContainer.start();
@@ -72,9 +53,7 @@ public abstract class AbstractIntegrationTest {
                 .build();
 
         wiremockClient = new WireMock("localhost", wiremockContainer.getFirstMappedPort());
-
     }
-
 
     @DynamicPropertySource
     static void registerDynamoDBProperties(DynamicPropertyRegistry registry) {
@@ -100,7 +79,7 @@ public abstract class AbstractIntegrationTest {
     void cleanup() throws IOException {
         sggcDynamoDbContainer.reset(dynamoDbClient);
         wiremockContainer.reset(wiremockClient);
-        //TODO call cleanup methods on other containers, move dynamodb logic into aws cleanup class hierarchy
+        localStackContainer.reset();
     }
 
 
