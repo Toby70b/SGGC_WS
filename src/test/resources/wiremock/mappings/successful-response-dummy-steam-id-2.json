@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/IPlayerService/GetOwnedGames/v1/",
+    "queryParameters": {
+      "steamid": {
+        "equalTo": "DummySteamId2"
+      },
+      "key": {
+        "equalTo": "DUMMY_STEAM_API_KEY"
+      }
+    }
+  },
+  "response": {
+    "body": "{\n  \"response\": {\n    \"game_count\": 3,\n    \"games\": [\n      {\n        \"appid\": 3830,\n        \"playtime_forever\": 127,\n        \"playtime_windows_forever\": 127,\n        \"playtime_mac_forever\": 0,\n        \"playtime_linux_forever\": 0,\n        \"rtime_last_played\": 1575501822\n      },\n      {\n        \"appid\": 1158850,\n        \"playtime_forever\": 379,\n        \"playtime_windows_forever\": 0,\n        \"playtime_mac_forever\": 0,\n        \"playtime_linux_forever\": 0,\n        \"rtime_last_played\": 1363849200\n      },\n      {\n        \"appid\": 1880360,\n        \"playtime_forever\": 573,\n        \"playtime_windows_forever\": 0,\n        \"playtime_mac_forever\": 0,\n        \"playtime_linux_forever\": 0,\n        \"rtime_last_played\": 1452907964\n      }\n    ]\n  }\n}",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200
+  }
+}

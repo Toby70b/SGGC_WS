@@ -21,4 +21,10 @@ public class UserServiceIT extends AbstractIntegrationTest {
         userService.getIdsOfGamesOwnedByAllUsers(Set.of("DummySteamId1","DummySteamId2"));
         System.out.println();
     }
+
+    @Test
+    void dasda() throws TooFewSteamIdsException, SecretRetrievalException, UserHasNoGamesException {
+        userService.getIdsOfGamesOwnedByAllUsers(Set.of("DummySteamId1","DummySteamId2"));
+        System.out.println();
+    }
 }
