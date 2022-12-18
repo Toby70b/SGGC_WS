@@ -77,8 +77,8 @@ public abstract class AbstractIntegrationTest {
 
     @AfterEach
     void cleanup() throws IOException {
-        sggcDynamoDbContainer.reset(dynamoDbClient);
-        wiremockContainer.reset(wiremockClient);
+        sggcDynamoDbContainer.reset();
+        wiremockContainer.reset();
         localStackContainer.reset();
     }
 

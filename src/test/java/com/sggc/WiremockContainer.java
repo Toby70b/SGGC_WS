@@ -22,8 +22,9 @@ public class WiremockContainer extends GenericContainer<WiremockContainer>  {
     /**
      * Resets the state of the WireMock instance
      */
-    public void reset(WireMock wireMock) {
-        wireMock.resetToDefaultMappings();
+    public void reset() {
+        WireMock wiremockClient = new WireMock("localhost", this.getFirstMappedPort());
+        wiremockClient.resetToDefaultMappings();
     }
 
 

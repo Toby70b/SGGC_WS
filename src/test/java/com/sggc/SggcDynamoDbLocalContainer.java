@@ -8,7 +8,6 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 public class SggcDynamoDbLocalContainer extends GenericContainer<SggcDynamoDbLocalContainer> {
@@ -26,9 +25,9 @@ public class SggcDynamoDbLocalContainer extends GenericContainer<SggcDynamoDbLoc
     /**
      * Resets the state of the Local DynamoDB instance to when it was first initialized.
      */
-    public void reset(AmazonDynamoDB dynamoDbClient) throws IOException {
-        dynamoDbClient = AmazonDynamoDBClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:"+this.getFirstMappedPort().toString(), "eu-west-2"))
+    public void reset() {
+        AmazonDynamoDB dynamoDbClient = AmazonDynamoDBClientBuilder.standard()
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:" + this.getFirstMappedPort().toString(), "eu-west-2"))
                 .withCredentials(new DefaultAWSCredentialsProviderChain())
                 .build();
         AmazonDynamoDbCleaner cleaner = new AmazonDynamoDbCleaner(dynamoDbClient);
