@@ -33,7 +33,7 @@ public class SteamRequestService {
     public static final String STEAM_APP_IDS_QUERY_PARAM_KEY = "appids";
     public static final String VANITY_URL_QUERY_PARAM_KEY = "vanityurl";
 
-    public static final String STEAM_API_KEY_NAME = "SteamAPIKey";
+    public static final String STEAM_API_KEY_SECRET_ID = "SteamAPIKey";
     public static final String GET_OWNED_GAMES_ENDPOINT = "/IPlayerService/GetOwnedGames/v1/";
     public static final String RESOLVE_VANITY_URL_ENDPOINT = "/ISteamUser/ResolveVanityURL/v1/";
     public static final String GET_APP_DETAILS_ENDPOINT = "/api/appdetails/";
@@ -147,7 +147,7 @@ public class SteamRequestService {
      */
 
     private String getSteamApiKey() throws SecretRetrievalException {
-        return secretManagerService.getSecretValue(STEAM_API_KEY_NAME);
+        return secretManagerService.getSecretValue(STEAM_API_KEY_SECRET_ID);
     }
 
 
