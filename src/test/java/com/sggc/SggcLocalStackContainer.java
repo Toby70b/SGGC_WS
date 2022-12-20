@@ -15,14 +15,12 @@ public class SggcLocalStackContainer extends LocalStackContainer {
 
     private static final String DEFAULT_DOCKER_IMAGE = "localstack/localstack:latest";
     private static final int DEFAULT_EXPOSED_PORT = 4566;
-    private static final String LOCALSTACK_SUCCESS_LOG_MESSAGE_REGEX = ".*########## Secrets Initialized ##########.*\\n";
     private static final LocalStackContainer.Service[] ENABLED_SERVICES = {SECRETSMANAGER};
 
     public SggcLocalStackContainer() {
         super(DockerImageName.parse(DEFAULT_DOCKER_IMAGE));
         this.withExposedPorts(DEFAULT_EXPOSED_PORT)
-                .withServices(ENABLED_SERVICES)
-                .waitingFor(Wait.forLogMessage(LOCALSTACK_SUCCESS_LOG_MESSAGE_REGEX, 1));
+                .withServices(ENABLED_SERVICES);
     }
 
     /**
