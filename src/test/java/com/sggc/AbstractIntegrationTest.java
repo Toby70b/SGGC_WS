@@ -30,6 +30,8 @@ public abstract class AbstractIntegrationTest {
     protected static AWSSecretsManager secretsManagerClient;
     protected static WireMock wiremockClient;
 
+    protected static AwsSecretsManagerTestSupporter secretsManagerTestSupporter;
+
 
     static {
         sggcDynamoDbContainer = new SggcDynamoDbLocalContainer();
@@ -51,6 +53,8 @@ public abstract class AbstractIntegrationTest {
                 .build();
 
         wiremockClient = new WireMock("localhost", wiremockContainer.getFirstMappedPort());
+
+        secretsManagerTestSupporter = new AwsSecretsManagerTestSupporter(secretsManagerClient);
     }
 
     @DynamicPropertySource
