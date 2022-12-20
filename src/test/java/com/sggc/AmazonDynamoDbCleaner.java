@@ -43,7 +43,7 @@ public class AmazonDynamoDbCleaner implements TestResourceCleaner {
             try {
                 reader = Files.newBufferedReader(Paths.get(String.format("%s%s.json", LOCAL_DYNAMO_DB_DDL_PATH, tableName)));
             } catch (IOException e) {
-                //TODO dont do this, or at least wrap in a custom expcetion with an appropriate message
+                //TODO don't do this, or at least wrap in a custom exception with an appropriate message
                 throw new RuntimeException(e);
             }
             dynamoDbClient.deleteTable(tableName);
