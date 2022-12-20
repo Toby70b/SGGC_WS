@@ -35,5 +35,5 @@ public class User {
     }
 
     //TTL (time-to-live) field for DynamoDB
-    private double removalDate;
+    private long removalDate;
 }
