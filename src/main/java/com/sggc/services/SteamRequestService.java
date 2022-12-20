@@ -18,7 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
-
+//TODO improve store request creation too
 /**
  * Class representing an interface for communicating with the Steam API
  */
