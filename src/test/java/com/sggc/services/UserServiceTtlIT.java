@@ -11,18 +11,22 @@ import com.sggc.repositories.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.sggc.TestSecretsConstants.MOCK_STEAM_API_KEY_VALUE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-public class UserServiceIT extends AbstractIntegrationTest {
-
+public class UserServiceTtlIT extends AbstractIntegrationTest {
 
     @Autowired
     public UserService userService;
@@ -30,9 +34,12 @@ public class UserServiceIT extends AbstractIntegrationTest {
     @Autowired
     public UserRepository userRepository;
 
+    @MockBean
+    private Clock clock;
+
     @Test
-    @DisplayName("If a user is not found in the DB, their details will be requested via the Steam API and persisted within the Database")
-    void IfAUserIsNotFoundInTheDbItsDetailsWillBeRequestedViaTheSteamApiAndPersistedWithinTheDatabase() throws TooFewSteamIdsException, SecretRetrievalException, UserHasNoGamesException {
+    @DisplayName("When a user is persisted in the database its TTL field will be populated with a date exactly 24 hours in the future")
+    void WhenAUserIsPersistedInTheDatabaseItsTtlFieldWillBePopulatedWithADateExactly24HoursInTheFuture() throws TooFewSteamIdsException, SecretRetrievalException, UserHasNoGamesException {
         secretsManagerTestSupporter.createMockSteamApiKey();
         wiremockClient.register(
                 WireMock.get(urlPathEqualTo(TestSteamWebConstants.Endpoints.GET_OWNED_GAMES_ENDPOINT))
@@ -54,7 +61,10 @@ public class UserServiceIT extends AbstractIntegrationTest {
                         ).build()
         );
 
-        String getOwnedGamesResponseMockGameId = "3830";
+        Clock fixedClock = Clock.fixed(Instant.parse("2018-08-22T10:00:00Z"), ZoneOffset.UTC);
+        when(clock.instant()).thenReturn(fixedClock.instant());
+        Date oneDayInTheFuture = Date.from(clock.instant().plus(1, ChronoUnit.DAYS));
+
         userService.getIdsOfGamesOwnedByAllUsers(Set.of("7656119804520628", "7656119804520626"));
 
         List<User> persistedUsers = new ArrayList<>();
@@ -67,34 +77,7 @@ public class UserServiceIT extends AbstractIntegrationTest {
         assertTrue(user1.isPresent());
         assertTrue(user2.isPresent());
 
-        assertEquals(1, user1.get().getOwnedGameIds().size());
-        assertEquals(1, user1.get().getOwnedGameIds().size());
-
-        assertTrue(user1.get().getOwnedGameIds().contains(getOwnedGamesResponseMockGameId));
-        assertTrue(user2.get().getOwnedGameIds().contains(getOwnedGamesResponseMockGameId));
-    }
-
-    @Test
-    @DisplayName("If a request to retrieve all games owned by all users is received then a list of common games should be returned")
-    void IfARequestToRetrieveAllGamesOwnedByAllUsersIsReceivedThenAListOfCommonGamesShouldBeReturned() throws TooFewSteamIdsException, SecretRetrievalException, UserHasNoGamesException {
-        User user1 = new User();
-        User user2 = new User();
-        User user3 = new User();
-
-        user1.setId("7656119804520628");
-        user1.setOwnedGameIds(Set.of("1189", "6147", "8888"));
-
-        user2.setId("7656119804520626");
-        user2.setOwnedGameIds(Set.of("1182", "6147", "8888", "3789"));
-
-        user3.setId("7656119804520618");
-        user3.setOwnedGameIds(Set.of("6147", "8888"));
-
-        userRepository.save(user1);
-        userRepository.save(user2);
-        userRepository.save(user3);
-
-        Set<String> commonGames = userService.getIdsOfGamesOwnedByAllUsers(Set.of("7656119804520628", "7656119804520626", "7656119804520618"));
-        assertEquals(Set.of("6147", "8888"), commonGames);
+        assertEquals(oneDayInTheFuture, Date.from(Instant.ofEpochSecond(user1.get().getRemovalDate())));
+        assertEquals(oneDayInTheFuture, Date.from(Instant.ofEpochSecond(user2.get().getRemovalDate())));
     }
 }
