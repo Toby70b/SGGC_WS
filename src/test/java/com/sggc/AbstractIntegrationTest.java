@@ -22,13 +22,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @EnableConfigurationProperties
 public abstract class AbstractIntegrationTest {
 
-    static final SggcDynamoDbLocalContainer sggcDynamoDbContainer;
-    static final SggcLocalStackContainer localStackContainer;
-    static final WiremockContainer wiremockContainer;
+    protected static final SggcDynamoDbLocalContainer sggcDynamoDbContainer;
+    protected static final SggcLocalStackContainer localStackContainer;
+    protected static final WiremockContainer wiremockContainer;
 
-    static AmazonDynamoDB dynamoDbClient;
-    static AWSSecretsManager secretsManagerClient;
-    static WireMock wiremockClient;
+    protected static AmazonDynamoDB dynamoDbClient;
+    protected static AWSSecretsManager secretsManagerClient;
+    protected static WireMock wiremockClient;
 
 
     static {
