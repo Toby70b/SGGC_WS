@@ -3,14 +3,10 @@ package com.sggc.services;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.TooFewSteamIdsException;
 import com.sggc.exceptions.UserHasNoGamesException;
-import com.sggc.exceptions.VanityUrlResolutionException;
 import com.sggc.models.Game;
 import com.sggc.models.User;
-import com.sggc.validation.ValidationResult;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
-import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import com.sggc.repositories.UserRepository;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -23,12 +19,9 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.sggc.services.VanityUrlService.VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE;
-import static com.sggc.services.VanityUrlService.VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -43,9 +36,6 @@ class UserServiceTest {
 
     @Mock
     private Clock clock;
-
-    @Mock
-    private VanityUrlService vanityUrlService;
 
     @InjectMocks
     private UserService userService;

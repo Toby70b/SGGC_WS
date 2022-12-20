@@ -30,7 +30,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final SteamRequestService steamRequestHandler;
-    private final VanityUrlService vanityUrlService;
     private final Clock systemClock;
 
     /**
