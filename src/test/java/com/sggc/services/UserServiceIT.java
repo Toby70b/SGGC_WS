@@ -2,7 +2,7 @@ package com.sggc.services;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.sggc.AbstractIntegrationTest;
-import com.sggc.TestSteamWebConstants;
+import com.sggc.constants.SteamWebTestConstants;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.TooFewSteamIdsException;
 import com.sggc.exceptions.UserHasNoGamesException;
@@ -16,7 +16,7 @@ import org.springframework.http.MediaType;
 import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.sggc.TestSecretsConstants.MOCK_STEAM_API_KEY_VALUE;
+import static com.sggc.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -31,13 +31,13 @@ public class UserServiceIT extends AbstractIntegrationTest {
     public UserRepository userRepository;
 
     @Test
-    @DisplayName("If a user is not found in the DB, their details will be requested via the Steam API and persisted within the Database")
+    @DisplayName("If a user is not found in the DB, their details will be requested via the Steam API and persisted within the database")
     void IfAUserIsNotFoundInTheDbItsDetailsWillBeRequestedViaTheSteamApiAndPersistedWithinTheDatabase() throws TooFewSteamIdsException, SecretRetrievalException, UserHasNoGamesException {
         secretsManagerTestSupporter.createMockSteamApiKey();
         wiremockClient.register(
-                WireMock.get(urlPathEqualTo(TestSteamWebConstants.Endpoints.GET_OWNED_GAMES_ENDPOINT))
-                        .withQueryParam(TestSteamWebConstants.STEAM_ID_QUERY_PARAM_KEY, equalTo("7656119804520628"))
-                        .withQueryParam(TestSteamWebConstants.STEAM_KEY_QUERY_PARAM_KEY, equalTo(MOCK_STEAM_API_KEY_VALUE))
+                WireMock.get(urlPathEqualTo(SteamWebTestConstants.Endpoints.GET_OWNED_GAMES_ENDPOINT))
+                        .withQueryParam(SteamWebTestConstants.STEAM_ID_QUERY_PARAM_KEY, equalTo("7656119804520628"))
+                        .withQueryParam(SteamWebTestConstants.STEAM_KEY_QUERY_PARAM_KEY, equalTo(MOCK_STEAM_API_KEY_VALUE))
                         .willReturn(ok()
                                 .withHeader("Content-Type", MediaType.APPLICATION_JSON.toString())
                                 .withBodyFile("steam-api/get-owned-games/successful-get-owned-games-response-single-game-1.json")
@@ -45,9 +45,9 @@ public class UserServiceIT extends AbstractIntegrationTest {
         );
 
         wiremockClient.register(
-                WireMock.get(urlPathEqualTo(TestSteamWebConstants.Endpoints.GET_OWNED_GAMES_ENDPOINT))
-                        .withQueryParam(TestSteamWebConstants.STEAM_ID_QUERY_PARAM_KEY, equalTo("7656119804520626"))
-                        .withQueryParam(TestSteamWebConstants.STEAM_KEY_QUERY_PARAM_KEY, equalTo(MOCK_STEAM_API_KEY_VALUE))
+                WireMock.get(urlPathEqualTo(SteamWebTestConstants.Endpoints.GET_OWNED_GAMES_ENDPOINT))
+                        .withQueryParam(SteamWebTestConstants.STEAM_ID_QUERY_PARAM_KEY, equalTo("7656119804520626"))
+                        .withQueryParam(SteamWebTestConstants.STEAM_KEY_QUERY_PARAM_KEY, equalTo(MOCK_STEAM_API_KEY_VALUE))
                         .willReturn(ok()
                                 .withHeader("Content-Type", MediaType.APPLICATION_JSON.toString())
                                 .withBodyFile("steam-api/get-owned-games/successful-get-owned-games-response-single-game-1.json")
