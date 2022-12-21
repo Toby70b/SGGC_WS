@@ -73,7 +73,7 @@ public class SteamRequestService {
                 .build()
                 .toUri();
 
-        log.debug("Contacting [{}] to get details of game [{}]", sanitizeRequestUri(requestUri), appId);
+        log.debug("Contacting [{}] to get details of game [{}]", requestUri, appId);
         String response = restTemplate.getForObject(requestUri, String.class);
         return parseGameDetailsList(response);
     }
