@@ -40,7 +40,7 @@ public class UserServiceIT extends AbstractIntegrationTest {
                         .withQueryParam(SteamWebTestConstants.STEAM_KEY_QUERY_PARAM_KEY, equalTo(MOCK_STEAM_API_KEY_VALUE))
                         .willReturn(ok()
                                 .withHeader("Content-Type", MediaType.APPLICATION_JSON.toString())
-                                .withBodyFile("steam-api/get-owned-games/successful-get-owned-games-response-single-game-1.json")
+                                .withBodyFile("steam-api/get-owned-games/successful-response-single-game-1.json")
                         ).build()
         );
 
@@ -50,7 +50,7 @@ public class UserServiceIT extends AbstractIntegrationTest {
                         .withQueryParam(SteamWebTestConstants.STEAM_KEY_QUERY_PARAM_KEY, equalTo(MOCK_STEAM_API_KEY_VALUE))
                         .willReturn(ok()
                                 .withHeader("Content-Type", MediaType.APPLICATION_JSON.toString())
-                                .withBodyFile("steam-api/get-owned-games/successful-get-owned-games-response-single-game-1.json")
+                                .withBodyFile("steam-api/get-owned-games/successful-response-single-game-1.json")
                         ).build()
         );
 
