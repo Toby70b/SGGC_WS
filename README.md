@@ -80,7 +80,7 @@ want to improve on to help gain a greater understanding of the subject matter. T
 * Move application from EBS to ECS
 * Use Spring Cloud Config to further externalize application configuration
 * E2E tests
-* General code cleanup (Service result pattern instead of exceptions, remove Controller Advice except as a catch-all for unchecked exception)
+* General code cleanup (Service Result pattern instead of exceptions, remove Controller Advice except as a catch-all for unchecked exception)
 
 ## Thanks to
 https://steamcommunity.com/dev (without it this wouldn't exist, and I wouldn't have had the practice) 
