@@ -36,8 +36,8 @@ public class UserServiceIT extends AbstractIntegrationTest {
         secretsManagerTestSupporter.createMockSteamApiKey();
         wiremockClient.register(
                 WireMock.get(urlPathEqualTo(SteamWebTestConstants.Endpoints.GET_OWNED_GAMES_ENDPOINT))
-                        .withQueryParam(SteamWebTestConstants.STEAM_ID_QUERY_PARAM_KEY, equalTo("7656119804520628"))
-                        .withQueryParam(SteamWebTestConstants.STEAM_KEY_QUERY_PARAM_KEY, equalTo(MOCK_STEAM_API_KEY_VALUE))
+                        .withQueryParam(SteamWebTestConstants.QueryParams.STEAM_ID_QUERY_PARAM_KEY, equalTo("7656119804520628"))
+                        .withQueryParam(SteamWebTestConstants.QueryParams.STEAM_KEY_QUERY_PARAM_KEY, equalTo(MOCK_STEAM_API_KEY_VALUE))
                         .willReturn(ok()
                                 .withHeader("Content-Type", MediaType.APPLICATION_JSON.toString())
                                 .withBodyFile("steam-api/get-owned-games/successful-response-single-game-1.json")
@@ -46,8 +46,8 @@ public class UserServiceIT extends AbstractIntegrationTest {
 
         wiremockClient.register(
                 WireMock.get(urlPathEqualTo(SteamWebTestConstants.Endpoints.GET_OWNED_GAMES_ENDPOINT))
-                        .withQueryParam(SteamWebTestConstants.STEAM_ID_QUERY_PARAM_KEY, equalTo("7656119804520626"))
-                        .withQueryParam(SteamWebTestConstants.STEAM_KEY_QUERY_PARAM_KEY, equalTo(MOCK_STEAM_API_KEY_VALUE))
+                        .withQueryParam(SteamWebTestConstants.QueryParams.STEAM_ID_QUERY_PARAM_KEY, equalTo("7656119804520626"))
+                        .withQueryParam(SteamWebTestConstants.QueryParams.STEAM_KEY_QUERY_PARAM_KEY, equalTo(MOCK_STEAM_API_KEY_VALUE))
                         .willReturn(ok()
                                 .withHeader("Content-Type", MediaType.APPLICATION_JSON.toString())
                                 .withBodyFile("steam-api/get-owned-games/successful-response-single-game-1.json")
