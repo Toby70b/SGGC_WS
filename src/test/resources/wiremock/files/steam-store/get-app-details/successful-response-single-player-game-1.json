@@ -1,0 +1,214 @@
+{
+  "2080": {
+    "success": true,
+    "data": {
+      "type": "dlc",
+      "name": "Monster Hunter Rise: Sunbreak",
+      "steam_appid": 2080,
+      "required_age": 0,
+      "is_free": false,
+      "controller_support": "full",
+      "detailed_description": "<strong>Monster Hunter Rise: Sunbreak expansion</strong><br>The world of Monster Hunter Rise gets bigger and deeper with this massive expansion featuring new monsters, new locales and more!<br><br><ul class=\"bb_ul\"><li><strong>A new adventure in a distant land</strong><br>Renowned as the &quot;Fierce Flame of Kamura” since the events of Monster Hunter Rise, you must set sail to uncover the cause of a terrible threat facing a kingdom across the sea!<br><img src=\"https://cdn.akamai.steamstatic.com/steam/apps/1880360/extras/220131_kohaku_01_ストーリー.gif?t=1664413720\" /><br><br></li><li><strong>New enemies arrive, old foes return</strong><br>Arriving in Elgado Outpost, you discover that the abnormal events threatening this kingdom are caused by Malzeno, Lunagaron and Garangolm – terrifying monsters known locally as the Three Lords. In addition to these new enemies, You must also face old foes as series monsters not featured in Monster Hunter Rise make their return!<br><img src=\"https://cdn.akamai.steamstatic.com/steam/apps/1880360/extras/220131_kohaku_02_メルゼナ.gif?t=1664413720\" /><br><br></li><li><strong>Deeper gameplay</strong><br>Your trusty Wirebug returns and is more useful than ever, with the addition of new abilities for all 14 weapon types that bring a new level of flexibility and depth to the hunting action.<br><img src=\"https://cdn.akamai.steamstatic.com/steam/apps/1880360/extras/220131_kohaku_03_PLアクション.gif?t=1664413720\" /><br><br></li><li><strong>A colourful cast of characters</strong><br>Your new base of operations features a variety of locals to interact with, each with their own charming personality. Sometimes they will need your hunter’s help, and sometimes they will be the ones who help you out!<br><img src=\"https://cdn.akamai.steamstatic.com/steam/apps/1880360/extras/220201_kohaku_04_NPC拠点.gif?t=1664413720\" /></li></ul><br>Note: You must own Monster Hunter Rise in order to play this expansion. Sunbreak content is accessible after completion of the 7-star Hub quest “Serpent Goddess of Thunder”.    If you purchase this content while the game is open, you must restart the game in order to access the content.",
+      "about_the_game": "<strong>Monster Hunter Rise: Sunbreak expansion</strong><br>The world of Monster Hunter Rise gets bigger and deeper with this massive expansion featuring new monsters, new locales and more!<br><br><ul class=\"bb_ul\"><li><strong>A new adventure in a distant land</strong><br>Renowned as the &quot;Fierce Flame of Kamura” since the events of Monster Hunter Rise, you must set sail to uncover the cause of a terrible threat facing a kingdom across the sea!<br><img src=\"https://cdn.akamai.steamstatic.com/steam/apps/1880360/extras/220131_kohaku_01_ストーリー.gif?t=1664413720\" /><br><br></li><li><strong>New enemies arrive, old foes return</strong><br>Arriving in Elgado Outpost, you discover that the abnormal events threatening this kingdom are caused by Malzeno, Lunagaron and Garangolm – terrifying monsters known locally as the Three Lords. In addition to these new enemies, You must also face old foes as series monsters not featured in Monster Hunter Rise make their return!<br><img src=\"https://cdn.akamai.steamstatic.com/steam/apps/1880360/extras/220131_kohaku_02_メルゼナ.gif?t=1664413720\" /><br><br></li><li><strong>Deeper gameplay</strong><br>Your trusty Wirebug returns and is more useful than ever, with the addition of new abilities for all 14 weapon types that bring a new level of flexibility and depth to the hunting action.<br><img src=\"https://cdn.akamai.steamstatic.com/steam/apps/1880360/extras/220131_kohaku_03_PLアクション.gif?t=1664413720\" /><br><br></li><li><strong>A colourful cast of characters</strong><br>Your new base of operations features a variety of locals to interact with, each with their own charming personality. Sometimes they will need your hunter’s help, and sometimes they will be the ones who help you out!<br><img src=\"https://cdn.akamai.steamstatic.com/steam/apps/1880360/extras/220201_kohaku_04_NPC拠点.gif?t=1664413720\" /></li></ul><br>Note: You must own Monster Hunter Rise in order to play this expansion. Sunbreak content is accessible after completion of the 7-star Hub quest “Serpent Goddess of Thunder”.    If you purchase this content while the game is open, you must restart the game in order to access the content.",
+      "short_description": "Monster Hunter Rise: Sunbreak expansion The world of Monster Hunter Rise gets bigger and deeper with this massive expansion featuring new monsters, new locales and more!",
+      "fullgame": {
+        "appid": "1446780",
+        "name": "MONSTER HUNTER RISE"
+      },
+      "supported_languages": "English<strong>*</strong>, French, Italian, German, Spanish - Spain, Arabic, Japanese<strong>*</strong>, Korean, Polish, Portuguese - Brazil, Russian, Simplified Chinese, Traditional Chinese<br><strong>*</strong>languages with full audio support",
+      "reviews": "“both new and veteran Monster Hunter fans will enjoy (it) immensely.”<br>90% – <a href=\"https://steamcommunity.com/linkfilter/?url=https://www.windowscentral.com/gaming/pc-gaming/monster-hunter-rise-sunbreak-pc-review\" target=\"_blank\" rel=\" noopener\"  >Windows Central</a><br><br>“...one of my favorite game expansions in recent history.”<br>90% – <a href=\"https://steamcommunity.com/linkfilter/?url=https://venturebeat.com/2022/06/29/monster-hunter-rise-sunbreak-review-more-and-better/\" target=\"_blank\" rel=\" noopener\"  >VentureBeat</a><br><br>“a whole new world of content”<br>85% – <a href=\"https://steamcommunity.com/linkfilter/?url=https://www.gamerevolution.com/review/709794-monster-hunter-rise-sunbreak-review-worth-playing-buying-switch-pc\" target=\"_blank\" rel=\" noopener\"  >GameRevolution</a><br>",
+      "header_image": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/header.jpg?t=1664413720",
+      "website": "https://www.monsterhunter.com/rise-steam/",
+      "pc_requirements": {
+        "minimum": "<strong>Minimum:</strong><br><ul class=\"bb_ul\"><li><strong>OS:</strong> Windows 10 （64-bit）<br></li><li><strong>Processor:</strong> Intel® Core™ i3-4130 or Core™ i5-3470 or AMD FX™-6100<br></li><li><strong>Memory:</strong> 8 GB RAM<br></li><li><strong>Graphics:</strong> NVIDIA® GeForce® GT 1030 (DDR4) or AMD Radeon™ RX 550<br></li><li><strong>DirectX:</strong> Version 12<br></li><li><strong>Network:</strong> Broadband Internet connection<br></li><li><strong>Storage:</strong> 36 GB available space<br></li><li><strong>Additional Notes:</strong> 2080p/30fps when graphics settings are set to &quot;Low&quot;. System requirements subject to change during game development.</li></ul>",
+        "recommended": "<strong>Recommended:</strong><br><ul class=\"bb_ul\"><li><strong>OS:</strong> Windows 10 （64-bit）<br></li><li><strong>Processor:</strong> Intel® Core™ i5-4460 or AMD FX™-8300<br></li><li><strong>Memory:</strong> 8 GB RAM<br></li><li><strong>Graphics:</strong> NVIDIA® GeForce® GTX 1060 (VRAM 3GB) or AMD Radeon™ RX 570 (VRAM 4GB)<br></li><li><strong>DirectX:</strong> Version 12<br></li><li><strong>Network:</strong> Broadband Internet connection<br></li><li><strong>Storage:</strong> 36 GB available space<br></li><li><strong>Additional Notes:</strong> 2080p/30fps when graphics settings are set to &quot;Average&quot;. System requirements subject to change during game development.</li></ul>"
+      },
+      "mac_requirements": [],
+      "linux_requirements": [],
+      "legal_notice": "©CAPCOM CO., LTD. 2021, 2022 ALL RIGHTS RESERVED.",
+      "developers": [
+        "CAPCOM Co., Ltd."
+      ],
+      "publishers": [
+        "CAPCOM Co., Ltd."
+      ],
+      "demos": [
+        {
+          "appid": 2080,
+          "description": ""
+        }
+      ],
+      "price_overview": {
+        "currency": "GBP",
+        "initial": 3299,
+        "final": 3299,
+        "discount_percent": 0,
+        "initial_formatted": "",
+        "final_formatted": "£32.99"
+      },
+      "packages": [
+        677034,
+        692569,
+        692570
+      ],
+      "package_groups": [
+        {
+          "name": "default",
+          "title": "Buy Monster Hunter Rise: Sunbreak",
+          "description": "",
+          "selection_text": "Select a purchase option",
+          "save_text": "",
+          "display_type": 0,
+          "is_recurring_subscription": "false",
+          "subs": [
+            {
+              "packageid": 677034,
+              "percent_savings_text": " ",
+              "percent_savings": 0,
+              "option_text": "Monster Hunter Rise: Sunbreak - £32.99",
+              "option_description": "",
+              "can_get_free_license": "0",
+              "is_free_license": false,
+              "price_in_cents_with_discount": 3299
+            },
+            {
+              "packageid": 692569,
+              "percent_savings_text": " ",
+              "percent_savings": 0,
+              "option_text": "Monster Hunter Rise + Sunbreak - £57.99",
+              "option_description": "",
+              "can_get_free_license": "0",
+              "is_free_license": false,
+              "price_in_cents_with_discount": 5799
+            },
+            {
+              "packageid": 692570,
+              "percent_savings_text": " ",
+              "percent_savings": 0,
+              "option_text": "Monster Hunter Rise + Sunbreak Deluxe - £65.99",
+              "option_description": "",
+              "can_get_free_license": "0",
+              "is_free_license": false,
+              "price_in_cents_with_discount": 6599
+            }
+          ]
+        }
+      ],
+      "platforms": {
+        "windows": true,
+        "mac": false,
+        "linux": false
+      },
+      "categories": [
+        {
+          "id": 2,
+          "description": "Single-player"
+        }
+      ],
+      "genres": [
+        {
+          "id": "1",
+          "description": "Action"
+        }
+      ],
+      "screenshots": [
+        {
+          "id": 0,
+          "path_thumbnail": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/ss_b35d56f45d81499edac06de18a42b9272941fa70.600x338.jpg?t=1664413720",
+          "path_full": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/ss_b35d56f45d81499edac06de18a42b9272941fa70.1920x1080.jpg?t=1664413720"
+        },
+        {
+          "id": 1,
+          "path_thumbnail": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/ss_4cfa18c2d50e61c09782d146866725637bff3a39.600x338.jpg?t=1664413720",
+          "path_full": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/ss_4cfa18c2d50e61c09782d146866725637bff3a39.1920x1080.jpg?t=1664413720"
+        },
+        {
+          "id": 2,
+          "path_thumbnail": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/ss_666a39f6afd1f834f0dc74e8d210b6ed1e007cd7.600x338.jpg?t=1664413720",
+          "path_full": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/ss_666a39f6afd1f834f0dc74e8d210b6ed1e007cd7.1920x1080.jpg?t=1664413720"
+        },
+        {
+          "id": 3,
+          "path_thumbnail": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/ss_23821e6c32d8dd7990a527610a237482771a4af6.600x338.jpg?t=1664413720",
+          "path_full": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/ss_23821e6c32d8dd7990a527610a237482771a4af6.1920x1080.jpg?t=1664413720"
+        },
+        {
+          "id": 4,
+          "path_thumbnail": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/ss_bdfd5812a6c52c0c6dff960480e17b306d49e487.600x338.jpg?t=1664413720",
+          "path_full": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/ss_bdfd5812a6c52c0c6dff960480e17b306d49e487.1920x1080.jpg?t=1664413720"
+        },
+        {
+          "id": 5,
+          "path_thumbnail": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/ss_669e2420c8d25cfc867e9be17e75321cee42c2c3.600x338.jpg?t=1664413720",
+          "path_full": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/ss_669e2420c8d25cfc867e9be17e75321cee42c2c3.1920x1080.jpg?t=1664413720"
+        },
+        {
+          "id": 6,
+          "path_thumbnail": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/ss_5e8b85674db0b5a43d5a6395e41e7846bd2df13f.600x338.jpg?t=1664413720",
+          "path_full": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/ss_5e8b85674db0b5a43d5a6395e41e7846bd2df13f.1920x1080.jpg?t=1664413720"
+        }
+      ],
+      "movies": [
+        {
+          "id": 256891701,
+          "name": "62_MHRise-SB_PV3_MP_Owned_EN-EU.mp4",
+          "thumbnail": "https://cdn.akamai.steamstatic.com/steam/apps/256891701/movie.293x165.jpg?t=1655167164",
+          "webm": {
+            "480": "http://cdn.akamai.steamstatic.com/steam/apps/256891701/movie480_vp9.webm?t=1655167164",
+            "max": "http://cdn.akamai.steamstatic.com/steam/apps/256891701/movie_max_vp9.webm?t=1655167164"
+          },
+          "mp4": {
+            "480": "http://cdn.akamai.steamstatic.com/steam/apps/256891701/movie480.mp4?t=1655167164",
+            "max": "http://cdn.akamai.steamstatic.com/steam/apps/256891701/movie_max.mp4?t=1655167164"
+          },
+          "highlight": true
+        },
+        {
+          "id": 256886780,
+          "name": "62_MHRise-SB_PV2_MP_Owned_EN-EU.mp4",
+          "thumbnail": "https://cdn.akamai.steamstatic.com/steam/apps/256886780/movie.293x165.jpg?t=1653357488",
+          "webm": {
+            "480": "http://cdn.akamai.steamstatic.com/steam/apps/256886780/movie480_vp9.webm?t=1653357488",
+            "max": "http://cdn.akamai.steamstatic.com/steam/apps/256886780/movie_max_vp9.webm?t=1653357488"
+          },
+          "mp4": {
+            "480": "http://cdn.akamai.steamstatic.com/steam/apps/256886780/movie480.mp4?t=1653357488",
+            "max": "http://cdn.akamai.steamstatic.com/steam/apps/256886780/movie_max.mp4?t=1653357488"
+          },
+          "highlight": true
+        },
+        {
+          "id": 256878200,
+          "name": "61_MHRise-SB_PV1_MP_Owned_EN-EU.mp4",
+          "thumbnail": "https://cdn.akamai.steamstatic.com/steam/apps/256878200/movie.293x165.jpg?t=1647564343",
+          "webm": {
+            "480": "http://cdn.akamai.steamstatic.com/steam/apps/256878200/movie480_vp9.webm?t=1647564343",
+            "max": "http://cdn.akamai.steamstatic.com/steam/apps/256878200/movie_max_vp9.webm?t=1647564343"
+          },
+          "mp4": {
+            "480": "http://cdn.akamai.steamstatic.com/steam/apps/256878200/movie480.mp4?t=1647564343",
+            "max": "http://cdn.akamai.steamstatic.com/steam/apps/256878200/movie_max.mp4?t=1647564343"
+          },
+          "highlight": true
+        }
+      ],
+      "recommendations": {
+        "total": 3212
+      },
+      "release_date": {
+        "coming_soon": false,
+        "date": "29 Jun, 2022"
+      },
+      "support_info": {
+        "url": "http://www.capcom.co.jp/support/contact/",
+        "email": ""
+      },
+      "background": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/page_bg_generated_v6b.jpg?t=1664413720",
+      "background_raw": "https://cdn.akamai.steamstatic.com/steam/apps/1880360/page.bg.jpg?t=1664413720",
+      "content_descriptors": {
+        "ids": [],
+        "notes": null
+      }
+    }
+  }
+}
