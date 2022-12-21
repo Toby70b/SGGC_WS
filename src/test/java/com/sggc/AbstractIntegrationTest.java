@@ -21,7 +21,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static com.sggc.constants.TestAwsConstants.DEFAULT_REGION;
 
-//TODO cleanup for V2
 @SpringBootTest(classes = SteamGroupGamesApplication.class)
 @TestPropertySource(properties = {"spring.config.location = classpath:app-test.yml"})
 @Testcontainers
@@ -47,6 +46,7 @@ public abstract class AbstractIntegrationTest {
         localStackContainer.start();
         wiremockContainer.start();
 
+        //TODO for v2 maybe remove all of these and allow each test class to define what clients they want? Could be slower due to new object instantiation but probably wouldn't be noticeable. Can test
         dynamoDbClient = AmazonDynamoDBClientBuilder.standard()
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:"+sggcDynamoDbContainer.getFirstMappedPort().toString(), DEFAULT_REGION))
                 .withCredentials(new DefaultAWSCredentialsProviderChain())
@@ -59,6 +59,7 @@ public abstract class AbstractIntegrationTest {
 
         wiremockClient = new WireMock("localhost", wiremockContainer.getFirstMappedPort());
 
+        //TODO whats to be done about this for V2? We can keep it, as it is used, but should we do something different?
         secretsManagerTestSupporter = new AwsSecretsManagerTestSupporter(secretsManagerClient);
     }
 
@@ -82,6 +83,7 @@ public abstract class AbstractIntegrationTest {
                 String.format("http://%s:%d", wiremockContainer.getHost(), wiremockContainer.getFirstMappedPort()));
     }
 
+    //TODO remove for v2 and move into junit extensions
     @AfterEach
     void cleanup() {
         sggcDynamoDbContainer.reset();
