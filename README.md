@@ -68,11 +68,19 @@ tobypeel/steam_group_game_checker_api:prod
 Please see the relevant README on local development setup [here](Local-Developer-Setup/README.md).
 
 ## Things to improve
-* Improved handling of the various responses from Steam
-* Move from REST to a Queue-based API
-* Integration tests
+This project originally started as something I wanted to create rapidly. As such I favoured expedience over quality. 
+As I've added new features or changed the applications' underlying infrastructure, I've noticed parts of the projects that
+can be improved, either by poor design or antipatterns, or just things that would exist in any business-level application. 
+While I want to avoid constantly fiddling with the project to achieve perfection, they’re several outstanding areas I 
+want to improve on to help gain a greater understanding of the subject matter. These are listed below:
+
+* Integration tests within a framework including Testcontainers (in progress)
+* Improved handling of the various responses from Steam and AWS
+* Logging improvements (Centralized logging in CloudWatch and enabling tracking of a request through the application)
+* Move application from EBS to ECS
+* Use Spring Cloud Config to further externalize application configuration
 * E2E tests
-* Development Environments
+* General code cleanup (Service result pattern instead of exceptions, remove Controller Advice except as a catch-all for unchecked exception)
 
 ## Thanks to
 https://steamcommunity.com/dev (without it this wouldn't exist, and I wouldn't have had the practice) 
