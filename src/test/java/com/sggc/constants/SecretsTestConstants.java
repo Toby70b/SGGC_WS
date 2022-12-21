@@ -1,11 +1,11 @@
-package com.sggc;
+package com.sggc.constants;
 
 /**
  * Represents a class for constants related to Secrets required by the Application. To be used for application tests
  */
-public class TestSecretsConstants {
+public class SecretsTestConstants {
 
-    private TestSecretsConstants() {
+    private SecretsTestConstants() {
     }
 
     public static String STEAM_API_KEY_ID = "SteamAPIKey";

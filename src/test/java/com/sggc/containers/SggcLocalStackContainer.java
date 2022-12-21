@@ -1,12 +1,14 @@
-package com.sggc;
+package com.sggc.containers;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
+import com.sggc.cleaner.AwsSecretsManagerCleanerTest;
 import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import static com.sggc.constants.TestAwsConstants.DEFAULT_REGION;
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SECRETSMANAGER;
 
 public class SggcLocalStackContainer extends LocalStackContainer {
@@ -29,7 +31,7 @@ public class SggcLocalStackContainer extends LocalStackContainer {
             switch (enabledService){
                 case SECRETSMANAGER:
                     AWSSecretsManager secretsManagerClient = AWSSecretsManagerClientBuilder.standard()
-                            .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:"+this.getFirstMappedPort().toString(), "eu-west-2"))
+                            .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:"+this.getFirstMappedPort().toString(), DEFAULT_REGION))
                             .withCredentials(new DefaultAWSCredentialsProviderChain())
                             .build();
                     AwsSecretsManagerCleanerTest awsSecretsManagerCleaner = new AwsSecretsManagerCleanerTest(secretsManagerClient);

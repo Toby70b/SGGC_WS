@@ -1,14 +1,17 @@
-package com.sggc;
+package com.sggc.containers;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.sggc.cleaner.AmazonDynamoDbCleaner;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import java.nio.file.Path;
+
+import static com.sggc.constants.TestAwsConstants.DEFAULT_REGION;
 
 public class SggcDynamoDbLocalContainer extends GenericContainer<SggcDynamoDbLocalContainer> {
 
@@ -27,7 +30,7 @@ public class SggcDynamoDbLocalContainer extends GenericContainer<SggcDynamoDbLoc
      */
     public void reset() {
         AmazonDynamoDB dynamoDbClient = AmazonDynamoDBClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:" + this.getFirstMappedPort().toString(), "eu-west-2"))
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:" + this.getFirstMappedPort().toString(), DEFAULT_REGION))
                 .withCredentials(new DefaultAWSCredentialsProviderChain())
                 .build();
         AmazonDynamoDbCleaner cleaner = new AmazonDynamoDbCleaner(dynamoDbClient);

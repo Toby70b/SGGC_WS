@@ -1,4 +1,4 @@
-package com.sggc;
+package com.sggc.containers;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.testcontainers.containers.BindMode;

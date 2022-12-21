@@ -1,4 +1,4 @@
-package com.sggc;
+package com.sggc.cleaner;
 
 /**
  * Represents behaviour for removing resources within a service to ensure integration tests do not suffer from pollution.

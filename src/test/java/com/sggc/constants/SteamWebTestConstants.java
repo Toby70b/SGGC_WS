@@ -1,11 +1,11 @@
-package com.sggc;
+package com.sggc.constants;
 
 /**
- * Represents a class used to
+ * Represents a class for constants related to the Steam web application. To be used for application tests.
  */
-public class TestSteamWebConstants {
+public class SteamWebTestConstants {
 
-    private TestSteamWebConstants() {
+    private SteamWebTestConstants() {
     }
 
     public final static String STEAM_ID_QUERY_PARAM_KEY = "steamid";

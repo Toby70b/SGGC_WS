@@ -1,13 +1,8 @@
-package com.sggc;
+package com.sggc.cleaner;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
-import com.amazonaws.services.secretsmanager.AWSSecretsManager;
-import com.amazonaws.services.secretsmanager.model.DeleteSecretRequest;
-import com.amazonaws.services.secretsmanager.model.ListSecretsRequest;
-import com.amazonaws.services.secretsmanager.model.ListSecretsResult;
-import com.amazonaws.services.secretsmanager.model.SecretListEntry;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
