@@ -27,7 +27,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
 
-import static com.sggc.TestUtils.createExampleGame;
+import static com.sggc.helper.TestUtils.createExampleGame;
 import static com.sggc.services.SteamRequestService.STEAM_API_KEY_SECRET_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;

@@ -7,6 +7,10 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.sggc.containers.SggcDynamoDbLocalContainer;
+import com.sggc.containers.SggcLocalStackContainer;
+import com.sggc.containers.WiremockContainer;
+import com.sggc.helper.AwsSecretsManagerTestSupporter;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +18,8 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import static com.sggc.constants.TestAwsConstants.DEFAULT_REGION;
 
 //TODO cleanup for V2
 @SpringBootTest(classes = SteamGroupGamesApplication.class)
@@ -32,7 +38,6 @@ public abstract class AbstractIntegrationTest {
 
     protected static AwsSecretsManagerTestSupporter secretsManagerTestSupporter;
 
-
     static {
         sggcDynamoDbContainer = new SggcDynamoDbLocalContainer();
         wiremockContainer = new WiremockContainer();
@@ -43,12 +48,12 @@ public abstract class AbstractIntegrationTest {
         wiremockContainer.start();
 
         dynamoDbClient = AmazonDynamoDBClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:"+sggcDynamoDbContainer.getFirstMappedPort().toString(), "eu-west-2"))
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:"+sggcDynamoDbContainer.getFirstMappedPort().toString(), DEFAULT_REGION))
                 .withCredentials(new DefaultAWSCredentialsProviderChain())
                 .build();
 
         secretsManagerClient = AWSSecretsManagerClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:"+localStackContainer.getFirstMappedPort().toString(), "eu-west-2"))
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:"+localStackContainer.getFirstMappedPort().toString(), DEFAULT_REGION))
                 .withCredentials(new DefaultAWSCredentialsProviderChain())
                 .build();
 
