@@ -4,7 +4,6 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.sggc.AbstractIntegrationTest;
 import com.sggc.constants.SteamWebTestConstants;
 import com.sggc.models.Game;
-import com.sggc.models.User;
 import com.sggc.repositories.GameRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -14,11 +13,9 @@ import org.springframework.http.MediaType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.sggc.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameServiceIT extends AbstractIntegrationTest {
