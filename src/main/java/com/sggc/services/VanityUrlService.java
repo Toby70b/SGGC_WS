@@ -91,7 +91,7 @@ public class VanityUrlService {
      *                                      secrets manager
      * @throws VanityUrlResolutionException if the resolution request from the Steam API responds other than success
      */
-    public String resolveVanityURL(String vanityUrl) throws SecretRetrievalException, VanityUrlResolutionException {
+    private String resolveVanityURL(String vanityUrl) throws SecretRetrievalException, VanityUrlResolutionException {
         ResolveVanityUrlResponse.Response response = steamRequestService.resolveVanityUrl(vanityUrl).getResponse();
         if (!response.isSuccess()) {
             throw new VanityUrlResolutionException(vanityUrl);
