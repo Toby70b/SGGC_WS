@@ -46,7 +46,7 @@ public class SggcController {
         List<ValidationResult> validationErrorList = vanityUrlService.validateSteamIdsAndVanityUrls(steamIds);
         if (!validationErrorList.isEmpty()) {
             SggcResponse response = new SggcResponse(false, new ValidationException(validationErrorList).toApiError());
-            log.info("Error occurred when validation request object returning 400 error response with body [{}]", response);
+            log.info("Error occurred when validating Steam Ids/Vanity URls object returning 400 error response with body [{}]", response);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
         Set<String> resolvedSteamUserIds;
