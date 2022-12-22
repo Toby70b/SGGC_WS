@@ -1,4 +1,4 @@
-package com.sggc.services;
+package com.sggc.infrastructure;
 
 import com.google.gson.*;
 import com.sggc.config.SteamProperties;
@@ -8,10 +8,9 @@ import com.sggc.models.GameData;
 import com.sggc.models.SteamGameCategory;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
-import com.sggc.util.AwsSecretRetriever;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -23,9 +22,9 @@ import java.util.Collections;
  * Class representing an interface for communicating with the Steam API
  */
 @Log4j2
-@Service
+@Component
 @RequiredArgsConstructor
-public class SteamRequestService {
+public class SteamRequestSender {
     public static final String STEAM_API_KEY_MASK = "*************";
 
     public static final String STEAM_KEY_QUERY_PARAM_KEY = "key";

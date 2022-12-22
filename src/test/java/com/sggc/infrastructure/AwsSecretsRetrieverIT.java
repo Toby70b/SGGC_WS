@@ -1,10 +1,11 @@
-package com.sggc.util;
+package com.sggc.infrastructure;
 
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
 import com.sggc.config.CachingConfig;
 import com.sggc.exceptions.SecretRetrievalException;
+import com.sggc.infrastructure.AwsSecretRetriever;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ class AwsSecretsRetrieverIT {
     private AWSSecretsManager client;
 
     @Autowired
-    private AwsSecretRetriever AwsSecretRetriever;
+    private com.sggc.infrastructure.AwsSecretRetriever AwsSecretRetriever;
 
     @Test
     @DisplayName("Given a previously cached secret, when subsequently retrieving the secret, then use the secret in the cache")

@@ -1,4 +1,4 @@
-package com.sggc.services;
+package com.sggc.infrastructure;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -11,7 +11,8 @@ import com.sggc.models.GameData;
 import com.sggc.models.SteamGameCategory;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
-import com.sggc.util.AwsSecretRetriever;
+import com.sggc.infrastructure.AwsSecretRetriever;
+import com.sggc.infrastructure.SteamRequestSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,12 +29,12 @@ import java.util.Collections;
 import java.util.Set;
 
 import static com.sggc.helper.TestUtils.createExampleGame;
-import static com.sggc.services.SteamRequestService.STEAM_API_KEY_SECRET_ID;
+import static com.sggc.infrastructure.SteamRequestSender.STEAM_API_KEY_SECRET_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SteamRequestServiceTest {
+class SteamRequestSenderTest {
 
     public static final String MOCK_API_ADDRESS = "mockApiAddress";
     public static final String MOCK_STORE_ADDRESS = "mockStoreAddress";
@@ -43,12 +44,12 @@ class SteamRequestServiceTest {
     @Mock
     private AwsSecretRetriever secretManagerService;
 
-    private SteamRequestService steamRequestService;
+    private SteamRequestSender steamRequestSender;
 
     @BeforeEach
     public void setup() {
         SteamProperties mockSteamProperties = new SteamProperties(MOCK_API_ADDRESS, MOCK_STORE_ADDRESS);
-        steamRequestService = new SteamRequestService(restTemplate, secretManagerService, mockSteamProperties);
+        steamRequestSender = new SteamRequestSender(restTemplate, secretManagerService, mockSteamProperties);
     }
 
     @Test
@@ -66,7 +67,7 @@ class SteamRequestServiceTest {
         when(restTemplate.getForObject(mockURI, GetOwnedGamesResponse.class)).thenReturn(mockResponse);
         when(secretManagerService.getSecretValue(STEAM_API_KEY_SECRET_ID)).thenReturn("SomeKey");
 
-        assertEquals(mockResponse, steamRequestService.requestUsersOwnedGamesFromSteamApi("12345678910"));
+        assertEquals(mockResponse, steamRequestSender.requestUsersOwnedGamesFromSteamApi("12345678910"));
     }
 
     @Nested
@@ -111,7 +112,7 @@ class SteamRequestServiceTest {
                     new GameData(Set.of(singlePlayerCategory, multiplayerCategory, unknownCategory));
 
             when(restTemplate.getForObject(mockURI, String.class)).thenReturn(mockResponseJson);
-            assertEquals(expectedGameDataResponse, steamRequestService.requestAppDetailsFromSteamApi("SomeAppId"));
+            assertEquals(expectedGameDataResponse, steamRequestSender.requestAppDetailsFromSteamApi("SomeAppId"));
         }
 
         @Test
@@ -128,7 +129,7 @@ class SteamRequestServiceTest {
                     new GameData(Collections.singleton(new GameCategory(SteamGameCategory.MULTIPLAYER)));
 
             when(restTemplate.getForObject(mockURI, String.class)).thenReturn(mockResponseJson);
-            assertEquals(expectedGameDataResponse, steamRequestService.requestAppDetailsFromSteamApi("SomeAppId"));
+            assertEquals(expectedGameDataResponse, steamRequestSender.requestAppDetailsFromSteamApi("SomeAppId"));
         }
 
         @Test
@@ -143,7 +144,7 @@ class SteamRequestServiceTest {
                     "}";
 
             when(restTemplate.getForObject(mockURI, String.class)).thenReturn(mockResponseJson);
-            assertThrows(IOException.class, () -> steamRequestService.requestAppDetailsFromSteamApi("SomeAppId"));
+            assertThrows(IOException.class, () -> steamRequestSender.requestAppDetailsFromSteamApi("SomeAppId"));
         }
     }
 
@@ -160,7 +161,7 @@ class SteamRequestServiceTest {
         when(restTemplate.getForObject(mockURI, ResolveVanityUrlResponse.class)).thenReturn(mockResponse);
         when(secretManagerService.getSecretValue(STEAM_API_KEY_SECRET_ID)).thenReturn("SomeKey");
 
-        assertEquals(mockResponse, steamRequestService.resolveVanityUrl("SomeVanityUrl"));
+        assertEquals(mockResponse, steamRequestSender.resolveVanityUrl("SomeVanityUrl"));
     }
 
     @Nested
@@ -171,7 +172,7 @@ class SteamRequestServiceTest {
 
         @BeforeEach
         void setup() {
-            steamRequestServiceLogger = (Logger) LoggerFactory.getLogger(SteamRequestService.class);
+            steamRequestServiceLogger = (Logger) LoggerFactory.getLogger(SteamRequestSender.class);
             listAppender = new ListAppender<>();
             listAppender.start();
             steamRequestServiceLogger.addAppender(listAppender);
@@ -194,7 +195,7 @@ class SteamRequestServiceTest {
 
             when(restTemplate.getForObject(mockURI, GetOwnedGamesResponse.class)).thenReturn(mockResponse);
             when(secretManagerService.getSecretValue(STEAM_API_KEY_SECRET_ID)).thenReturn("SomeKey");
-            steamRequestService.requestUsersOwnedGamesFromSteamApi("SomeUserId");
+            steamRequestSender.requestUsersOwnedGamesFromSteamApi("SomeUserId");
 
             assertFalse(listAppender.list.isEmpty());
             assertEquals(Level.DEBUG, listAppender.list.get(0).getLevel());

@@ -7,6 +7,7 @@ import com.sggc.models.Game;
 import com.sggc.models.User;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.repositories.UserRepository;
+import com.sggc.infrastructure.SteamRequestSender;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ class UserServiceTest {
     private UserRepository userRepository;
 
     @Mock
-    private SteamRequestService steamRequestService;
+    private SteamRequestSender steamRequestSender;
 
     @Mock
     private Clock clock;
@@ -77,7 +78,7 @@ class UserServiceTest {
             getOwnedGamesResponseDetails.setGameCount(0);
             mockGetOwnedGamesResponse1.setResponse(getOwnedGamesResponseDetails);
 
-            when(steamRequestService.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse1);
+            when(steamRequestSender.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse1);
             UserHasNoGamesException exception =
                     assertThrows(UserHasNoGamesException.class, () -> userService.getIdsOfGamesOwnedByAllUsers(Set.of("1", "2")));
             assertEquals(exception.getUserId(), "1");
@@ -193,7 +194,7 @@ class UserServiceTest {
 
             getOwnedGamesResponseDetails.setGames(Set.of(game1, game2, game3));
             mockGetOwnedGamesResponse.setResponse(getOwnedGamesResponseDetails);
-            when(steamRequestService.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse);
+            when(steamRequestSender.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse);
             assertEquals(Set.of("2", "1342", "10"), userService.findOwnedGamesByUserId("1"));
         }
 
@@ -207,7 +208,7 @@ class UserServiceTest {
             Game game1 = createExampleGame("2");
             getOwnedGamesResponseDetails.setGames(Set.of(game1));
             mockGetOwnedGamesResponse.setResponse(getOwnedGamesResponseDetails);
-            when(steamRequestService.requestUsersOwnedGamesFromSteamApi("12")).thenReturn(mockGetOwnedGamesResponse);
+            when(steamRequestSender.requestUsersOwnedGamesFromSteamApi("12")).thenReturn(mockGetOwnedGamesResponse);
 
             Clock fixedClock = Clock.fixed(Instant.parse("2018-08-22T10:00:00Z"), ZoneOffset.UTC);
             when(clock.instant()).thenReturn(fixedClock.instant());
@@ -230,7 +231,7 @@ class UserServiceTest {
             GetOwnedGamesResponse.Response getOwnedGamesResponseDetails = new GetOwnedGamesResponse.Response();
             getOwnedGamesResponseDetails.setGameCount(0);
             mockGetOwnedGamesResponse.setResponse(getOwnedGamesResponseDetails);
-            when(steamRequestService.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse);
+            when(steamRequestSender.requestUsersOwnedGamesFromSteamApi("1")).thenReturn(mockGetOwnedGamesResponse);
             UserHasNoGamesException exception =
                     assertThrows(UserHasNoGamesException.class, () -> userService.findOwnedGamesByUserId("1"));
             assertEquals(exception.getUserId(), "1");

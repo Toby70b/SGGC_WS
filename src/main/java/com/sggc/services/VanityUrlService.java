@@ -3,6 +3,7 @@ package com.sggc.services;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.VanityUrlResolutionException;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
+import com.sggc.infrastructure.SteamRequestSender;
 import com.sggc.validation.ValidationResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -25,7 +26,7 @@ public class VanityUrlService {
     public static final String VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE = "Vanity URL must be between 3 and 32 characters long";
     public static final String VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE = "Vanity URL must not contain special characters";
 
-    private final SteamRequestService steamRequestService;
+    private final SteamRequestSender steamRequestSender;
 
     /**
      * Checks whether the Steam user ids and vanity URLs are valid
@@ -92,7 +93,7 @@ public class VanityUrlService {
      * @throws VanityUrlResolutionException if the resolution request from the Steam API responds other than success
      */
     private String resolveVanityURL(String vanityUrl) throws SecretRetrievalException, VanityUrlResolutionException {
-        ResolveVanityUrlResponse.Response response = steamRequestService.resolveVanityUrl(vanityUrl).getResponse();
+        ResolveVanityUrlResponse.Response response = steamRequestSender.resolveVanityUrl(vanityUrl).getResponse();
         if (!response.isSuccess()) {
             throw new VanityUrlResolutionException(vanityUrl);
         }

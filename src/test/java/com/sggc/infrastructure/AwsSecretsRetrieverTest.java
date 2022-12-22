@@ -1,9 +1,10 @@
-package com.sggc.util;
+package com.sggc.infrastructure;
 
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.model.AWSSecretsManagerException;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
 import com.sggc.exceptions.SecretRetrievalException;
+import com.sggc.infrastructure.AwsSecretRetriever;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

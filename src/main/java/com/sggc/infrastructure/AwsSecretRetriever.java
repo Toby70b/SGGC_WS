@@ -1,4 +1,4 @@
-package com.sggc.util;
+package com.sggc.infrastructure;
 
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
