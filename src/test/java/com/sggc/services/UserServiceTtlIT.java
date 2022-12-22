@@ -29,10 +29,10 @@ import static org.mockito.Mockito.when;
 public class UserServiceTtlIT extends AbstractIntegrationTest {
 
     @Autowired
-    public UserService userService;
+    private UserService userService;
 
     @Autowired
-    public UserRepository userRepository;
+    private UserRepository userRepository;
 
     @MockBean
     private Clock clock;
@@ -41,9 +41,13 @@ public class UserServiceTtlIT extends AbstractIntegrationTest {
     @DisplayName("When a user is persisted in the database its TTL field will be populated with a date exactly 24 hours in the future")
     void WhenAUserIsPersistedInTheDatabaseItsTtlFieldWillBePopulatedWithADateExactly24HoursInTheFuture() throws TooFewSteamIdsException, SecretRetrievalException, UserHasNoGamesException {
         secretsManagerTestSupporter.createMockSteamApiKey();
+
+        String mockUserId1 = "7656119804520628";
+        String mockUserId2 = "7656119804520626";
+
         wiremockClient.register(
                 WireMock.get(urlPathEqualTo(SteamWebTestConstants.Endpoints.GET_OWNED_GAMES_ENDPOINT))
-                        .withQueryParam(SteamWebTestConstants.QueryParams.STEAM_ID_QUERY_PARAM_KEY, equalTo("7656119804520628"))
+                        .withQueryParam(SteamWebTestConstants.QueryParams.STEAM_ID_QUERY_PARAM_KEY, equalTo(mockUserId1))
                         .withQueryParam(SteamWebTestConstants.QueryParams.STEAM_KEY_QUERY_PARAM_KEY, equalTo(MOCK_STEAM_API_KEY_VALUE))
                         .willReturn(ok()
                                 .withHeader("Content-Type", MediaType.APPLICATION_JSON.toString())
@@ -53,7 +57,7 @@ public class UserServiceTtlIT extends AbstractIntegrationTest {
 
         wiremockClient.register(
                 WireMock.get(urlPathEqualTo(SteamWebTestConstants.Endpoints.GET_OWNED_GAMES_ENDPOINT))
-                        .withQueryParam(SteamWebTestConstants.QueryParams.STEAM_ID_QUERY_PARAM_KEY, equalTo("7656119804520626"))
+                        .withQueryParam(SteamWebTestConstants.QueryParams.STEAM_ID_QUERY_PARAM_KEY, equalTo(mockUserId2))
                         .withQueryParam(SteamWebTestConstants.QueryParams.STEAM_KEY_QUERY_PARAM_KEY, equalTo(MOCK_STEAM_API_KEY_VALUE))
                         .willReturn(ok()
                                 .withHeader("Content-Type", MediaType.APPLICATION_JSON.toString())
@@ -61,18 +65,19 @@ public class UserServiceTtlIT extends AbstractIntegrationTest {
                         ).build()
         );
 
-        Clock fixedClock = Clock.fixed(Instant.parse("2018-08-22T10:00:00Z"), ZoneOffset.UTC);
+        String mockDate = "2018-08-22T10:00:00Z";
+        Clock fixedClock = Clock.fixed(Instant.parse(mockDate), ZoneOffset.UTC);
         when(clock.instant()).thenReturn(fixedClock.instant());
         Date oneDayInTheFuture = Date.from(clock.instant().plus(1, ChronoUnit.DAYS));
 
-        userService.getIdsOfGamesOwnedByAllUsers(Set.of("7656119804520628", "7656119804520626"));
+        userService.getIdsOfGamesOwnedByAllUsers(Set.of(mockUserId1, mockUserId2));
 
         List<User> persistedUsers = new ArrayList<>();
         userRepository.findAll().forEach(persistedUsers::add);
         assertEquals(2, persistedUsers.size());
 
-        Optional<User> user1 = userRepository.findById("7656119804520628");
-        Optional<User> user2 = userRepository.findById("7656119804520626");
+        Optional<User> user1 = userRepository.findById(mockUserId1);
+        Optional<User> user2 = userRepository.findById(mockUserId2);
 
         assertTrue(user1.isPresent());
         assertTrue(user2.isPresent());
