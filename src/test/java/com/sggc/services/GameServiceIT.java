@@ -37,7 +37,6 @@ public class GameServiceIT extends AbstractIntegrationTest {
     private GameRepository gameRepository;
 
     WireMock wiremockClient = initializeWiremockClient();
-    AWSSecretsManager secretsManagerClient = initializeAwsSecretsManagerClient();
 
     @Nested
     @DisplayName("If provided with a list of Game app ids then the service attempt to return all Games with matching app ids persisted within the database")
