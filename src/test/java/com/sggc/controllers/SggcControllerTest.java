@@ -133,9 +133,6 @@ class SggcControllerTest {
                 assertThrows(SecretRetrievalException.class, () ->
                         sggcController.getGamesAllUsersOwn(request));
 
-        SggcResponse expectedResponse = new SggcResponse(false, new ApiError("Exception",
-                "Internal server error."));
-
         assertEquals("Exception occurred when attempting to retrieve a secret from AWS secrets manager", expectedException.getMessage());
     }
 

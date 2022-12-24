@@ -11,8 +11,6 @@ import com.sggc.models.GameData;
 import com.sggc.models.SteamGameCategory;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
-import com.sggc.infrastructure.AwsSecretRetriever;
-import com.sggc.infrastructure.SteamRequestSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,7 +26,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
 
-import static com.sggc.helper.TestUtils.createExampleGame;
+import static com.sggc.util.TestUtils.createExampleGame;
 import static com.sggc.infrastructure.SteamRequestSender.STEAM_API_KEY_SECRET_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;

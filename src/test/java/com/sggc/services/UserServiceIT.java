@@ -1,17 +1,23 @@
 package com.sggc.services;
 
-import com.amazonaws.services.secretsmanager.model.AWSSecretsManagerException;
+import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.sggc.AbstractIntegrationTest;
 import com.sggc.constants.SteamWebTestConstants;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.TooFewSteamIdsException;
 import com.sggc.exceptions.UserHasNoGamesException;
+import com.sggc.extentions.SggcLocalDynamoDbCleanerExtension;
+import com.sggc.extentions.SggcLocalStackCleanerExtension;
+import com.sggc.extentions.WiremockCleanerExtension;
 import com.sggc.models.User;
 import com.sggc.repositories.UserRepository;
+import com.sggc.util.AwsSecretsManagerTestUtil;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
@@ -22,15 +28,30 @@ import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.sggc.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
+import static com.sggc.containers.SggcLocalStackContainer.ENABLED_SERVICES;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceIT extends AbstractIntegrationTest {
+
+    @RegisterExtension
+    SggcLocalDynamoDbCleanerExtension dynamoDbCleanerExtension = new SggcLocalDynamoDbCleanerExtension(sggcDynamoDbContainer.getFirstMappedPort());
+
+    @RegisterExtension
+    WiremockCleanerExtension wiremockCleanerExtension = new WiremockCleanerExtension(wiremockContainer.getFirstMappedPort());
+
+    @RegisterExtension
+    SggcLocalStackCleanerExtension localStackCleanerExtension
+            = new SggcLocalStackCleanerExtension(localStackContainer.getFirstMappedPort(), List.of(ENABLED_SERVICES));
 
     @Autowired
     private UserService userService;
 
     @Autowired
     private UserRepository userRepository;
+
+    WireMock wiremockClient = initializeWiremockClient();
+    AWSSecretsManager secretsManagerClient = initializeAwsSecretsManagerClient();
+    
 
     @Nested
     @DisplayName("If a user is not found in the DB, the service will attempt to retrieve their details via the Steam API and persist them within the database")
@@ -39,7 +60,7 @@ public class UserServiceIT extends AbstractIntegrationTest {
         @Test
         @DisplayName("If a user is not found in the DB, their details will be requested via the Steam API and persisted within the database")
         void IfAUserIsNotFoundInTheDbItsDetailsWillBeRequestedViaTheSteamApiAndPersistedWithinTheDatabase() throws TooFewSteamIdsException, SecretRetrievalException, UserHasNoGamesException {
-            secretsManagerTestSupporter.createMockSteamApiKey();
+            AwsSecretsManagerTestUtil.createMockSteamApiKey(secretsManagerClient);
 
             String mockUserId1 = "7656119804520628";
             String mockUserId2 = "7656119804520626";
@@ -87,7 +108,7 @@ public class UserServiceIT extends AbstractIntegrationTest {
         @Test
         @DisplayName("If a retrieved User does not own any games then an appropriate exception will be thrown")
         void IfARetrievedUserDoesNotOwnAnyGamesThenAnAppropriateExceptionWillBeThrown() {
-            secretsManagerTestSupporter.createMockSteamApiKey();
+            AwsSecretsManagerTestUtil.createMockSteamApiKey(secretsManagerClient);
 
             String mockUserId1 = "7656119804520628";
             String mockUserId2 = "7656119804520626";
@@ -122,7 +143,7 @@ public class UserServiceIT extends AbstractIntegrationTest {
         @Test
         @DisplayName("If an attempt to retrieve a user is unsuccessful due to the user not existing then an appropriate exception will be thrown")
         void IfAnAttemptToRetrieveAUserIsUnsuccessfulDueToTheUserNotExistingThenAnAppropriateExceptionWillBeThrown() {
-            secretsManagerTestSupporter.createMockSteamApiKey();
+            AwsSecretsManagerTestUtil.createMockSteamApiKey(secretsManagerClient);
 
             String mockUserId1 = "7656119804520628";
             String mockUserId2 = "7656119804520626";
@@ -151,7 +172,7 @@ public class UserServiceIT extends AbstractIntegrationTest {
                     assertThrows(UserHasNoGamesException.class, () ->
                             userService.getIdsOfGamesOwnedByAllUsers(Set.of(mockUserId1, mockUserId2)));
 
-            assertTrue(expectedException.getUserId().equals(mockUserId1));
+            assertEquals(expectedException.getUserId(), mockUserId1);
         }
     }
 

@@ -1,13 +1,17 @@
 package com.sggc.services;
 
+import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.sggc.AbstractIntegrationTest;
 import com.sggc.constants.SteamWebTestConstants;
+import com.sggc.extentions.SggcLocalDynamoDbCleanerExtension;
+import com.sggc.extentions.WiremockCleanerExtension;
 import com.sggc.models.Game;
 import com.sggc.repositories.GameRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
@@ -20,11 +24,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GameServiceIT extends AbstractIntegrationTest {
 
+    @RegisterExtension
+    SggcLocalDynamoDbCleanerExtension dynamoDbCleanerExtension = new SggcLocalDynamoDbCleanerExtension(sggcDynamoDbContainer.getFirstMappedPort());
+
+    @RegisterExtension
+    WiremockCleanerExtension wiremockCleanerExtension = new WiremockCleanerExtension(wiremockContainer.getFirstMappedPort());
+
     @Autowired
     private GameService gameService;
 
     @Autowired
     private GameRepository gameRepository;
+
+    WireMock wiremockClient = initializeWiremockClient();
+    AWSSecretsManager secretsManagerClient = initializeAwsSecretsManagerClient();
 
     @Nested
     @DisplayName("If provided with a list of Game app ids then the service attempt to return all Games with matching app ids persisted within the database")

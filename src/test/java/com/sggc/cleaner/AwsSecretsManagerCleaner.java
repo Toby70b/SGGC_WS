@@ -10,14 +10,14 @@ import com.amazonaws.services.secretsmanager.model.SecretListEntry;
  * Represents a class that can reset a given AWS Secrets Manager service to a state resembling its first initialization.
  * Designed to be used by integration tests to avoid pollution.
  */
-public class AwsSecretsManagerCleanerTest implements TestResourceCleaner {
+public class AwsSecretsManagerCleaner implements TestResourceCleaner {
 
     private final AWSSecretsManager secretsManagerClient;
 
     /**
      * @param secretsManagerClient a preconfigured AWS Secrets Manager client
      */
-    public AwsSecretsManagerCleanerTest(AWSSecretsManager secretsManagerClient) {
+    public AwsSecretsManagerCleaner(AWSSecretsManager secretsManagerClient) {
         this.secretsManagerClient = secretsManagerClient;
     }
 

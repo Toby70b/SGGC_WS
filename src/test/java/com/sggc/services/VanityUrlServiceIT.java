@@ -1,27 +1,43 @@
 package com.sggc.services;
 
+import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.sggc.AbstractIntegrationTest;
 import com.sggc.constants.SteamWebTestConstants;
 import com.sggc.exceptions.SecretRetrievalException;
-import com.sggc.exceptions.UserHasNoGamesException;
 import com.sggc.exceptions.VanityUrlResolutionException;
+import com.sggc.extentions.SggcLocalStackCleanerExtension;
+import com.sggc.extentions.WiremockCleanerExtension;
+import com.sggc.util.AwsSecretsManagerTestUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
+import java.util.List;
 import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.sggc.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
+import static com.sggc.containers.SggcLocalStackContainer.ENABLED_SERVICES;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class VanityUrlServiceIT extends AbstractIntegrationTest {
 
+    @RegisterExtension
+    WiremockCleanerExtension wiremockCleanerExtension = new WiremockCleanerExtension(wiremockContainer.getFirstMappedPort());
+
+    @RegisterExtension
+    SggcLocalStackCleanerExtension localStackCleanerExtension
+            = new SggcLocalStackCleanerExtension(localStackContainer.getFirstMappedPort(), List.of(ENABLED_SERVICES));
+
     @Autowired
     public VanityUrlService vanityUrlService;
+
+    WireMock wiremockClient = initializeWiremockClient();
+    AWSSecretsManager secretsManagerClient = initializeAwsSecretsManagerClient();
 
     @Nested
     @DisplayName("If provided with a Vanity URL then the service will attempt to resolve it into it's corresponding Steam user id")
@@ -30,7 +46,7 @@ public class VanityUrlServiceIT extends AbstractIntegrationTest {
         @Test
         @DisplayName("If provided with a Vanity URL then attempt to resolve the Vanity URL's corresponding Steam user id and return it")
         void IfProvidedWithAVanityUrlThenAttemptToResolveTheVanityUrlsCorrespondingSteamUserIdAndReturnIt() throws SecretRetrievalException, VanityUrlResolutionException {
-            secretsManagerTestSupporter.createMockSteamApiKey();
+            AwsSecretsManagerTestUtil.createMockSteamApiKey(secretsManagerClient);
 
             String mockVanityUrl = "SomeVanityUrl";
             wiremockClient.register(
@@ -54,7 +70,7 @@ public class VanityUrlServiceIT extends AbstractIntegrationTest {
         @Test
         @DisplayName("If a Vanity URL cannot be resolved into a Steam user id then throw an appropriate exception")
         void IfAVanityUrlCannotBeResolvedIntoASteamUserIdThenThrowAnAppropriateException() {
-            secretsManagerTestSupporter.createMockSteamApiKey();
+            AwsSecretsManagerTestUtil.createMockSteamApiKey(secretsManagerClient);
 
             String mockVanityUrl = "SomeVanityUrl";
             wiremockClient.register(

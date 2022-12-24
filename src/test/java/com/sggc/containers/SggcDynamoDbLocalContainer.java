@@ -25,17 +25,4 @@ public class SggcDynamoDbLocalContainer extends GenericContainer<SggcDynamoDbLoc
             .waitingFor(Wait.forLogMessage(SUCCESS_LOG_MESSAGE_REGEX, 1));
     }
 
-    /**
-     * Resets the state of the Local DynamoDB instance to when it was first initialized.
-     */
-    public void reset() {
-        AmazonDynamoDB dynamoDbClient = AmazonDynamoDBClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:" + this.getFirstMappedPort().toString(), DEFAULT_REGION))
-                .withCredentials(new DefaultAWSCredentialsProviderChain())
-                .build();
-        AmazonDynamoDbCleaner cleaner = new AmazonDynamoDbCleaner(dynamoDbClient);
-        cleaner.performCleanup();
-    }
-
-
 }

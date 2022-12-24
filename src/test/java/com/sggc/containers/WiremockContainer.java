@@ -1,6 +1,5 @@
 package com.sggc.containers;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
@@ -18,15 +17,6 @@ public class WiremockContainer extends GenericContainer<WiremockContainer>  {
                 .withClasspathResourceMapping(FILES_HOST_PATH,
                         FILES_CONTAINER_PATH,BindMode.READ_ONLY);
     }
-
-    /**
-     * Resets the state of the WireMock instance
-     */
-    public void reset() {
-        WireMock wiremockClient = new WireMock("localhost", this.getFirstMappedPort());
-        wiremockClient.resetToDefaultMappings();
-    }
-
 
 }
 

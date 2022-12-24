@@ -1,4 +1,4 @@
-package com.sggc.helper;
+package com.sggc.util;
 
 import com.sggc.models.Game;
 

@@ -1,15 +1,21 @@
 package com.sggc.services;
 
+import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.sggc.AbstractIntegrationTest;
 import com.sggc.constants.SteamWebTestConstants;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.TooFewSteamIdsException;
 import com.sggc.exceptions.UserHasNoGamesException;
+import com.sggc.extentions.SggcLocalDynamoDbCleanerExtension;
+import com.sggc.extentions.SggcLocalStackCleanerExtension;
+import com.sggc.extentions.WiremockCleanerExtension;
 import com.sggc.models.User;
 import com.sggc.repositories.UserRepository;
+import com.sggc.util.AwsSecretsManagerTestUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -22,11 +28,27 @@ import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.sggc.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
+import static com.sggc.containers.SggcLocalStackContainer.ENABLED_SERVICES;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 public class UserServiceTtlIT extends AbstractIntegrationTest {
+
+    @RegisterExtension
+    SggcLocalDynamoDbCleanerExtension dynamoDbCleanerExtension
+            = new SggcLocalDynamoDbCleanerExtension(sggcDynamoDbContainer.getFirstMappedPort());
+
+    @RegisterExtension
+    WiremockCleanerExtension wiremockCleanerExtension
+            = new WiremockCleanerExtension(wiremockContainer.getFirstMappedPort());
+
+    @RegisterExtension
+    SggcLocalStackCleanerExtension localStackCleanerExtension
+            = new SggcLocalStackCleanerExtension(localStackContainer.getFirstMappedPort(), List.of(ENABLED_SERVICES));
+
+    WireMock wiremockClient = initializeWiremockClient();
+    AWSSecretsManager secretsManagerClient = initializeAwsSecretsManagerClient();
 
     @Autowired
     private UserService userService;
@@ -40,7 +62,7 @@ public class UserServiceTtlIT extends AbstractIntegrationTest {
     @Test
     @DisplayName("When a user is persisted in the database its TTL field will be populated with a date exactly 24 hours in the future")
     void WhenAUserIsPersistedInTheDatabaseItsTtlFieldWillBePopulatedWithADateExactly24HoursInTheFuture() throws TooFewSteamIdsException, SecretRetrievalException, UserHasNoGamesException {
-        secretsManagerTestSupporter.createMockSteamApiKey();
+        AwsSecretsManagerTestUtil.createMockSteamApiKey(secretsManagerClient);
 
         String mockUserId1 = "7656119804520628";
         String mockUserId2 = "7656119804520626";
