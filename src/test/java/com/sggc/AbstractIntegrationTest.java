@@ -59,16 +59,6 @@ public abstract class AbstractIntegrationTest {
                 String.format("http://%s:%d", wiremockContainer.getHost(), wiremockContainer.getFirstMappedPort()));
     }
 
-    public AmazonDynamoDB initializeDynamoDbClient() {
-        return AmazonDynamoDBClientBuilder.standard()
-                .withEndpointConfiguration(
-                        new AwsClientBuilder.EndpointConfiguration
-                                ("http://localhost:"
-                                        + sggcDynamoDbContainer.getFirstMappedPort().toString(), DEFAULT_REGION))
-                .withCredentials(new DefaultAWSCredentialsProviderChain())
-                .build();
-    }
-
     public AWSSecretsManager initializeAwsSecretsManagerClient() {
         return AWSSecretsManagerClientBuilder.standard()
                 .withEndpointConfiguration(
