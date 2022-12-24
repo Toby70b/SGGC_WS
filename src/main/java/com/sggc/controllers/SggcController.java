@@ -60,10 +60,16 @@ public class SggcController {
         Set<String> commonGameIdsBetweenUsers;
         try {
             commonGameIdsBetweenUsers = userService.getIdsOfGamesOwnedByAllUsers(resolvedSteamUserIds);
-        } catch (UserHasNoGamesException | TooFewSteamIdsException ex) {
+        } catch (UserHasNoGamesException ex) {
             SggcResponse response = new SggcResponse(false, ex.toApiError());
             log.info("Error occurred while trying to find user's owned games returning 404 error response with body [{}]", response);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+        catch (TooFewSteamIdsException ex){
+            SggcResponse response = new SggcResponse(false, ex.toApiError());
+            log.info("After Vanity URL resolution there are fewer than two Steam user IDs in the collection to find common games for." +
+                    "returning 400 error response with body [{}].",response);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
         Set<Game> commonGames = gameService.findGamesById(commonGameIdsBetweenUsers, request.isMultiplayerOnly());
         log.info("Response successful");
