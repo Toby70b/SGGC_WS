@@ -18,6 +18,8 @@ RUN yum -y install sudo less \
     && mkdir -p sggc-setup
 #Run script to start local dynamodb and populate it with data
 COPY init-db.sh sggc-setup/init-db.sh
+#Mark copied file as executable to run on AWS CodeBuild
+RUN  chmod +x ./sggc-setup/init-db.sh
 COPY tables sggc-setup/tables
 ENTRYPOINT ["/bin/bash" ,"-c", "sggc-setup/init-db.sh"]
 

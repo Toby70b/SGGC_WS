@@ -35,6 +35,7 @@ reports:
   SggcWsIntegrationTestReport:
     files:
       - '**/*IT.xml'
+      - '**/*Tests.xml'
     base-directory: 'target/failsafe-reports'
 artifacts:
   files:
