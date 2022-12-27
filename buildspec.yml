@@ -13,18 +13,19 @@ phases:
       - docker login -u ${DOCKER_HUB_USERNAME} -p ${DOCKER_HUB_PASSWORD}
   build:
     commands:
-      - echo Build started on `date`
-      - mvn surefire-report:report
-      # We're not currently, running the WS on ECR so build the docker image and later push it to a registry
-      - echo Docker Build started on `date`
+      - echo Build started on `date`.
+      - echo Beginning tests.
+      - mvn verify
+      - echo tests complete.
+      # We're not currently, running the WS on ECR so just build the docker image and later push it to a registry
+      - echo Docker Build started on `date`.
       - docker build -t tobypeel/steam_group_game_checker_api:latest .
       - docker tag tobypeel/steam_group_game_checker_api:latest tobypeel/steam_group_game_checker_api:prod
   post_build:
     commands:
-      - echo Build completed on `date`
+      - echo Build completed on `date`.
       - mvn package
       - echo Pushing the Docker images...
-      - docker push tobypeel/steam_group_game_checker_api:latest
       - docker push tobypeel/steam_group_game_checker_api:prod
 reports:
   SggcWsUnitTestReport:
