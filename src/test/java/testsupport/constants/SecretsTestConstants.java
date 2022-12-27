@@ -1,4 +1,4 @@
-package com.sggc.constants;
+package testsupport.constants;
 
 /**
  * Represents a class for constants related to Secrets required by the Application. To be used for application tests

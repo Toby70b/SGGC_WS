@@ -1,12 +1,11 @@
-package com.sggc.util;
+package testsupport.util;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
-
-import static com.sggc.constants.TestAwsConstants.DEFAULT_REGION;
+import testsupport.constants.TestAwsConstants;
 
 /**
  * Represents a utility class for initializing clients for services used by the application and for application tests.
@@ -24,7 +23,7 @@ public class TestClientInitializer {
         return AWSSecretsManagerClientBuilder.standard()
                 .withEndpointConfiguration(
                         new AwsClientBuilder.EndpointConfiguration(
-                                String.format("http://localhost:%d", port), DEFAULT_REGION))
+                                String.format("http://localhost:%d", port), TestAwsConstants.DEFAULT_REGION))
                 .withCredentials(new DefaultAWSCredentialsProviderChain())
                 .build();
     }

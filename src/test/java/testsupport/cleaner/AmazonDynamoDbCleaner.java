@@ -1,4 +1,4 @@
-package com.sggc.cleaner;
+package testsupport.cleaner;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;

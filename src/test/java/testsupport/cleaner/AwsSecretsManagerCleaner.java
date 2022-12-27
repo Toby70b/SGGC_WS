@@ -1,4 +1,4 @@
-package com.sggc.cleaner;
+package testsupport.cleaner;
 
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.model.DeleteSecretRequest;

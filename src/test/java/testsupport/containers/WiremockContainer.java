@@ -1,4 +1,4 @@
-package com.sggc.containers;
+package testsupport.containers;
 
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;

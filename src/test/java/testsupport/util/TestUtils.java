@@ -1,4 +1,4 @@
-package com.sggc.util;
+package testsupport.util;
 
 import com.sggc.models.Game;
 

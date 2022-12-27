@@ -3,12 +3,12 @@ package com.sggc.services;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.sggc.AbstractIntegrationTest;
-import com.sggc.constants.SteamWebTestConstants;
+import testsupport.constants.SteamWebTestConstants;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.VanityUrlResolutionException;
-import com.sggc.extentions.SggcLocalStackCleanerExtension;
-import com.sggc.extentions.WiremockCleanerExtension;
-import com.sggc.util.AwsSecretsManagerTestUtil;
+import testsupport.extentions.SggcLocalStackCleanerExtension;
+import testsupport.extentions.WiremockCleanerExtension;
+import testsupport.util.AwsSecretsManagerTestUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.sggc.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
-import static com.sggc.containers.SggcLocalStackContainer.ENABLED_SERVICES;
-import static com.sggc.util.TestClientInitializer.initializeAwsSecretsManagerClient;
-import static com.sggc.util.TestClientInitializer.initializeWiremockClient;
+import static testsupport.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
+import static testsupport.containers.SggcLocalStackContainer.ENABLED_SERVICES;
+import static testsupport.util.TestClientInitializer.initializeAwsSecretsManagerClient;
+import static testsupport.util.TestClientInitializer.initializeWiremockClient;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class VanityUrlServiceIT extends AbstractIntegrationTest {

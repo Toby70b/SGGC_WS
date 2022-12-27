@@ -1,4 +1,4 @@
-package com.sggc.constants;
+package testsupport.constants;
 
 /**
  * Represents a class for constants related to the Steam Store and Web APIs. To be used for application tests.

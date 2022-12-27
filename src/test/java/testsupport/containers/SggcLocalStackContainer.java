@@ -1,4 +1,4 @@
-package com.sggc.containers;
+package testsupport.containers;
 
 import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;

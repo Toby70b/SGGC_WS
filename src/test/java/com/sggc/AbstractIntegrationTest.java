@@ -1,23 +1,14 @@
 package com.sggc;
 
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.amazonaws.services.secretsmanager.AWSSecretsManager;
-import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.sggc.containers.SggcDynamoDbLocalContainer;
-import com.sggc.containers.SggcLocalStackContainer;
-import com.sggc.containers.WiremockContainer;
+import testsupport.containers.SggcDynamoDbLocalContainer;
+import testsupport.containers.SggcLocalStackContainer;
+import testsupport.containers.WiremockContainer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import static com.sggc.constants.TestAwsConstants.DEFAULT_REGION;
 
 @SpringBootTest(classes = SteamGroupGamesApplication.class)
 @TestPropertySource(properties = {"spring.config.location = classpath:app-test.yml"})

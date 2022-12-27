@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Set;
 
-import static com.sggc.util.TestUtils.createExampleGame;
+import static testsupport.util.TestUtils.createExampleGame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
