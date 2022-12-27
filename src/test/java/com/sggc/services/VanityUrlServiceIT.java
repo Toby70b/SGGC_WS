@@ -9,6 +9,7 @@ import com.sggc.exceptions.VanityUrlResolutionException;
 import com.sggc.extentions.SggcLocalStackCleanerExtension;
 import com.sggc.extentions.WiremockCleanerExtension;
 import com.sggc.util.AwsSecretsManagerTestUtil;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,8 @@ import java.util.Set;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.sggc.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
 import static com.sggc.containers.SggcLocalStackContainer.ENABLED_SERVICES;
+import static com.sggc.util.TestClientInitializer.initializeAwsSecretsManagerClient;
+import static com.sggc.util.TestClientInitializer.initializeWiremockClient;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class VanityUrlServiceIT extends AbstractIntegrationTest {
@@ -36,12 +39,18 @@ public class VanityUrlServiceIT extends AbstractIntegrationTest {
     @Autowired
     public VanityUrlService vanityUrlService;
 
-    WireMock wiremockClient = initializeWiremockClient();
-    AWSSecretsManager secretsManagerClient = initializeAwsSecretsManagerClient();
+    private static WireMock wiremockClient;
+    private static AWSSecretsManager secretsManagerClient;
+
+    @BeforeAll
+    static void beforeAll() {
+        wiremockClient = initializeWiremockClient(wiremockContainer.getFirstMappedPort());
+        secretsManagerClient = initializeAwsSecretsManagerClient(localStackContainer.getFirstMappedPort());
+    }
 
     @Nested
     @DisplayName("If provided with a Vanity URL then the service will attempt to resolve it into it's corresponding Steam user id")
-    class VanityUrlResolutionTests{
+    class VanityUrlResolutionTests {
 
         @Test
         @DisplayName("If provided with a Vanity URL then attempt to resolve the Vanity URL's corresponding Steam user id and return it")

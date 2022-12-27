@@ -8,6 +8,7 @@ import com.sggc.extentions.SggcLocalDynamoDbCleanerExtension;
 import com.sggc.extentions.WiremockCleanerExtension;
 import com.sggc.models.Game;
 import com.sggc.repositories.GameRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,8 @@ import java.util.List;
 import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.sggc.util.TestClientInitializer.initializeAwsSecretsManagerClient;
+import static com.sggc.util.TestClientInitializer.initializeWiremockClient;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameServiceIT extends AbstractIntegrationTest {
@@ -36,7 +39,14 @@ public class GameServiceIT extends AbstractIntegrationTest {
     @Autowired
     private GameRepository gameRepository;
 
-    WireMock wiremockClient = initializeWiremockClient();
+
+    private static WireMock wiremockClient;
+
+    @BeforeAll
+    static void beforeAll() {
+        wiremockClient = initializeWiremockClient(wiremockContainer.getFirstMappedPort());
+    }
+
 
     @Nested
     @DisplayName("If provided with a list of Game app ids then the service attempt to return all Games with matching app ids persisted within the database")

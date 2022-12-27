@@ -29,6 +29,8 @@ import java.util.Set;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.sggc.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
 import static com.sggc.containers.SggcLocalStackContainer.ENABLED_SERVICES;
+import static com.sggc.util.TestClientInitializer.initializeAwsSecretsManagerClient;
+import static com.sggc.util.TestClientInitializer.initializeWiremockClient;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceIT extends AbstractIntegrationTest {
@@ -49,9 +51,15 @@ public class UserServiceIT extends AbstractIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
-    WireMock wiremockClient = initializeWiremockClient();
-    AWSSecretsManager secretsManagerClient = initializeAwsSecretsManagerClient();
-    
+    private static WireMock wiremockClient;
+    private static AWSSecretsManager secretsManagerClient;
+
+    @BeforeAll
+    static void beforeAll() {
+        wiremockClient = initializeWiremockClient(wiremockContainer.getFirstMappedPort());
+        secretsManagerClient = initializeAwsSecretsManagerClient(localStackContainer.getFirstMappedPort());
+    }
+
 
     @Nested
     @DisplayName("If a user is not found in the DB, the service will attempt to retrieve their details via the Steam API and persist them within the database")

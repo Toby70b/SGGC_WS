@@ -13,6 +13,7 @@ import com.sggc.extentions.WiremockCleanerExtension;
 import com.sggc.models.User;
 import com.sggc.repositories.UserRepository;
 import com.sggc.util.AwsSecretsManagerTestUtil;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -29,6 +30,8 @@ import java.util.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.sggc.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
 import static com.sggc.containers.SggcLocalStackContainer.ENABLED_SERVICES;
+import static com.sggc.util.TestClientInitializer.initializeAwsSecretsManagerClient;
+import static com.sggc.util.TestClientInitializer.initializeWiremockClient;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -47,8 +50,15 @@ public class UserServiceTtlIT extends AbstractIntegrationTest {
     SggcLocalStackCleanerExtension localStackCleanerExtension
             = new SggcLocalStackCleanerExtension(localStackContainer.getFirstMappedPort(), List.of(ENABLED_SERVICES));
 
-    WireMock wiremockClient = initializeWiremockClient();
-    AWSSecretsManager secretsManagerClient = initializeAwsSecretsManagerClient();
+    private static WireMock wiremockClient;
+    private static AWSSecretsManager secretsManagerClient;
+
+    @BeforeAll
+    static void beforeAll() {
+        wiremockClient = initializeWiremockClient(wiremockContainer.getFirstMappedPort());
+        secretsManagerClient = initializeAwsSecretsManagerClient(localStackContainer.getFirstMappedPort());
+    }
+
 
     @Autowired
     private UserService userService;

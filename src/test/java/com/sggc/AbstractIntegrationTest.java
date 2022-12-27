@@ -58,20 +58,6 @@ public abstract class AbstractIntegrationTest {
         registry.add("steam.store_address", () ->
                 String.format("http://%s:%d", wiremockContainer.getHost(), wiremockContainer.getFirstMappedPort()));
     }
-
-    public AWSSecretsManager initializeAwsSecretsManagerClient() {
-        return AWSSecretsManagerClientBuilder.standard()
-                .withEndpointConfiguration(
-                        new AwsClientBuilder.EndpointConfiguration
-                                ("http://localhost:"
-                                        + localStackContainer.getFirstMappedPort().toString(), DEFAULT_REGION))
-                .withCredentials(new DefaultAWSCredentialsProviderChain())
-                .build();
-    }
-
-    public WireMock initializeWiremockClient() {
-        return new WireMock("localhost", wiremockContainer.getFirstMappedPort());
-    }
 }
 
 
