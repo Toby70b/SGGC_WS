@@ -141,14 +141,17 @@
     <build>
         <plugins>
             <plugin>
+                <!--  ********** Provides Spring boot support ********** -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <!--  ********** Surefire plugin for unit tests ********** -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M7</version>
             </plugin>
+            <!--  ********** Compiler plugin to compile sources ********** -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -157,6 +160,7 @@
                     <target>11</target>
                 </configuration>
             </plugin>
+            <!--  ********** Failsafe plugin for integration tests ********** -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
@@ -170,6 +174,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--  ********** Dependency Plugin to identify unused plugins ********** -->
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.3.0</version>
