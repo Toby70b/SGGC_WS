@@ -123,7 +123,7 @@ class SggcControllerTest {
     @DisplayName("If an error occurs while trying to retrieve the steam key secret it throw an appropriate exception")
     void IfAnErrorOccursWhileTryingToRetrieveTheSteamKeySecretItWillReturnA500ErrorWithAnAppropriateMessage() throws Exception {
         when(vanityUrlService.resolveVanityUrls(Set.of("765611980452062222321321", "76561198045206223")))
-                .thenThrow(new SecretRetrievalException(new Exception()));
+                .thenThrow(new SecretRetrievalException("someSecretId", new Exception()));
 
         GetCommonGamesRequest request = new GetCommonGamesRequest();
         request.setSteamIds(Set.of("765611980452062222321321", "76561198045206223"));
@@ -133,7 +133,8 @@ class SggcControllerTest {
                 assertThrows(SecretRetrievalException.class, () ->
                         sggcController.getGamesAllUsersOwn(request));
 
-        assertEquals("Exception occurred when attempting to retrieve a secret from AWS secrets manager", expectedException.getMessage());
+        assertEquals("Exception occurred when attempting to retrieve secret [someSecretId] from AWS secrets manager"
+                , expectedException.getMessage());
     }
 
     @Test

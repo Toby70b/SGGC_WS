@@ -1,4 +1,4 @@
-package testsupport.extentions;
+package util.extentions;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.extension.BeforeEachCallback;

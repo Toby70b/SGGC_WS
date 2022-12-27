@@ -1,4 +1,4 @@
-package testsupport.containers;
+package util.containers;
 
 import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;

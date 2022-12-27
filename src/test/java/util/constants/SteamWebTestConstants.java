@@ -1,4 +1,4 @@
-package testsupport.constants;
+package util.constants;
 
 /**
  * Represents a class for constants related to the Steam Store and Web APIs. To be used for application tests.

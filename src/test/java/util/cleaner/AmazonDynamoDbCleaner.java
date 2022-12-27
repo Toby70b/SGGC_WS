@@ -1,4 +1,4 @@
-package testsupport.cleaner;
+package util.cleaner;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;

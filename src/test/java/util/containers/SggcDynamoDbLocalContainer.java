@@ -1,4 +1,4 @@
-package testsupport.containers;
+package util.containers;
 
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;

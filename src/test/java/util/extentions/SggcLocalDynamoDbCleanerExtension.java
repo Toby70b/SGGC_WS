@@ -1,14 +1,14 @@
-package testsupport.extentions;
+package util.extentions;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import testsupport.cleaner.AmazonDynamoDbCleaner;
+import util.cleaner.AmazonDynamoDbCleaner;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-import static testsupport.constants.TestAwsConstants.DEFAULT_REGION;
+import static util.constants.TestAwsConstants.DEFAULT_REGION;
 
 /**
  * Represents a custom JUnit Extension, used to remove any data from a SGGC Local DynamoDb instance while leaving

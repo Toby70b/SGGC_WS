@@ -1,4 +1,4 @@
-package testsupport.containers;
+package util.containers;
 
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;

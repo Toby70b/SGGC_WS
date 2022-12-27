@@ -1,4 +1,4 @@
-package testsupport.constants;
+package util.constants;
 
 import com.amazonaws.services.s3.model.Region;
 /**

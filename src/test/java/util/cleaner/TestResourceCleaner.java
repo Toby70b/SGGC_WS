@@ -1,4 +1,4 @@
-package testsupport.cleaner;
+package util.cleaner;
 
 /**
  * Represents behaviour for removing resources within a service to ensure integration tests do not suffer from pollution.

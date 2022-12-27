@@ -1,11 +1,11 @@
-package testsupport.extentions;
+package util.extentions;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
-import testsupport.cleaner.AwsSecretsManagerCleaner;
-import testsupport.cleaner.TestResourceCleaner;
+import util.cleaner.AwsSecretsManagerCleaner;
+import util.cleaner.TestResourceCleaner;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.testcontainers.containers.localstack.LocalStackContainer;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static testsupport.constants.TestAwsConstants.DEFAULT_REGION;
+import static util.constants.TestAwsConstants.DEFAULT_REGION;
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SECRETSMANAGER;
 
 /**

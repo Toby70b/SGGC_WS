@@ -1,46 +1,58 @@
 package com.sggc.infrastructure;
 
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
-import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
-import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
-import com.sggc.config.CachingConfig;
+import com.sggc.AbstractIntegrationTest;
 import com.sggc.exceptions.SecretRetrievalException;
-import com.sggc.infrastructure.AwsSecretRetriever;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
+import util.extentions.SggcLocalStackCleanerExtension;
+import util.util.AwsSecretsManagerTestUtil;
 
-import static org.mockito.Mockito.*;
+import java.util.List;
 
-@SpringBootTest(classes = AwsSecretRetriever.class)
-@Import(CachingConfig.class)
-class AwsSecretsRetrieverIT {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static util.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
+import static util.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_ID;
+import static util.containers.SggcLocalStackContainer.ENABLED_SERVICES;
+import static util.util.TestClientInitializer.initializeAwsSecretsManagerClient;
 
-    @MockBean
-    private AWSSecretsManager client;
+class AwsSecretsRetrieverIT extends AbstractIntegrationTest {
+
+
+    @RegisterExtension
+    SggcLocalStackCleanerExtension localStackCleanerExtension
+            = new SggcLocalStackCleanerExtension(localStackContainer.getFirstMappedPort(), List.of(ENABLED_SERVICES));
+
+    private static AWSSecretsManager secretsManagerClient;
+
+    @BeforeAll
+    static void beforeAll() {
+        secretsManagerClient = initializeAwsSecretsManagerClient(localStackContainer.getFirstMappedPort());
+    }
 
     @Autowired
-    private com.sggc.infrastructure.AwsSecretRetriever AwsSecretRetriever;
+    private AwsSecretRetriever awsSecretRetriever;
 
     @Test
-    @DisplayName("Given a previously cached secret, when subsequently retrieving the secret, then use the secret in the cache")
-    void givenCachedKeyWhenRetrievingAKeyThenUseCache() throws SecretRetrievalException {
+    @DisplayName("Given a request to retrieve a secret when the secret is found then the secret's value will be returned")
+    void givenARequestToRetrieveASecretWhenTheSecretIsFoundThenTheSecretsValueWillBeReturned() throws SecretRetrievalException {
+        AwsSecretsManagerTestUtil.createMockSteamApiKey(secretsManagerClient);
+        String secretValue = awsSecretRetriever.getSecretValue(MOCK_STEAM_API_KEY_ID);
+        assertEquals(secretValue, MOCK_STEAM_API_KEY_VALUE);
+    }
 
-        GetSecretValueRequest valueRequest = new GetSecretValueRequest()
-                .withSecretId("someSecretKey");
-        GetSecretValueResult valueResponse = new GetSecretValueResult()
-                .withSecretString("SomeSecretValue");
+    @Test
+    @DisplayName("Given a request to retrieve a secret when the secret cannot not be found then an appropriate exception will be thrown")
+    void givenARequestToRetrieveASecretWhenTheSecretCannotBeFoundThenAnAppropriateExceptionWillBeThrown() {
+        SecretRetrievalException expectedException = assertThrows(SecretRetrievalException.class,
+                () -> awsSecretRetriever.getSecretValue("someSecretId"));
 
-        when(client.getSecretValue(valueRequest)).thenReturn(valueResponse);
-        AwsSecretRetriever.getSecretValue("someSecretKey");
-        verify(client).getSecretValue(valueRequest);
-
-        AwsSecretRetriever.getSecretValue("someSecretKey");
-        AwsSecretRetriever.getSecretValue("someSecretKey");
-        verify(client, times(1)).getSecretValue(valueRequest);
+        assertEquals("Exception occurred when attempting to retrieve secret [someSecretId] from AWS secrets manager",
+                expectedException.getMessage());
     }
 
 }

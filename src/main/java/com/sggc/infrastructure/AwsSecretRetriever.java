@@ -35,7 +35,7 @@ public class AwsSecretRetriever {
             GetSecretValueResult valueResponse = client.getSecretValue(valueRequest);
             return valueResponse.getSecretString();
         } catch (Exception e) {
-            throw new SecretRetrievalException("Exception occurred when attempting to retrieve secret from AWS secrets manager", e);
+            throw new SecretRetrievalException(secretId, e);
         }
     }
 

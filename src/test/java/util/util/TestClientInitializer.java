@@ -1,11 +1,11 @@
-package testsupport.util;
+package util.util;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import testsupport.constants.TestAwsConstants;
+import util.constants.TestAwsConstants;
 
 /**
  * Represents a utility class for initializing clients for services used by the application and for application tests.

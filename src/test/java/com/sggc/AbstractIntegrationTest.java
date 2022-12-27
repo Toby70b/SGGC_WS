@@ -1,8 +1,8 @@
 package com.sggc;
 
-import testsupport.containers.SggcDynamoDbLocalContainer;
-import testsupport.containers.SggcLocalStackContainer;
-import testsupport.containers.WiremockContainer;
+import util.containers.SggcDynamoDbLocalContainer;
+import util.containers.SggcLocalStackContainer;
+import util.containers.WiremockContainer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
