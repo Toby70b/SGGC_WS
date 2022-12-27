@@ -11,12 +11,11 @@
 
     <groupId>com.sggc</groupId>
     <artifactId>sggcws</artifactId>
-    <version>${project.version}</version>
+    <version>1.1.1</version>
     <name>sggc-ws</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
-        <project.version>1.1.1</project.version>
         <aws-java-sdk-bom.version>1.12.356</aws-java-sdk-bom.version>
         <spring-boot-starter-parent.version>2.2.4.RELEASE</spring-boot-starter-parent.version>
         <testcontainers-bom.version>1.17.6</testcontainers-bom.version>
