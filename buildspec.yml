@@ -34,7 +34,7 @@ reports:
     base-directory: 'target/surefire-reports'
   SggcWsIntegrationTestReport:
     files:
-      - '**/*'
+      - '**/*IT.xml'
     base-directory: 'target/failsafe-reports'
 artifacts:
   files:
