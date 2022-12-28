@@ -16,6 +16,7 @@ import java.util.Map;
 
 import static util.constants.TestAwsConstants.DEFAULT_REGION;
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SECRETSMANAGER;
+import static util.util.TestClientInitializer.initializeAwsSecretsManagerClient;
 
 /**
  * Represents a custom JUnit Extension, used to remove any data from a LocalStack instance.
@@ -49,7 +50,7 @@ public class SggcLocalStackCleanerExtension implements BeforeEachCallback {
             switch (enabledService){
                 case SECRETSMANAGER:
                     cleanerMap.put(SECRETSMANAGER.getLocalStackName(),
-                            new AwsSecretsManagerCleaner(createAwsSecretsManagerClient()));
+                            new AwsSecretsManagerCleaner(initializeAwsSecretsManagerClient(port)));
                     break;
             }
         }
@@ -62,17 +63,4 @@ public class SggcLocalStackCleanerExtension implements BeforeEachCallback {
             resourceCleanerMap.get(enabledService.getLocalStackName()).performCleanup();
         }
     }
-
-    /**
-     * Initializes a new AWSSecretsManager client configured to be used with the local LocalStack instance.
-     * @return a new AWSSecretsManager client.
-     */
-    private AWSSecretsManager createAwsSecretsManagerClient() {
-        return AWSSecretsManagerClientBuilder.standard()
-                .withEndpointConfiguration(
-                        new AwsClientBuilder.EndpointConfiguration(String.format("http://localhost:%d",port), DEFAULT_REGION))
-                .withCredentials(new DefaultAWSCredentialsProviderChain())
-                .build();
-    }
-
 }
