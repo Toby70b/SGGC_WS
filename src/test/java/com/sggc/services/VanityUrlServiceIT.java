@@ -3,12 +3,8 @@ package com.sggc.services;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.sggc.AbstractIntegrationTest;
-import util.constants.SteamWebTestConstants;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.VanityUrlResolutionException;
-import util.extentions.SggcLocalStackCleanerExtension;
-import util.extentions.WiremockCleanerExtension;
-import util.util.AwsSecretsManagerTestUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,16 +12,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import util.constants.SteamWebTestConstants;
+import util.extentions.SggcLocalStackCleanerExtension;
+import util.extentions.WiremockCleanerExtension;
+import util.util.AwsSecretsManagerTestUtil;
 
 import java.util.List;
 import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SECRETSMANAGER;
 import static util.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
-import static util.containers.SggcLocalStackContainer.ENABLED_SERVICES;
 import static util.util.TestClientInitializer.initializeAwsSecretsManagerClient;
 import static util.util.TestClientInitializer.initializeWiremockClient;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class VanityUrlServiceIT extends AbstractIntegrationTest {
 
@@ -34,7 +34,7 @@ public class VanityUrlServiceIT extends AbstractIntegrationTest {
 
     @RegisterExtension
     SggcLocalStackCleanerExtension localStackCleanerExtension
-            = new SggcLocalStackCleanerExtension(localStackContainer.getFirstMappedPort(), List.of(ENABLED_SERVICES));
+            = new SggcLocalStackCleanerExtension(localStackContainer.getFirstMappedPort(), List.of(SECRETSMANAGER));
 
     @Autowired
     public VanityUrlService vanityUrlService;

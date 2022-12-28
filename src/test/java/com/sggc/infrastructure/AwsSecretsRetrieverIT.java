@@ -15,9 +15,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static util.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
+import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SECRETSMANAGER;
 import static util.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_ID;
-import static util.containers.SggcLocalStackContainer.ENABLED_SERVICES;
+import static util.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
 import static util.util.TestClientInitializer.initializeAwsSecretsManagerClient;
 
 class AwsSecretsRetrieverIT extends AbstractIntegrationTest {
@@ -25,7 +25,7 @@ class AwsSecretsRetrieverIT extends AbstractIntegrationTest {
 
     @RegisterExtension
     SggcLocalStackCleanerExtension localStackCleanerExtension
-            = new SggcLocalStackCleanerExtension(localStackContainer.getFirstMappedPort(), List.of(ENABLED_SERVICES));
+            = new SggcLocalStackCleanerExtension(localStackContainer.getFirstMappedPort(), List.of(SECRETSMANAGER));
 
     private static AWSSecretsManager secretsManagerClient;
 
