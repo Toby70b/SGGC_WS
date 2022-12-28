@@ -11,7 +11,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest(classes = SteamGroupGamesApplication.class)
-@TestPropertySource(properties = {"spring.config.location = classpath:app-test.yml"})
+@TestPropertySource(properties = {"spring.config.location = classpath:app-int-test.yml"})
 @Testcontainers
 @EnableConfigurationProperties
 public abstract class AbstractIntegrationTest {
