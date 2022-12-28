@@ -69,7 +69,7 @@ Please see the relevant README on local development setup [here](Local-Developer
 
 ## Things to improve
 This project originally started as something I wanted to create rapidly. As such I favoured expedience over quality. 
-As I've added new features or changed the applications' underlying infrastructure, I've noticed parts of the projects that
+As I've added new features or changed the application's underlying infrastructure, I've noticed parts of the projects that
 can be improved, either by poor design or antipatterns, or just things that would exist in any business-level application. 
 While I want to avoid constantly fiddling with the project to achieve perfection, they’re several outstanding areas I 
 want to improve on to help gain a greater understanding of the subject matter. These are listed below:
