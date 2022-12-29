@@ -4,10 +4,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Represents the controller for the Swagger endpoint the URL is the root of the service
+ * Represents the controller for the Swagger endpoint.
  */
 @Controller
-public class Swagger2Controller {
+public class SwaggerController {
 
     public static final String SWAGGER_API_URI = "";
     public static final String SWAGGER_UI_REDIRECT = "redirect:/swagger-ui.html";

@@ -24,3 +24,7 @@ secrets_manager:
 steam:
   api_address: ${STEAM_API_ADDRESS}
   store_address: ${STEAM_STORE_ADDRESS}
+
+springdoc:
+  packagesToScan: com.sggc.controllers,
+  paths-to-match: /api/**
