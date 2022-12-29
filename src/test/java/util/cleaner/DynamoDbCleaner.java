@@ -14,10 +14,10 @@ import java.nio.file.Paths;
 import java.util.List;
 
 /**
- * Represents a class that can reset a given Dynamo DB service to a state resembling its first initialization. Designed
- * to be used by integration tests to avoid pollution.
+ * Represents a class that can reset a given Dynamo DB service to a state resembling its first initialization with SGGC
+ * table structure.
  */
-public class AmazonDynamoDbCleaner implements TestResourceCleaner {
+public class DynamoDbCleaner implements TestResourceCleaner {
 
     public static final String LOCAL_DYNAMO_DB_DDL_PATH = "Local-Developer-Setup/DynamoDB/tables/";
     private final AmazonDynamoDB dynamoDbClient;
@@ -25,7 +25,7 @@ public class AmazonDynamoDbCleaner implements TestResourceCleaner {
     /**
      * @param dynamoDbClient a preconfigured Amazon Dynamo DB client
      */
-    public AmazonDynamoDbCleaner(AmazonDynamoDB dynamoDbClient) {
+    public DynamoDbCleaner(AmazonDynamoDB dynamoDbClient) {
         this.dynamoDbClient = dynamoDbClient;
     }
 

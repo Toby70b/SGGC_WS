@@ -2,7 +2,7 @@ package util.extentions;
 
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import util.cleaner.AmazonDynamoDbCleaner;
+import util.cleaner.DynamoDbCleaner;
 import util.clientfactories.LocalDynamoDbClientFactory;
 
 /**
@@ -11,14 +11,14 @@ import util.clientfactories.LocalDynamoDbClientFactory;
  */
 public class SggcLocalDynamoDbCleanerExtension implements BeforeEachCallback {
 
-    private final AmazonDynamoDbCleaner dynamoDbCleaner;
+    private final DynamoDbCleaner dynamoDbCleaner;
 
     /**
      * Initializes a new SggcLocalDynamoDbCleanerExtension object
      * @param port the port number of the local DynamoDb instance
      */
     public SggcLocalDynamoDbCleanerExtension(int port) {
-        dynamoDbCleaner = new AmazonDynamoDbCleaner(new LocalDynamoDbClientFactory().createClient(port));
+        dynamoDbCleaner = new DynamoDbCleaner(new LocalDynamoDbClientFactory().createClient(port));
     }
 
     @Override

@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import util.clientfactories.SecretsManagerClientFactory;
+import util.clientfactories.AWSSecretsManagerClientFactory;
 import util.constants.SteamWebTestConstants;
 import util.extentions.SggcLocalDynamoDbCleanerExtension;
 import util.extentions.SggcLocalStackCleanerExtension;
@@ -55,7 +55,7 @@ public class UserServiceTtlIT extends AbstractIntegrationTest {
     @BeforeAll
     static void beforeAll() {
         wiremockClient = new WireMock("localhost", wiremockContainer.getFirstMappedPort());
-        secretsManagerClient = new SecretsManagerClientFactory().createClient(localStackContainer.getFirstMappedPort());
+        secretsManagerClient = new AWSSecretsManagerClientFactory().createClient(localStackContainer.getFirstMappedPort());
     }
 
 

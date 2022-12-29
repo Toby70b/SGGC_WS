@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import util.clientfactories.SecretsManagerClientFactory;
+import util.clientfactories.AWSSecretsManagerClientFactory;
 import util.constants.SteamWebTestConstants;
 import util.extentions.SggcLocalStackCleanerExtension;
 import util.extentions.WiremockCleanerExtension;
@@ -44,7 +44,7 @@ public class VanityUrlServiceIT extends AbstractIntegrationTest {
     @BeforeAll
     static void beforeAll() {
         wiremockClient = new WireMock("localhost", wiremockContainer.getFirstMappedPort());
-        secretsManagerClient = new SecretsManagerClientFactory().createClient(localStackContainer.getFirstMappedPort());
+        secretsManagerClient = new AWSSecretsManagerClientFactory().createClient(localStackContainer.getFirstMappedPort());
     }
 
     @Nested

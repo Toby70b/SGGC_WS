@@ -2,8 +2,6 @@ package util.clientfactories;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
 
@@ -12,7 +10,7 @@ import static util.constants.TestAwsConstants.DEFAULT_REGION;
 /**
  * Represents a factory for creating clients to interact with a local AWS Secrets Manager instance.
  */
-public class SecretsManagerClientFactory {
+public class AWSSecretsManagerClientFactory {
 
     /**
      * Initializes a new {@link AWSSecretsManager} object; A client for interacting with an AWS Secrets Manager instance.

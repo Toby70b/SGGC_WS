@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import util.clientfactories.SecretsManagerClientFactory;
+import util.clientfactories.AWSSecretsManagerClientFactory;
 import util.extentions.SggcLocalStackCleanerExtension;
 import util.util.AwsSecretsManagerTestUtil;
 
@@ -31,7 +31,7 @@ class AwsSecretsRetrieverIT extends AbstractIntegrationTest {
 
     @BeforeAll
     static void beforeAll() {
-        secretsManagerClient = new SecretsManagerClientFactory().createClient(localStackContainer.getFirstMappedPort());
+        secretsManagerClient = new AWSSecretsManagerClientFactory().createClient(localStackContainer.getFirstMappedPort());
     }
 
     @Autowired
