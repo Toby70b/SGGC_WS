@@ -6,5 +6,5 @@ import com.amazonaws.regions.Regions;
  * application tests.
  */
 public class TestAwsConstants {
-    public static final String DEFAULT_REGION = Regions.EU_WEST_2.toString();
+    public static final String DEFAULT_REGION = Regions.EU_WEST_2.getName();
 }
