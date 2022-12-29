@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import util.clientfactories.SecretsManagerClientFactory;
 import util.constants.SteamWebTestConstants;
 import util.extentions.SggcLocalDynamoDbCleanerExtension;
 import util.extentions.SggcLocalStackCleanerExtension;
@@ -33,8 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SECRETSMANAGER;
 import static util.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
-import static util.util.TestClientInitializer.initializeAwsSecretsManagerClient;
-import static util.util.TestClientInitializer.initializeWiremockClient;
 
 public class UserServiceTtlIT extends AbstractIntegrationTest {
 
@@ -55,8 +54,8 @@ public class UserServiceTtlIT extends AbstractIntegrationTest {
 
     @BeforeAll
     static void beforeAll() {
-        wiremockClient = initializeWiremockClient(wiremockContainer.getFirstMappedPort());
-        secretsManagerClient = initializeAwsSecretsManagerClient(localStackContainer.getFirstMappedPort());
+        wiremockClient = new WireMock("localhost", wiremockContainer.getFirstMappedPort());
+        secretsManagerClient = new SecretsManagerClientFactory().createClient(localStackContainer.getFirstMappedPort());
     }
 
 

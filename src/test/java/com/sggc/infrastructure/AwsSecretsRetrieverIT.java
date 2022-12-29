@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import util.clientfactories.SecretsManagerClientFactory;
 import util.extentions.SggcLocalStackCleanerExtension;
 import util.util.AwsSecretsManagerTestUtil;
 
@@ -18,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SECRETSMANAGER;
 import static util.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_ID;
 import static util.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
-import static util.util.TestClientInitializer.initializeAwsSecretsManagerClient;
 
 class AwsSecretsRetrieverIT extends AbstractIntegrationTest {
 
@@ -31,7 +31,7 @@ class AwsSecretsRetrieverIT extends AbstractIntegrationTest {
 
     @BeforeAll
     static void beforeAll() {
-        secretsManagerClient = initializeAwsSecretsManagerClient(localStackContainer.getFirstMappedPort());
+        secretsManagerClient = new SecretsManagerClientFactory().createClient(localStackContainer.getFirstMappedPort());
     }
 
     @Autowired

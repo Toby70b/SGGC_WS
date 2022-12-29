@@ -2,9 +2,6 @@ package com.sggc.services;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.sggc.AbstractIntegrationTest;
-import util.constants.SteamWebTestConstants;
-import util.extentions.SggcLocalDynamoDbCleanerExtension;
-import util.extentions.WiremockCleanerExtension;
 import com.sggc.models.Game;
 import com.sggc.repositories.GameRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,13 +11,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import util.constants.SteamWebTestConstants;
+import util.extentions.SggcLocalDynamoDbCleanerExtension;
+import util.extentions.WiremockCleanerExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static util.util.TestClientInitializer.initializeWiremockClient;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameServiceIT extends AbstractIntegrationTest {
@@ -42,7 +41,7 @@ public class GameServiceIT extends AbstractIntegrationTest {
 
     @BeforeAll
     static void beforeAll() {
-        wiremockClient = initializeWiremockClient(wiremockContainer.getFirstMappedPort());
+        wiremockClient = new WireMock("localhost", wiremockContainer.getFirstMappedPort());
     }
 
 
