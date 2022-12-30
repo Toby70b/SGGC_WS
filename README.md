@@ -74,7 +74,8 @@ can be improved, either by poor design or antipatterns, or just things that woul
 While I want to avoid constantly fiddling with the project to achieve perfection, they’re several outstanding areas I 
 want to improve on to help gain a greater understanding of the subject matter. These are listed below:
 
-* Integration tests within a framework including Testcontainers (in progress)
+* ~~Integration tests within a framework including Testcontainers (in progress)~~
+* Move test framework code into seperate Maven module
 * Improved handling of the various responses from Steam and AWS
 * Logging improvements (Centralized logging in CloudWatch and enabling tracking of a request through the application)
 * Move application from EBS to ECS
