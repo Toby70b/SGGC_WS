@@ -2,6 +2,9 @@ package util.util;
 
 import com.sggc.models.Game;
 
+/**
+ * Represents common methods used in multiple tests.
+ */
 public class TestUtils {
     public static Game createExampleGame(String appid, Boolean multiplayer, String name) {
         Game exampleGame = new Game();

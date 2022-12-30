@@ -27,7 +27,7 @@ public class DynamoDbConfig {
     /**
      * Creates a new instance of the AWS DynamoDB client to perform actions on DynamoDB databases
      * <p/>
-     * If the 'ENVIRONMENT' environment variable is equal to 'local' then the instance will be configured to connect to
+     * If the 'DYNAMO_DB_ADDRESS' environment variable is set then the instance will be configured to connect to
      * a local AWS Secret Manager instance running on the host machine.
      *
      * @return a new instance of the AWS DynamoDB client

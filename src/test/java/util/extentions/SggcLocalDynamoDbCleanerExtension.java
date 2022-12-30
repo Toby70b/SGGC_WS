@@ -4,10 +4,11 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import util.cleaner.DynamoDbCleaner;
 import util.clientfactories.LocalDynamoDbClientFactory;
+import util.exceptions.InterruptedCleanupException;
 
 /**
  * Represents a custom JUnit Extension, used to remove any data from a SGGC Local DynamoDb instance while leaving
- * the table structure intact
+ * the table structure intact.
  */
 public class SggcLocalDynamoDbCleanerExtension implements BeforeEachCallback {
 

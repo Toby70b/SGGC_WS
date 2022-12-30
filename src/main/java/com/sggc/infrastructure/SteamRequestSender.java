@@ -17,9 +17,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
-//TODO improve store request creation too
+
 /**
- * Class representing an interface for communicating with the Steam API
+ * Represents an interface for communicating with the Steam API
  */
 @Log4j2
 @Component
@@ -66,6 +66,7 @@ public class SteamRequestSender {
      * @return a GameData object parsed from the response from the Steam API containing the details of the specified app
      */
     public GameData requestAppDetailsFromSteamApi(String appId) throws IOException {
+        //TODO abstract the URI creation into a method
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(steamProperties.getStoreAddress() + GET_APP_DETAILS_ENDPOINT);
         URI requestUri = uriComponentsBuilder
                 .queryParam(STEAM_APP_IDS_QUERY_PARAM_KEY, appId)

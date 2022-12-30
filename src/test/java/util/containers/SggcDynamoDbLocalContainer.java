@@ -6,6 +6,9 @@ import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import java.nio.file.Path;
 
+/**
+ * Represents a Testcontainer for the SGGC local DynamoDB service.
+ */
 public class SggcDynamoDbLocalContainer extends GenericContainer<SggcDynamoDbLocalContainer> {
 
     public static final String DEFAULT_DOCKER_FILE_LOCATION = "Local-Developer-Setup/DynamoDB/Dockerfile";

@@ -3,6 +3,9 @@ package com.sggc.validation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+/**
+ * Represents the result of validating some object
+ */
 @Data
 @AllArgsConstructor
 public class ValidationResult {

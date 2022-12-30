@@ -8,7 +8,7 @@ import static util.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
 
 /**
  * Utility class to support test classes with common functionality relating to the applications relationship with AWS
- * Secrets Manager
+ * Secrets Manager.
  */
 public class AwsSecretsManagerTestUtil {
     public static void createMockSteamApiKey(AWSSecretsManager secretsManagerClient) {

@@ -4,6 +4,9 @@ import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 
+/**
+ * Represents a Testcontainer for the WireMock mocking service
+ */
 public class WiremockContainer extends GenericContainer<WiremockContainer>  {
 
     private static final String DEFAULT_DOCKER_IMAGE = "wiremock/wiremock:latest";

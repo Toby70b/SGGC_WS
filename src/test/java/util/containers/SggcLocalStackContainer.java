@@ -5,6 +5,10 @@ import org.testcontainers.utility.DockerImageName;
 
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SECRETSMANAGER;
 
+/**
+ * Represents a Testcontainer for the Localstack service, with some extra default values applied to better suit usage
+ * by the SGGC application
+ */
 public class SggcLocalStackContainer extends LocalStackContainer {
 
     private static final String DEFAULT_DOCKER_IMAGE = "localstack/localstack:latest";
