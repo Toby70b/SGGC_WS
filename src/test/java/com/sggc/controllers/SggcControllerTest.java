@@ -2,31 +2,25 @@ package com.sggc.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sggc.errors.ApiError;
-import com.sggc.exceptions.*;
+import com.sggc.exceptions.SecretRetrievalException;
+import com.sggc.exceptions.TooFewSteamIdsException;
+import com.sggc.exceptions.UserHasNoGamesException;
+import com.sggc.exceptions.VanityUrlResolutionException;
 import com.sggc.models.Game;
 import com.sggc.models.sggc.SggcResponse;
-import com.sggc.services.VanityUrlService;
-import com.sggc.validation.ValidationResult;
 import com.sggc.models.steam.request.GetCommonGamesRequest;
 import com.sggc.services.GameService;
 import com.sggc.services.UserService;
-import org.junit.jupiter.api.BeforeEach;
+import com.sggc.services.VanityUrlService;
+import com.sggc.validation.ValidationResult;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class SggcControllerTest {

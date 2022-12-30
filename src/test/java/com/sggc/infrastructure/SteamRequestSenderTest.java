@@ -26,10 +26,10 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
 
-import static util.util.TestUtils.createExampleGame;
 import static com.sggc.infrastructure.SteamRequestSender.STEAM_API_KEY_SECRET_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+import static util.util.TestUtils.createExampleGame;
 
 @ExtendWith(MockitoExtension.class)
 class SteamRequestSenderTest {

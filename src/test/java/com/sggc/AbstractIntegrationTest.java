@@ -1,14 +1,14 @@
 package com.sggc;
 
-import util.containers.SggcDynamoDbLocalContainer;
-import util.containers.SggcLocalStackContainer;
-import util.containers.WiremockContainer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import util.containers.SggcDynamoDbLocalContainer;
+import util.containers.SggcLocalStackContainer;
+import util.containers.WiremockContainer;
 
 @SpringBootTest(classes = SteamGroupGamesApplication.class)
 @TestPropertySource(properties = {"spring.config.location = classpath:app-int-test.yml"})
