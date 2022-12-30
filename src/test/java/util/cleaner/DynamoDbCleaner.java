@@ -34,12 +34,11 @@ public class DynamoDbCleaner implements TestResourceCleaner {
         ListTablesResult tables = dynamoDbClient.listTables();
         List<String> tableNames = tables.getTableNames();
         for (String tableName : tableNames) {
-            Reader reader = null;
+            Reader reader;
             try {
                 reader = Files.newBufferedReader(Paths.get(String.format("%s%s.json", LOCAL_DYNAMO_DB_DDL_PATH, tableName)));
             } catch (IOException e) {
-                //TODO don't do this, or at least wrap in a custom exception with an appropriate message
-                throw new RuntimeException(e);
+                throw new RuntimeException("Exception occurred when trying to re-create deleted DynamoDB tables", e);
             }
             dynamoDbClient.deleteTable(tableName);
             Gson gson = new GsonBuilder()
