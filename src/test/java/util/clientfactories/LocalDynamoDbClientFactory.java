@@ -1,11 +1,12 @@
 package util.clientfactories;
 
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 
-import static util.constants.TestAwsConstants.DEFAULT_REGION;
+import static util.constants.TestAwsConstants.*;
 
 /**
  * Represents a factory for creating clients to interact with a local Amazon DynamoDB instance.
@@ -24,7 +25,8 @@ public class LocalDynamoDbClientFactory {
                 .withEndpointConfiguration(
                         new AwsClientBuilder.EndpointConfiguration(
                                 String.format("http://localhost:%d", port), DEFAULT_REGION))
-                .withCredentials(new DefaultAWSCredentialsProviderChain())
+                .withCredentials(new AWSStaticCredentialsProvider
+                        (new BasicAWSCredentials(MOCK_ACCESS_KEY,MOCK_SECRET_ACCESS_KEY)))
                 .build();
     }
 }

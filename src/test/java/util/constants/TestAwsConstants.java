@@ -7,4 +7,6 @@ import com.amazonaws.regions.Regions;
  */
 public class TestAwsConstants {
     public static final String DEFAULT_REGION = Regions.EU_WEST_2.getName();
+    public static final String MOCK_ACCESS_KEY = "DUMMY_ACCESS_KEY";
+    public static final String MOCK_SECRET_ACCESS_KEY = "DUMMY_SECRET_ACCESS_KEY";
 }
