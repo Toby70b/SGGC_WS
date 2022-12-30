@@ -1,11 +1,11 @@
 package com.sggc.services;
 
+import com.sggc.infrastructure.SteamRequestSender;
 import com.sggc.models.Game;
 import com.sggc.models.GameCategory;
 import com.sggc.models.GameData;
 import com.sggc.models.SteamGameCategory;
 import com.sggc.repositories.GameRepository;
-import com.sggc.infrastructure.SteamRequestSender;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,11 +18,11 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Set;
 
-import static util.util.TestUtils.createExampleGame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static util.util.TestUtils.createExampleGame;
 
 @ExtendWith(MockitoExtension.class)
 class GameServiceTest {

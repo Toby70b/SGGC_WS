@@ -2,8 +2,8 @@ package com.sggc.services;
 
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.VanityUrlResolutionException;
-import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import com.sggc.infrastructure.SteamRequestSender;
+import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import com.sggc.validation.ValidationResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

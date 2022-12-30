@@ -3,18 +3,20 @@ package com.sggc.services;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.TooFewSteamIdsException;
 import com.sggc.exceptions.UserHasNoGamesException;
+import com.sggc.infrastructure.SteamRequestSender;
 import com.sggc.models.Game;
 import com.sggc.models.User;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
 import com.sggc.repositories.UserRepository;
 import com.sggc.util.DateUtil;
-import com.sggc.infrastructure.SteamRequestSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

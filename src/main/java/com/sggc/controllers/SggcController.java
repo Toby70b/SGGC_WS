@@ -2,17 +2,20 @@ package com.sggc.controllers;
 
 import com.sggc.exceptions.*;
 import com.sggc.models.Game;
-import com.sggc.services.VanityUrlService;
-import com.sggc.validation.ValidationResult;
 import com.sggc.models.sggc.SggcResponse;
 import com.sggc.models.steam.request.GetCommonGamesRequest;
 import com.sggc.services.GameService;
 import com.sggc.services.UserService;
+import com.sggc.services.VanityUrlService;
+import com.sggc.validation.ValidationResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
