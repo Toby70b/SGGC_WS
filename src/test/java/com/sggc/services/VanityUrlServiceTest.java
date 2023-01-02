@@ -17,10 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Set;
 
-import static com.sggc.services.VanityUrlService.VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE;
-import static com.sggc.services.VanityUrlService.VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+import static util.constants.SggcVanityUrlValidationErrorMessageConstants.VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE;
+import static util.constants.SggcVanityUrlValidationErrorMessageConstants.VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE;
 
 @ExtendWith(MockitoExtension.class)
 public class VanityUrlServiceTest {
@@ -34,11 +34,12 @@ public class VanityUrlServiceTest {
     @Nested
     class VanityUrlResolutionTests {
         @Nested
-        @DisplayName("If provided with valid Vanity URL(s) then it will resolve any Vanity URl(s) into Steam user ids")
+        @DisplayName("Given a collection of valid Vanity URL(s) that correspond to Steam user IDs, when resolving the Vanity URl(s), " +
+                "then it will return a collection of corresponding Steam user IDs.")
         class ValidUserIdValidationTests {
 
             @Test
-            @DisplayName("Single Vanity URL")
+            @DisplayName("Single Vanity URL.")
             void ifProvidedWithAValidSteamIdItWillReturnAnEmptyList() throws SecretRetrievalException, VanityUrlResolutionException {
                 String randomSteamId = RandomStringUtils.random(17, true, true);
 
@@ -53,7 +54,7 @@ public class VanityUrlServiceTest {
             }
 
             @Test
-            @DisplayName("Multiple Vanity URLs")
+            @DisplayName("Multiple Vanity URLs.")
             void ifProvidedWithAValidVanityUrlItWillReturnAnEmptyList() throws SecretRetrievalException, VanityUrlResolutionException {
                 String randomSteamId1 = RandomStringUtils.random(22, true, true);
                 String randomSteamId2 = RandomStringUtils.random(17, true, true);
@@ -77,7 +78,7 @@ public class VanityUrlServiceTest {
             }
 
             @Test
-            @DisplayName("Mix of Vanity URLs and Steam user ids")
+            @DisplayName("Mix of Vanity URLs and Steam user IDs.")
             void ifProvidedWithAMixtureOfValidVanityUrlsAndSteamIdsItWillReturnAnEmptyList() throws SecretRetrievalException, VanityUrlResolutionException {
                 String randomSteamId1 = RandomStringUtils.random(17, true, true);
                 String randomSteamId2 = RandomStringUtils.random(18, true, true);
@@ -103,7 +104,8 @@ public class VanityUrlServiceTest {
         }
 
         @Test
-        @DisplayName("Given a valid Vanity URL that doesn't resolve into a steam id when the service resolves the vanity URL then it will throw a VanityUrlResolutionException including the vanity url")
+        @DisplayName("Given a valid Vanity URL that doesn't resolve into a Steam ID, when the service resolves the vanity URL, " +
+                "then it will throw a VanityUrlResolutionException including the Vanity URL.")
         void GivenAValidVanityUrlThatDoesntResolveIntoASteamIdWhenTheServiceResolvesTheVanityUrlThenItWillThrowAVanityUrlResolutionExceptionIncludingTheVanityUrl() throws SecretRetrievalException {
             String randomVanityUrl = RandomStringUtils.random(17, true, true);
             ResolveVanityUrlResponse.Response response = new ResolveVanityUrlResponse.Response();
@@ -121,19 +123,20 @@ public class VanityUrlServiceTest {
     class ValidationTests {
 
         @Test
-        @DisplayName("If provided with a valid vanity URL it will return no validation errors")
-        void ifProvidedWithAValidVanityUrlItWillReturnNoValidationErrrors() {
+        @DisplayName("Given a valid Vanity URL, when validating the Vanity URL, then it will return an empty list.")
+        void ifProvidedWithAValidVanityUrlItWillReturnNoValidationErrors() {
             String generatedString = RandomStringUtils.random(8, true, true);
-            ValidationResult expectedValidationError = new ValidationResult(false, generatedString, null);
             List<ValidationResult> validationResultList = vanityUrlService.validateSteamIdsAndVanityUrls(Set.of(generatedString));
             assertTrue(validationResultList.isEmpty());
         }
 
         @Nested
-        @DisplayName("If provided with a invalid vanity URL it will return a list of validation errors")
+        @DisplayName("Given a collection of invalid Vanity URL(s), when validating the Vanity URl(s), then it will return " +
+                "a collection of validation errors.")
+
         class InvalidUserIdValidationTests {
             @Test
-            @DisplayName("Too short")
+            @DisplayName("Too short.")
             void ifProvidedWithAVanityUrlThatIsTooShortItWillReturnAValidationErrorWithAnAppropriateMessage() {
                 String generatedString = RandomStringUtils.random(2, true, true);
                 ValidationResult expectedValidationError = new ValidationResult(true, generatedString, VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE);
@@ -144,7 +147,7 @@ public class VanityUrlServiceTest {
             }
 
             @Test
-            @DisplayName("Too long")
+            @DisplayName("Too long.")
             void ifProvidedWithAVanityUrlThatIsTooLongItWillReturnAValidationErrorWithAnAppropriateMessage() {
                 String generatedString = RandomStringUtils.random(33, true, true);
                 ValidationResult expectedValidationError = new ValidationResult(true, generatedString, VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE);
@@ -154,7 +157,7 @@ public class VanityUrlServiceTest {
             }
 
             @Test
-            @DisplayName("Special characters")
+            @DisplayName("Special characters.")
             void ifProvidedWithAVanityUrlThatContainsSpecialCharactersItWillReturnAValidationErrorWithAnAppropriateMessage() {
                 String generatedString = "abc123%^&";
                 ValidationResult expectedValidationError = new ValidationResult(true, generatedString, VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE);
@@ -165,7 +168,7 @@ public class VanityUrlServiceTest {
             }
 
             @Test
-            @DisplayName("Multiple invalid Vanity URLs return multiple validation errors")
+            @DisplayName("Multiple invalid Vanity URLs return multiple validation errors.")
             void IfProvidedWithMultipleInvalidVanityUrlsItWillReturnMultipleValidationErrorsWithAppropriateMessages() {
                 String generatedString1 = "abc123%^&";
                 String generatedString2 = RandomStringUtils.random(33, true, true);

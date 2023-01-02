@@ -19,13 +19,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import util.constants.SggcVanityUrlValidationErrorMessageConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static com.sggc.services.VanityUrlService.VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -48,18 +48,18 @@ public class SggcControllerIT {
     private GameService gameService;
 
     @Test
-    @DisplayName("Given a request with less than two Steam id's when validating the request body then a 400 error will be returned with an appropriate message")
+    @DisplayName("Given a request with less than two Steam IDs, when validating the request body, then a 400 error will " +
+            "be returned with an appropriate message.")
     public void givenRequestWithLessThanTwoSteamIdsWhenServicesValidatesA400ErrorWillBeReturnedWithAnAppropriateMessage() throws Exception {
         GetCommonGamesRequest sggcRequest = new GetCommonGamesRequest();
         sggcRequest.setMultiplayerOnly(true);
         String mockSteamId = "someSteamId";
         sggcRequest.setSteamIds(Collections.singleton(mockSteamId));
 
-
         final ApiError error = new ApiError(
                 "Exception",
-                "Request body violates validation rules, check error details for more information.",
-                Collections.singleton("More than one Steam id must be included")
+                "Request body violates validation rules. Please review the response object for more information.",
+                Collections.singleton("Request must include a minimum of two Steam IDs")
         );
         SggcResponse expectedResponse = new SggcResponse(false, error);
 
@@ -72,7 +72,8 @@ public class SggcControllerIT {
     }
 
     @Test
-    @DisplayName("Given a request is received with an invalid Vanity URL when validating the Vanity URL then a 400 error will be return with an appropriate response object")
+    @DisplayName("Given a request is received with an invalid Vanity URL, when validating the Vanity URL, then a 400 error " +
+            "will be returned with an appropriate response object.")
     public void givenARRequestIsReceivedWithAnInvalidVanityUrlWhenValidatingThenA400ErrorWillBeReturnedWithAnAppropriateResponseObject() throws Exception {
         GetCommonGamesRequest sggcRequest = new GetCommonGamesRequest();
         sggcRequest.setMultiplayerOnly(true);
@@ -80,13 +81,13 @@ public class SggcControllerIT {
         String mockSteamId = "someSteamId";
         sggcRequest.setSteamIds(Set.of(mockVanityUrl,mockSteamId));
 
-        ValidationResult expectedValidationError = new ValidationResult(true, mockVanityUrl, VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE);
+        ValidationResult expectedValidationError = new ValidationResult(true, mockVanityUrl,
+                SggcVanityUrlValidationErrorMessageConstants.VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE);
         when(vanityUrlService.validateSteamIdsAndVanityUrls(Set.of(mockVanityUrl,mockSteamId))).thenReturn(List.of(expectedValidationError));
-
 
         final ApiError error = new ApiError(
                 "ValidationException",
-                "Request body violates validation rules, check error details for more information.",
+                "Request body violates validation rules. Please review the response object for more information.",
                 Collections.singleton(expectedValidationError)
         );
         SggcResponse expectedResponse = new SggcResponse(false, error);
@@ -100,8 +101,8 @@ public class SggcControllerIT {
     }
 
     @Test
-    @DisplayName("Given a request with a valid Vanity URL which does not have a corresponding Steam user id when resolving " +
-            "it via the Steam API then a 400 error will be return with an appropriate response object")
+    @DisplayName("Given a request with a valid Vanity URL, when the Steam API cannot find a corresponding Steam user ID, " +
+            "then a 400 error will be returned with an appropriate response object.")
     public void givenARRequestWithAVValidVanityUrlWhichDoesNotHaveACorrespondingSteamUserIdWhenResolvingThenItWillReturnA400Error() throws Exception {
         GetCommonGamesRequest sggcRequest = new GetCommonGamesRequest();
         sggcRequest.setMultiplayerOnly(true);
@@ -130,7 +131,7 @@ public class SggcControllerIT {
     }
 
     @Test
-    @DisplayName("Given a request with a valid Steam user id, when a user is found to own no games return a 404 error with an appropriate response object")
+    @DisplayName("Given a request with a valid Steam user ID, when a user is found to own no games, then return a 404 error with an appropriate response object.")
     public void givenARequestWithAValidSteamUserIdWhenAUserIdFoundToOwnNoGamesReturnA404ErrorWithAnAppropriateResponseObject() throws Exception {
         GetCommonGamesRequest sggcRequest = new GetCommonGamesRequest();
         sggcRequest.setMultiplayerOnly(true);
@@ -161,8 +162,8 @@ public class SggcControllerIT {
     }
 
     @Test
-    @DisplayName("Given a request when after Vanity URL resolution there are fewer than two Steam ids to find common games for" +
-            " then a 400 error will be return with an appropriate response object")
+    @DisplayName("Given a request, when, after Vanity URL resolution there are fewer than two Steam ids to find common games for," +
+            " then a 400 error will be return with an appropriate response object.")
     public void givenARequestWhenAfterResolutionThereAreFewerThanTwoSteamIdsToFindCommonGamesForThenReturnA400ErrorWithAnAppropriateResponseObject() throws Exception {
         GetCommonGamesRequest sggcRequest = new GetCommonGamesRequest();
         sggcRequest.setMultiplayerOnly(true);
@@ -194,7 +195,7 @@ public class SggcControllerIT {
     }
 
     @Test
-    @DisplayName("Given a request when an uncaught exception is thrown then a 500 error will be return with an appropriate response object")
+    @DisplayName("Given a request when an uncaught exception is thrown, then a 500 error will be return with an appropriate response object.")
     public void givenARequestWhenAnUncaughtExceptionIsThrownThenA500ErrorWillBeReturnedWithAnAppropriateResponseObject() throws Exception {
         GetCommonGamesRequest sggcRequest = new GetCommonGamesRequest();
         sggcRequest.setMultiplayerOnly(true);

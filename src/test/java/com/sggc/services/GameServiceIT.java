@@ -46,11 +46,11 @@ public class GameServiceIT extends AbstractIntegrationTest {
 
 
     @Nested
-    @DisplayName("If provided with a list of Game app ids then the service attempt to return all Games with matching app ids persisted within the database")
+    @DisplayName("Given a collection of game IDs, when the service retrieves the corresponding games then it will return the games persisted within the database.")
     class FindGamesByAppIdTests {
 
         @Test
-        @DisplayName("If multiplayer status does not matter then return all Games with matching app ids persisted within the database")
+        @DisplayName("If multiplayer status does not matter then return all games with matching IDs persisted within the database.")
         void ifProvidedWithAListOfGameAppIdsThenTheServiceWillReturnAllMatchingAppIdsPersistedWithinTheDatabase() {
             String mockGameId1 = "1080";
             String mockGameId2 = "2080";
@@ -86,7 +86,7 @@ public class GameServiceIT extends AbstractIntegrationTest {
         }
 
         @Test
-        @DisplayName("If multiplayer-only games are requested then exclude any non-multiplayer games from the returned list")
+        @DisplayName("If multiplayer-only games are requested then exclude any non-multiplayer games from the returned list.")
         void ifMultiplayerOnlyGamesAreRequestedTheServiceWillExcludeAnyNonMultiplayerGamesFromTheReturnedList() {
             String mockGameId1 = "1080";
             String mockGameId2 = "2080";
@@ -123,11 +123,12 @@ public class GameServiceIT extends AbstractIntegrationTest {
     }
 
     @Nested
-    @DisplayName("If a Game's multiplayer status is currently unknown then the service will attempt to retrieve it via the Steam Store API and persisted within the database")
+    @DisplayName("Given a request for multiplayer-only games, when a game's multiplayer status is currently unknown, then " +
+            "the service will retrieve it via the Steam Store API and persist within the database.")
     class PersistGamesMultiplayerStatusTests {
 
         @Test
-        @DisplayName("If a Game's multiplayer status is currently unknown it should be requested via the Steam Store API and persisted within the database")
+        @DisplayName("The game's multiplayer status is available via the Steam Store API.")
         void IfAGamesMultiplayerStatusIsUnknownItShouldBeRequestedViaTheSteamStoreAPIAndPersistedWithinTheDatabase() {
             String mockGameId1 = "1080";
             String mockGameId2 = "2080";
@@ -185,7 +186,7 @@ public class GameServiceIT extends AbstractIntegrationTest {
         }
 
         @Test
-        @DisplayName("If a Game's multiplayer status is not available via the Steam Store API it should be treated as multiplayer")
+        @DisplayName("The game's multiplayer status is not available via the Steam Store API. It should be treated as multiplayer.")
         void IfAGamesMultiplayerStatusIsNotAvailableViaTheSteamStoreApiItShouldBeTreatedAsMultiplayer() {
             String mockGameId1 = "1080";
 
@@ -215,7 +216,5 @@ public class GameServiceIT extends AbstractIntegrationTest {
             assertNotNull(persistedGame1);
             assertTrue(persistedGame1.getMultiplayer());
         }
-
     }
-
 }

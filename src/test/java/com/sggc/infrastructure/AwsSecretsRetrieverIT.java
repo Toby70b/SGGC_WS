@@ -22,7 +22,6 @@ import static util.constants.SecretsTestConstants.MOCK_STEAM_API_KEY_VALUE;
 
 class AwsSecretsRetrieverIT extends AbstractIntegrationTest {
 
-
     @RegisterExtension
     SggcLocalStackCleanerExtension localStackCleanerExtension
             = new SggcLocalStackCleanerExtension(localStackContainer.getFirstMappedPort(), List.of(SECRETSMANAGER));
@@ -38,7 +37,7 @@ class AwsSecretsRetrieverIT extends AbstractIntegrationTest {
     private AwsSecretRetriever awsSecretRetriever;
 
     @Test
-    @DisplayName("Given a request to retrieve a secret when the secret is found then the secret's value will be returned")
+    @DisplayName("Given a request to retrieve a secret, when the secret is found, then the secret's value will be returned.")
     void givenARequestToRetrieveASecretWhenTheSecretIsFoundThenTheSecretsValueWillBeReturned() throws SecretRetrievalException {
         AwsSecretsManagerTestUtil.createMockSteamApiKey(secretsManagerClient);
         String secretValue = awsSecretRetriever.getSecretValue(MOCK_STEAM_API_KEY_ID);
@@ -46,12 +45,12 @@ class AwsSecretsRetrieverIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("Given a request to retrieve a secret when the secret cannot not be found then an appropriate exception will be thrown")
+    @DisplayName("Given a request to retrieve a secret, when the secret cannot not be found, then an appropriate exception will be thrown.")
     void givenARequestToRetrieveASecretWhenTheSecretCannotBeFoundThenAnAppropriateExceptionWillBeThrown() {
         SecretRetrievalException expectedException = assertThrows(SecretRetrievalException.class,
                 () -> awsSecretRetriever.getSecretValue("someSecretId"));
 
-        assertEquals("Exception occurred when attempting to retrieve secret [someSecretId] from AWS secrets manager",
+        assertEquals("Exception occurred when attempting to retrieve secret [someSecretId] from AWS secrets manager.",
                 expectedException.getMessage());
     }
 

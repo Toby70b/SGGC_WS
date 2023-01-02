@@ -7,7 +7,6 @@ import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.VanityUrlResolutionException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,57 +46,56 @@ public class VanityUrlServiceIT extends AbstractIntegrationTest {
         secretsManagerClient = new AWSSecretsManagerClientFactory().createClient(localStackContainer.getFirstMappedPort());
     }
 
-    @Nested
-    @DisplayName("If provided with a Vanity URL then the service will attempt to resolve it into it's corresponding Steam user id")
-    class VanityUrlResolutionTests {
 
-        @Test
-        @DisplayName("If provided with a Vanity URL then attempt to resolve the Vanity URL's corresponding Steam user id and return it")
-        void IfProvidedWithAVanityUrlThenAttemptToResolveTheVanityUrlsCorrespondingSteamUserIdAndReturnIt() throws SecretRetrievalException, VanityUrlResolutionException {
-            AwsSecretsManagerTestUtil.createMockSteamApiKey(secretsManagerClient);
+    @Test
+    @DisplayName("Given a valid Vanity URL which corresponds to a Steam user ID, when the service to resolves the Vanity URL, " +
+            "then the corresponding Steam user ID will be returned.")
+    void IfProvidedWithAVanityUrlThenAttemptToResolveTheVanityUrlsCorrespondingSteamUserIdAndReturnIt() throws SecretRetrievalException, VanityUrlResolutionException {
+        AwsSecretsManagerTestUtil.createMockSteamApiKey(secretsManagerClient);
 
-            String mockVanityUrl = "SomeVanityUrl";
-            wiremockClient.register(
-                    WireMock.get(urlPathEqualTo(SteamWebTestConstants.Endpoints.RESOLVE_VANITY_URL_ENDPOINT))
-                            .withQueryParam(SteamWebTestConstants.QueryParams.VANITY_URL_QUERY_PARAM_KEY, equalTo(mockVanityUrl))
-                            .withQueryParam(SteamWebTestConstants.QueryParams.STEAM_KEY_QUERY_PARAM_KEY, equalTo(MOCK_STEAM_API_KEY_VALUE))
-                            .willReturn(ok()
-                                    .withHeader("Content-Type", MediaType.APPLICATION_JSON.toString())
-                                    .withBodyFile("steam-api/resolve-vanity-url/successful-response-1.json")
-                            ).build()
-            );
+        String mockVanityUrl = "SomeVanityUrl";
+        wiremockClient.register(
+                WireMock.get(urlPathEqualTo(SteamWebTestConstants.Endpoints.RESOLVE_VANITY_URL_ENDPOINT))
+                        .withQueryParam(SteamWebTestConstants.QueryParams.VANITY_URL_QUERY_PARAM_KEY, equalTo(mockVanityUrl))
+                        .withQueryParam(SteamWebTestConstants.QueryParams.STEAM_KEY_QUERY_PARAM_KEY, equalTo(MOCK_STEAM_API_KEY_VALUE))
+                        .willReturn(ok()
+                                .withHeader("Content-Type", MediaType.APPLICATION_JSON.toString())
+                                .withBodyFile("steam-api/resolve-vanity-url/successful-response-1.json")
+                        ).build()
+        );
 
-            String expectedResolvedSteamId = "76561197979721089";
+        String expectedResolvedSteamId = "76561197979721089";
 
-            Set<String> resolvedSteamIds = vanityUrlService.resolveVanityUrls(Set.of(mockVanityUrl));
+        Set<String> resolvedSteamIds = vanityUrlService.resolveVanityUrls(Set.of(mockVanityUrl));
 
-            assertEquals(1, resolvedSteamIds.size());
-            assertTrue(resolvedSteamIds.contains(expectedResolvedSteamId));
-        }
-
-        @Test
-        @DisplayName("If a Vanity URL cannot be resolved into a Steam user id then throw an appropriate exception")
-        void IfAVanityUrlCannotBeResolvedIntoASteamUserIdThenThrowAnAppropriateException() {
-            AwsSecretsManagerTestUtil.createMockSteamApiKey(secretsManagerClient);
-
-            String mockVanityUrl = "SomeVanityUrl";
-            wiremockClient.register(
-                    WireMock.get(urlPathEqualTo(SteamWebTestConstants.Endpoints.RESOLVE_VANITY_URL_ENDPOINT))
-                            .withQueryParam(SteamWebTestConstants.QueryParams.VANITY_URL_QUERY_PARAM_KEY, equalTo(mockVanityUrl))
-                            .withQueryParam(SteamWebTestConstants.QueryParams.STEAM_KEY_QUERY_PARAM_KEY, equalTo(MOCK_STEAM_API_KEY_VALUE))
-                            .willReturn(ok()
-                                    .withHeader("Content-Type", MediaType.APPLICATION_JSON.toString())
-                                    .withBodyFile("steam-api/resolve-vanity-url/unsuccessful-response-1.json")
-                            ).build()
-            );
-
-            VanityUrlResolutionException expectedException =
-                    assertThrows(VanityUrlResolutionException.class, () ->
-                            vanityUrlService.resolveVanityUrls(Set.of(mockVanityUrl)));
-
-            assertEquals("SomeVanityUrl", expectedException.getVanityUrl());
-        }
+        assertEquals(1, resolvedSteamIds.size());
+        assertTrue(resolvedSteamIds.contains(expectedResolvedSteamId));
     }
 
+    @Test
+    @DisplayName("Given a valid Vanity URL which does not correspond to a Steam user ID, when the service to resolves the Vanity URL, " +
+            "then an appropriate exception will be thrown.")
+    void IfAVanityUrlCannotBeResolvedIntoASteamUserIdThenThrowAnAppropriateException() {
+        AwsSecretsManagerTestUtil.createMockSteamApiKey(secretsManagerClient);
 
+        String mockVanityUrl = "SomeVanityUrl";
+        wiremockClient.register(
+                WireMock.get(urlPathEqualTo(SteamWebTestConstants.Endpoints.RESOLVE_VANITY_URL_ENDPOINT))
+                        .withQueryParam(SteamWebTestConstants.QueryParams.VANITY_URL_QUERY_PARAM_KEY, equalTo(mockVanityUrl))
+                        .withQueryParam(SteamWebTestConstants.QueryParams.STEAM_KEY_QUERY_PARAM_KEY, equalTo(MOCK_STEAM_API_KEY_VALUE))
+                        .willReturn(ok()
+                                .withHeader("Content-Type", MediaType.APPLICATION_JSON.toString())
+                                .withBodyFile("steam-api/resolve-vanity-url/unsuccessful-response-1.json")
+                        ).build()
+        );
+
+        VanityUrlResolutionException expectedException =
+                assertThrows(VanityUrlResolutionException.class, () ->
+                        vanityUrlService.resolveVanityUrls(Set.of(mockVanityUrl)));
+
+        assertEquals("SomeVanityUrl", expectedException.getVanityUrl());
+    }
 }
+
+
+

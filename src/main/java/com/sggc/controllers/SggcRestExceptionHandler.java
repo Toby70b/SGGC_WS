@@ -47,7 +47,7 @@ public class SggcRestExceptionHandler extends ResponseEntityExceptionHandler {
 
         final ApiError error = new ApiError(
                 "Exception",
-                "Request body violates validation rules, check error details for more information.",
+                "Request body violates validation rules. Please review the response object for more information.",
                 validationErrors
         );
         SggcResponse response = new SggcResponse(false, error);
