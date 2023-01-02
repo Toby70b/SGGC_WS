@@ -1,3 +1,4 @@
+# Docker compose for building a local development environment
 version: '3.8'
 services:
   localstack-aws-secrets-manager:
@@ -10,7 +11,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   dynamodb-local:
-    image: tobypeel/steam_group_game_checker_local_db:latest
+    build: ./DynamoDB/
     container_name: sggc-local-dynamodb
     ports:
       - "8000:8000"
