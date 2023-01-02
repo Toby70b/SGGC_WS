@@ -20,10 +20,9 @@ phases:
       # We're not currently, running the WS on ECR so just build the docker image and later push it to a registry
       - echo Docker Build started on `date`.
       - docker build -t tobypeel/steam_group_game_checker_api:prod .
+      - echo Build completed on `date`.
   post_build:
     commands:
-      - echo Build completed on `date`.
-      - mvn package
       - echo Pushing the Docker images...
       - docker push tobypeel/steam_group_game_checker_api:prod
 reports:
