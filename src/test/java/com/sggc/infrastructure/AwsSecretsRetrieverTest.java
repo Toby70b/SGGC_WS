@@ -25,30 +25,31 @@ class AwsSecretsRetrieverTest {
     private AwsSecretRetriever secretManagerService;
 
     @Test
-    @DisplayName("Given a request is made to retrieve a secret when the secret is found then the secret's value should be returned")
+    @DisplayName("Given a request to retrieve a secret, when the secret is found ,then the secret's value should be returned.")
     void GivenRequestToRetrieveSecretWhenTheSecretIsFoundThenTheSecretsValueShouldBeReturned() throws SecretRetrievalException {
         String mockSecretId = "secretId";
-        String mockSecretVlaue = "secretName";
+        String mockSecretValue = "secretName";
 
         GetSecretValueRequest valueRequest = new GetSecretValueRequest()
                 .withSecretId(mockSecretId);
-        when(client.getSecretValue(valueRequest)).thenReturn(new GetSecretValueResult().withSecretString(mockSecretVlaue));
+        when(client.getSecretValue(valueRequest)).thenReturn(new GetSecretValueResult().withSecretString(mockSecretValue));
         String secretValue = secretManagerService.getSecretValue(mockSecretId);
-        assertEquals(mockSecretVlaue, secretValue);
+        assertEquals(mockSecretValue, secretValue);
     }
 
 
     @Test
-    @DisplayName("Given a request is made to retrieve a secret when an error occurs attempting to retrieve a secret, then throw a appropriate exception")
+    @DisplayName("Given a request to retrieve a secret, when an error occurs attempting to retrieve a secret, then an appropriate exception will be thrown.")
     void GivenRequestToRetrieveSecretWhenAnErrorOccursRetrievingSecretThenThrowException() {
+        String mockSecretId = "secretId";
         GetSecretValueRequest valueRequest = new GetSecretValueRequest()
-                .withSecretId("secretKey");
+                .withSecretId(mockSecretId);
 
         when(client.getSecretValue(valueRequest)).thenThrow(AWSSecretsManagerException.class);
         SecretRetrievalException expectedException =
-                assertThrows(SecretRetrievalException.class, ()->secretManagerService.getSecretValue("secretKey"));
+                assertThrows(SecretRetrievalException.class, ()->secretManagerService.getSecretValue(mockSecretId));
 
-        assertEquals("Exception occurred when attempting to retrieve secret [secretKey] from AWS secrets manager",
+        assertEquals("Exception occurred when attempting to retrieve secret [secretId] from AWS secrets manager.",
                 expectedException.getMessage());
         assertTrue(expectedException.getCause() instanceof AWSSecretsManagerException);
     }

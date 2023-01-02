@@ -60,11 +60,12 @@ public class UserServiceIT extends AbstractIntegrationTest {
     }
 
     @Nested
-    @DisplayName("If a user is not found in the DB, the service will attempt to retrieve their details via the Steam API and persist them within the database")
+    @DisplayName("Given a request to retrieve users common games, when a user is not found in the DB, then the  service will" +
+            " to retrieve their details via the Steam API and persist them within the database.")
     class PersistUsersOwnedGamesTests {
 
         @Test
-        @DisplayName("If a user is not found in the DB, their details will be requested via the Steam API and persisted within the database")
+        @DisplayName("User's details successfully retrieved from the Steam Store API.")
         void IfAUserIsNotFoundInTheDbItsDetailsWillBeRequestedViaTheSteamApiAndPersistedWithinTheDatabase() throws TooFewSteamIdsException, SecretRetrievalException, UserHasNoGamesException {
             AwsSecretsManagerTestUtil.createMockSteamApiKey(secretsManagerClient);
 
@@ -112,7 +113,7 @@ public class UserServiceIT extends AbstractIntegrationTest {
         }
 
         @Test
-        @DisplayName("If a retrieved User does not own any games then an appropriate exception will be thrown")
+        @DisplayName("Retrieved user does ot own any games, an appropriate exception will be thrown.")
         void IfARetrievedUserDoesNotOwnAnyGamesThenAnAppropriateExceptionWillBeThrown() {
             AwsSecretsManagerTestUtil.createMockSteamApiKey(secretsManagerClient);
 
@@ -147,7 +148,7 @@ public class UserServiceIT extends AbstractIntegrationTest {
         }
 
         @Test
-        @DisplayName("If an attempt to retrieve a user is unsuccessful due to the user not existing then an appropriate exception will be thrown")
+        @DisplayName("User's details unsuccessfully retrieved from the Steam Store API. An appropriate exception will be thrown.")
         void IfAnAttemptToRetrieveAUserIsUnsuccessfulDueToTheUserNotExistingThenAnAppropriateExceptionWillBeThrown() {
             AwsSecretsManagerTestUtil.createMockSteamApiKey(secretsManagerClient);
 
@@ -183,7 +184,7 @@ public class UserServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("If a request to retrieve all games owned by all users is received then a list of common games should be returned")
+    @DisplayName("Given a request to retrieve users' common games, when the users' owned games have been retrieved, then a list of common games should be returned")
     void IfARequestToRetrieveAllGamesOwnedByAllUsersIsReceivedThenAListOfCommonGamesShouldBeReturned() throws TooFewSteamIdsException, SecretRetrievalException, UserHasNoGamesException {
         String mockUserId1 = "7656119804520628";
         String mockUserId2 = "7656119804520626";

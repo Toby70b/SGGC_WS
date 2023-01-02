@@ -58,7 +58,6 @@ public class UserServiceTtlIT extends AbstractIntegrationTest {
         secretsManagerClient = new AWSSecretsManagerClientFactory().createClient(localStackContainer.getFirstMappedPort());
     }
 
-
     @Autowired
     private UserService userService;
 
@@ -69,7 +68,8 @@ public class UserServiceTtlIT extends AbstractIntegrationTest {
     private Clock clock;
 
     @Test
-    @DisplayName("When a user is persisted in the database its TTL field will be populated with a date exactly 24 hours in the future")
+    @DisplayName("Given a request to find Steam users common games, when a user is persisted in the database ,then " +
+            "its TTL field will be populated with a date exactly 24 hours in the future.")
     void WhenAUserIsPersistedInTheDatabaseItsTtlFieldWillBePopulatedWithADateExactly24HoursInTheFuture() throws TooFewSteamIdsException, SecretRetrievalException, UserHasNoGamesException {
         AwsSecretsManagerTestUtil.createMockSteamApiKey(secretsManagerClient);
 
