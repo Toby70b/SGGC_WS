@@ -2,7 +2,6 @@ package com.sggc.exceptions;
 
 import com.sggc.errors.ApiError;
 import lombok.Data;
-import org.springframework.http.HttpStatus;
 
 /**
  * Represents an exception to be thrown when a Steam user owns no games

@@ -2,10 +2,10 @@ package com.sggc.services;
 
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.VanityUrlResolutionException;
+import com.sggc.infrastructure.SteamRequestSender;
 import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import com.sggc.validation.ValidationResult;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,14 +20,13 @@ import java.util.Set;
 import static com.sggc.services.VanityUrlService.VANITY_URL_NOT_ALPHANUMERIC_ERROR_MESSAGE;
 import static com.sggc.services.VanityUrlService.VANITY_URL_NOT_WITHIN_REQUIRED_LENGTH_ERROR_MESSAGE;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class VanityUrlServiceTest {
 
     @Mock
-    private SteamRequestService steamRequestService;
+    private SteamRequestSender steamRequestSender;
 
     @InjectMocks
     private VanityUrlService vanityUrlService;
@@ -49,7 +48,7 @@ public class VanityUrlServiceTest {
                 ResolveVanityUrlResponse vanityUrlResponse = new ResolveVanityUrlResponse();
                 vanityUrlResponse.setResponse(response);
 
-                when(steamRequestService.resolveVanityUrl("VanityUrl1")).thenReturn(vanityUrlResponse);
+                when(steamRequestSender.resolveVanityUrl("VanityUrl1")).thenReturn(vanityUrlResponse);
                 assertEquals(vanityUrlService.resolveVanityUrls(Set.of("VanityUrl1")), Set.of(randomSteamId));
             }
 
@@ -71,8 +70,8 @@ public class VanityUrlServiceTest {
                 ResolveVanityUrlResponse vanityUrlResponse2 = new ResolveVanityUrlResponse();
                 vanityUrlResponse2.setResponse(response2);
 
-                when(steamRequestService.resolveVanityUrl("VanityUrl1")).thenReturn(vanityUrlResponse1);
-                when(steamRequestService.resolveVanityUrl("VanityUrl2")).thenReturn(vanityUrlResponse2);
+                when(steamRequestSender.resolveVanityUrl("VanityUrl1")).thenReturn(vanityUrlResponse1);
+                when(steamRequestSender.resolveVanityUrl("VanityUrl2")).thenReturn(vanityUrlResponse2);
 
                 assertEquals(vanityUrlService.resolveVanityUrls(Set.of("VanityUrl1", "VanityUrl2")), Set.of(randomSteamId1, randomSteamId2));
             }
@@ -96,8 +95,8 @@ public class VanityUrlServiceTest {
                 ResolveVanityUrlResponse vanityUrlResponse2 = new ResolveVanityUrlResponse();
                 vanityUrlResponse2.setResponse(response2);
 
-                when(steamRequestService.resolveVanityUrl("VanityUrl1")).thenReturn(vanityUrlResponse1);
-                when(steamRequestService.resolveVanityUrl("VanityUrl2")).thenReturn(vanityUrlResponse2);
+                when(steamRequestSender.resolveVanityUrl("VanityUrl1")).thenReturn(vanityUrlResponse1);
+                when(steamRequestSender.resolveVanityUrl("VanityUrl2")).thenReturn(vanityUrlResponse2);
 
                 assertEquals(vanityUrlService.resolveVanityUrls(Set.of("VanityUrl1", randomSteamId3, "VanityUrl2")), Set.of(randomSteamId1, randomSteamId3, randomSteamId2));
             }
@@ -111,7 +110,7 @@ public class VanityUrlServiceTest {
             response.setSuccess(42);
             ResolveVanityUrlResponse vanityUrlResponse = new ResolveVanityUrlResponse();
             vanityUrlResponse.setResponse(response);
-            when(steamRequestService.resolveVanityUrl(randomVanityUrl)).thenReturn(vanityUrlResponse);
+            when(steamRequestSender.resolveVanityUrl(randomVanityUrl)).thenReturn(vanityUrlResponse);
             VanityUrlResolutionException ex = assertThrows(VanityUrlResolutionException.class, () -> vanityUrlService.resolveVanityUrls(Set.of(randomVanityUrl)));
             assertEquals(randomVanityUrl, ex.getVanityUrl());
         }

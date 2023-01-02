@@ -1,7 +1,7 @@
 package com.sggc.controllers;
 
 import com.sggc.errors.ApiError;
-import com.sggc.models.sggc.SGGCResponse;
+import com.sggc.models.sggc.SggcResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.Ordered;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class SGGCRestExceptionHandler extends ResponseEntityExceptionHandler {
+public class SggcRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
      * Intercepts validation errors with the request model and returns an error wrapped them in an SGGCResponse object for easier consuming
@@ -50,7 +50,7 @@ public class SGGCRestExceptionHandler extends ResponseEntityExceptionHandler {
                 "Request body violates validation rules, check error details for more information.",
                 validationErrors
         );
-        SGGCResponse response = new SGGCResponse(false, error);
+        SggcResponse response = new SggcResponse(false, error);
         log.info("Internal server error occurred returning 400 response with body [{}]", response);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -59,13 +59,13 @@ public class SGGCRestExceptionHandler extends ResponseEntityExceptionHandler {
      * Catch-all method to catch all uncaught exceptions and wrap them in an SGGCResponse object for easier consuming
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<SGGCResponse> handleGenericException(Exception ex) {
+    public ResponseEntity<SggcResponse> handleGenericException(Exception ex) {
         log.error("Internal server error occurred", ex);
         final ApiError error = new ApiError(
                 "Exception",
                 "Internal server error."
         );
-        SGGCResponse response = new SGGCResponse(false, error);
+        SggcResponse response = new SggcResponse(false, error);
         log.info("Internal server error occurred returning 500 response with body [{}]", response);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }

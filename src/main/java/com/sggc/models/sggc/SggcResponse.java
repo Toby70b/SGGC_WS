@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SGGCResponse {
+public class SggcResponse {
     private boolean success;
     private Object body;
 }

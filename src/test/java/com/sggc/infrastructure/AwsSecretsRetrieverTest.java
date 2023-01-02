@@ -1,10 +1,10 @@
-package com.sggc.util;
+package com.sggc.infrastructure;
 
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.model.AWSSecretsManagerException;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
+import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
 import com.sggc.exceptions.SecretRetrievalException;
-import com.sggc.util.AwsSecretRetriever;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,13 +16,26 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class AwsSecretsRetriever {
+class AwsSecretsRetrieverTest {
 
     @Mock
     private AWSSecretsManager client;
 
     @InjectMocks
     private AwsSecretRetriever secretManagerService;
+
+    @Test
+    @DisplayName("Given a request is made to retrieve a secret when the secret is found then the secret's value should be returned")
+    void GivenRequestToRetrieveSecretWhenTheSecretIsFoundThenTheSecretsValueShouldBeReturned() throws SecretRetrievalException {
+        String mockSecretId = "secretId";
+        String mockSecretVlaue = "secretName";
+
+        GetSecretValueRequest valueRequest = new GetSecretValueRequest()
+                .withSecretId(mockSecretId);
+        when(client.getSecretValue(valueRequest)).thenReturn(new GetSecretValueResult().withSecretString(mockSecretVlaue));
+        String secretValue = secretManagerService.getSecretValue(mockSecretId);
+        assertEquals(mockSecretVlaue, secretValue);
+    }
 
 
     @Test
@@ -35,7 +48,7 @@ class AwsSecretsRetriever {
         SecretRetrievalException expectedException =
                 assertThrows(SecretRetrievalException.class, ()->secretManagerService.getSecretValue("secretKey"));
 
-        assertEquals("Exception occurred when attempting to retrieve secret from AWS secrets manager",
+        assertEquals("Exception occurred when attempting to retrieve secret [secretKey] from AWS secrets manager",
                 expectedException.getMessage());
         assertTrue(expectedException.getCause() instanceof AWSSecretsManagerException);
     }

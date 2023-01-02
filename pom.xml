@@ -5,24 +5,24 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.4.RELEASE</version>
+        <version>2.7.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.sggc</groupId>
     <artifactId>sggcws</artifactId>
-    <version>${project.version}</version>
+    <version>2.0.0</version>
     <name>sggc-ws</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
         <aws-java-sdk-bom.version>1.12.356</aws-java-sdk-bom.version>
-        <spring-boot-starter-parent.version>2.2.4.RELEASE</spring-boot-starter-parent.version>
-        <project.version>1.1.1</project.version>
+        <testcontainers-bom.version>1.17.6</testcontainers-bom.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- ********** AWS SDKs ********** -->
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-bom</artifactId>
@@ -30,11 +30,16 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- ********** Testcontainers ********** -->
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainers-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
-
-
-
 
     <dependencies>
         <!-- ********** Lombok ********** -->
@@ -80,42 +85,67 @@
             <artifactId>google-http-client</artifactId>
             <version>1.42.3</version>
         </dependency>
-        <!-- ********** Swagger ********** -->
+        <!-- ********** OpenAPI ********** -->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>2.9.2</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.6.14</version>
         </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.9.2</version>
-        </dependency>
-        <!-- TODO Should the below be in a dependency management? -->
         <!-- ********** AWS DynamoDB ********** -->
         <dependency>
             <groupId>io.github.boostchicken</groupId>
             <artifactId>spring-data-dynamodb</artifactId>
             <version>5.2.5</version>
         </dependency>
-        <!-- ********** AWS Secrets Manager ********** -->
+        <!-- ********** AWS SDKs ********** -->
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-secretsmanager</artifactId>
+        </dependency>
+        <!--  ********** TestContainers ********** -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>localstack</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!--  ********** WireMock ********** -->
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-jre8</artifactId>
+            <version>2.35.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
+                <!--  ********** Provides Spring boot support ********** -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <!--  ********** Surefire plugin for unit tests ********** -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M6</version>
+                <version>3.0.0-M7</version>
             </plugin>
+            <!--  ********** Compiler plugin to compile sources ********** -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -124,14 +154,31 @@
                     <target>11</target>
                 </configuration>
             </plugin>
+            <!--  ********** Failsafe plugin for integration tests ********** -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.0.0-M7</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--  ********** Dependency Plugin to identify unused plugins ********** -->
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
                     <ignoredUnusedDeclaredDependencies>
                         <ignoredUnusedDeclaredDependency>org.springframework*:*</ignoredUnusedDeclaredDependency>
-                        <ignoredUnusedDeclaredDependency>com.google.http-client:google-http-client:*</ignoredUnusedDeclaredDependency>
-                        <ignoredUnusedDeclaredDependency>io.springfox:springfox-swagger-ui:*</ignoredUnusedDeclaredDependency>
+                        <ignoredUnusedDeclaredDependency>com.google.http-client:google-http-client:*
+                        </ignoredUnusedDeclaredDependency>
+                        <ignoredUnusedDeclaredDependency>org.springdoc:springdoc-openapi-ui:*
+                        </ignoredUnusedDeclaredDependency>
                     </ignoredUnusedDeclaredDependencies>
                 </configuration>
             </plugin>

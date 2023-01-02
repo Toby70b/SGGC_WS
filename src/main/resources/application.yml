@@ -1,5 +1,3 @@
-environment: ${ENVIRONMENT}
-
 # Allow the passing of keys through env variables this is not recommended though.
 amazon:
   aws:
@@ -16,13 +14,18 @@ logging:
     path: ./SGGC - webapp
 
 dynamodb:
-  address: ${DYNAMO_DB_ADDRESS}
+  address: ${DYNAMO_DB_ADDRESS:}
   region: ${DYNAMO_DB_REGION}
 
 secrets_manager:
-  address: ${SECRETS_MANAGER_ADDRESS}
+  address: ${SECRETS_MANAGER_ADDRESS:}
   region: ${SECRETS_MANAGER_REGION}
 
 steam:
   api_address: ${STEAM_API_ADDRESS}
   store_address: ${STEAM_STORE_ADDRESS}
+
+# OpenAPI config, since we only ever plan on covering one Docket It's preferable to declare here.
+springdoc:
+  packagesToScan: com.sggc.controllers
+  paths-to-match: /api/**

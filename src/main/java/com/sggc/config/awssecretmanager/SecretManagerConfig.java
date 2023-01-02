@@ -3,16 +3,15 @@ package com.sggc.config.awssecretmanager;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
-import com.sggc.config.dynamodb.DynamoDbProperties;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/*
+ * Represents the configuration for AWS Secrets Manager.
+ */
 @Configuration
 @RequiredArgsConstructor
 public class SecretManagerConfig {
@@ -21,26 +20,20 @@ public class SecretManagerConfig {
         return new DefaultAWSCredentialsProviderChain();
     }
 
-    public static final String LOCAL_ENVIRONMENT_NAME = "local";
-
-
-    @Value("${environment}")
-    private String environment;
-
     private final SecretManagerProperties secretManagerProperties;
 
     /**
      * Creates a new instance of the AWS Secrets Manager client to perform actions on AWS secrets.
      * <p/>
-     * If the 'ENVIRONMENT' environment variable is equal to 'local' then the instance will be configured to connect to
-     * a local AWS Secret Manager instance running on the host machine.
+     * If the 'SECRETS_MANAGER_ADDRESS' environment variable is set then the instance will be configured to connect to
+     * an AWS Secret Manager instance running on that address.
      *
      * @return a new instance of the AWS Secrets Manager client
      */
     @Bean
     public AWSSecretsManager secretManagerClient() {
         AWSSecretsManagerClientBuilder clientBuilder = AWSSecretsManagerClientBuilder.standard();
-        if (LOCAL_ENVIRONMENT_NAME.equalsIgnoreCase(environment)) {
+        if (!secretManagerProperties.getAddress().isEmpty()) {
             clientBuilder.withEndpointConfiguration(
                     new AwsClientBuilder.EndpointConfiguration(secretManagerProperties.getAddress(), secretManagerProperties.getRegion()));
         } else {

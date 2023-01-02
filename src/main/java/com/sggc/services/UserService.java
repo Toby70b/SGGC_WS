@@ -3,21 +3,20 @@ package com.sggc.services;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.TooFewSteamIdsException;
 import com.sggc.exceptions.UserHasNoGamesException;
-import com.sggc.exceptions.VanityUrlResolutionException;
+import com.sggc.infrastructure.SteamRequestSender;
 import com.sggc.models.Game;
 import com.sggc.models.User;
-import com.sggc.validation.ValidationResult;
 import com.sggc.models.steam.response.GetOwnedGamesResponse;
-import com.sggc.models.steam.response.ResolveVanityUrlResponse;
 import com.sggc.repositories.UserRepository;
 import com.sggc.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -29,8 +28,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final SteamRequestService steamRequestHandler;
-    private final VanityUrlService vanityUrlService;
+    private final SteamRequestSender steamRequestHandler;
     private final Clock systemClock;
 
     /**

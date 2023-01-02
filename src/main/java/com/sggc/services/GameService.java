@@ -1,5 +1,6 @@
 package com.sggc.services;
 
+import com.sggc.infrastructure.SteamRequestSender;
 import com.sggc.models.Game;
 import com.sggc.models.GameCategory;
 import com.sggc.models.GameData;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 public class GameService {
 
     private final GameRepository gameRepository;
-    private final SteamRequestService steamRequestHandler;
+    private final SteamRequestSender steamRequestHandler;
 
     /**
      * Retrieve details of games from the DB via the game's app id

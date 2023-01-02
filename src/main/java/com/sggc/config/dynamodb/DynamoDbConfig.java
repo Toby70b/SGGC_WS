@@ -7,7 +7,6 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import lombok.RequiredArgsConstructor;
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,29 +18,24 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class DynamoDbConfig {
 
-    public static final String LOCAL_ENVIRONMENT_NAME = "local";
-
     private AWSCredentialsProvider amazonAWSCredentialsProvider() {
         return new DefaultAWSCredentialsProviderChain();
     }
-
-    @Value("${environment}")
-    private String environment;
 
     private final DynamoDbProperties dynamoDbProperties;
 
     /**
      * Creates a new instance of the AWS DynamoDB client to perform actions on DynamoDB databases
      * <p/>
-     * If the 'ENVIRONMENT' environment variable is equal to 'local' then the instance will be configured to connect to
-     * a local AWS Secret Manager instance running on the host machine.
+     * If the 'DYNAMO_DB_ADDRESS' environment variable is set then the instance will be configured to connect to
+     * an AWS DynamoDB instance running on that address.
      *
      * @return a new instance of the AWS DynamoDB client
      */
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
         AmazonDynamoDBClientBuilder clientBuilder = AmazonDynamoDBClientBuilder.standard();
-        if (LOCAL_ENVIRONMENT_NAME.equalsIgnoreCase(environment)) {
+        if (!dynamoDbProperties.getAddress().isEmpty()) {
             clientBuilder.withEndpointConfiguration(
                     new AwsClientBuilder.EndpointConfiguration(dynamoDbProperties.getAddress(), dynamoDbProperties.getRegion()));
         } else {

@@ -1,4 +1,4 @@
-package com.sggc.util;
+package com.sggc.infrastructure;
 
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
@@ -35,7 +35,7 @@ public class AwsSecretRetriever {
             GetSecretValueResult valueResponse = client.getSecretValue(valueRequest);
             return valueResponse.getSecretString();
         } catch (Exception e) {
-            throw new SecretRetrievalException("Exception occurred when attempting to retrieve secret from AWS secrets manager", e);
+            throw new SecretRetrievalException(secretId, e);
         }
     }
 
