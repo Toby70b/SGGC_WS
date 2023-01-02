@@ -183,7 +183,7 @@ class SteamRequestSenderTest {
 
             String expectedDebugMessage =
                     "Contacting [mockApiAddress/IPlayerService/GetOwnedGames/v1/?key=*************&steamid=SomeUserId] " +
-                            "to get owned games of user [SomeUserId]";
+                            "to get owned games of user [SomeUserId].";
 
             GetOwnedGamesResponse mockResponse = new GetOwnedGamesResponse();
             GetOwnedGamesResponse.Response mockResponseDetails = new GetOwnedGamesResponse.Response();
