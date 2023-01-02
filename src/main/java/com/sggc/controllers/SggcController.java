@@ -44,12 +44,12 @@ public class SggcController {
      */
     @PostMapping(value = "/")
     public ResponseEntity<SggcResponse> getGamesAllUsersOwn(@Valid @RequestBody GetCommonGamesRequest request) throws SecretRetrievalException {
-        log.info("Request received [{}]", request);
+        log.info("Request received [{}].", request);
         Set<String> steamIds = request.getSteamIds();
         List<ValidationResult> validationErrorList = vanityUrlService.validateSteamIdsAndVanityUrls(steamIds);
         if (!validationErrorList.isEmpty()) {
             SggcResponse response = new SggcResponse(false, new ValidationException(validationErrorList).toApiError());
-            log.info("Error occurred when validating Steam Ids/Vanity URls object returning 400 error response with body [{}]", response);
+            log.info("Error occurred when validating Steam IDs/Vanity URls object returning 400 error response with body [{}].", response);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
         Set<String> resolvedSteamUserIds;
@@ -57,7 +57,7 @@ public class SggcController {
             resolvedSteamUserIds = vanityUrlService.resolveVanityUrls(steamIds);
         } catch (VanityUrlResolutionException ex) {
             SggcResponse response = new SggcResponse(false, ex.toApiError());
-            log.info("Error occurred while trying to resolve Vanity url returning 404 error response with body [{}]", response);
+            log.info("Error occurred while trying to resolve Vanity URL returning 404 error response with body [{}].", response);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
         Set<String> commonGameIdsBetweenUsers;
@@ -65,17 +65,17 @@ public class SggcController {
             commonGameIdsBetweenUsers = userService.getIdsOfGamesOwnedByAllUsers(resolvedSteamUserIds);
         } catch (UserHasNoGamesException ex) {
             SggcResponse response = new SggcResponse(false, ex.toApiError());
-            log.info("Error occurred while trying to find user's owned games returning 404 error response with body [{}]", response);
+            log.info("Error occurred while trying to find user's owned games returning 404 error response with body [{}].", response);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
         catch (TooFewSteamIdsException ex){
             SggcResponse response = new SggcResponse(false, ex.toApiError());
-            log.info("After Vanity URL resolution there are fewer than two Steam user IDs in the collection to find common games for." +
-                    "returning 400 error response with body [{}].",response);
+            log.info("There are fewer than two Steam user IDs in the collection after Vanity URL resolution returning " +
+                    "400 error response with body [{}].", response);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
         Set<Game> commonGames = gameService.findGamesById(commonGameIdsBetweenUsers, request.isMultiplayerOnly());
-        log.info("Response successful");
+        log.info("Response successful.");
         return new ResponseEntity<>(new SggcResponse(true, commonGames), HttpStatus.OK);
     }
 }

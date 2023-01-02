@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Represents the result of validating some object
+ * Represents the result of validating some object.
  */
 @Data
 @AllArgsConstructor

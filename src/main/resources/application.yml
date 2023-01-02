@@ -25,7 +25,7 @@ steam:
   api_address: ${STEAM_API_ADDRESS}
   store_address: ${STEAM_STORE_ADDRESS}
 
-# OpenAPI config, since we only ever plan on covering one Docket its preferable to declare here
+# OpenAPI config, since we only ever plan on covering one Docket It's preferable to declare here.
 springdoc:
-  packagesToScan: com.sggc.controllers,
+  packagesToScan: com.sggc.controllers
   paths-to-match: /api/**

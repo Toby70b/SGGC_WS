@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Represents the application's caching configuration
+ * Represents the application's caching configuration.
  */
 @Configuration
 @EnableCaching

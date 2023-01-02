@@ -17,16 +17,16 @@ public class LocalDynamoDbClientFactory {
      * Initializes a new {@link AmazonDynamoDB} object; A client for interacting with an Amazon DynamoDB instance. By
      * default, the service is expected to be running locally and configured to be running in the region of "eu-west-2".
      *
-     * @param port the port which the Amazon DynamoDB instance is listening on
+     * @param port the port which the Amazon DynamoDB instance is listening on.
      * @return a new client for interacting with a local Amazon DynamoDB instance.
      */
     public AmazonDynamoDB createClient(int port) {
-        return  AmazonDynamoDBClientBuilder.standard()
+        return AmazonDynamoDBClientBuilder.standard()
                 .withEndpointConfiguration(
                         new AwsClientBuilder.EndpointConfiguration(
                                 String.format("http://localhost:%d", port), DEFAULT_REGION))
                 .withCredentials(new AWSStaticCredentialsProvider
-                        (new BasicAWSCredentials(MOCK_ACCESS_KEY,MOCK_SECRET_ACCESS_KEY)))
+                        (new BasicAWSCredentials(MOCK_ACCESS_KEY, MOCK_SECRET_ACCESS_KEY)))
                 .build();
     }
 }

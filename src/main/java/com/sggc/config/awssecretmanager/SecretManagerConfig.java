@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /*
- * Represents the configuration for AWS Secrets Manager
+ * Represents the configuration for AWS Secrets Manager.
  */
 @Configuration
 @RequiredArgsConstructor
@@ -26,7 +26,7 @@ public class SecretManagerConfig {
      * Creates a new instance of the AWS Secrets Manager client to perform actions on AWS secrets.
      * <p/>
      * If the 'SECRETS_MANAGER_ADDRESS' environment variable is set then the instance will be configured to connect to
-     * a local AWS Secret Manager instance running on the host machine.
+     * an AWS Secret Manager instance running on that address.
      *
      * @return a new instance of the AWS Secrets Manager client
      */

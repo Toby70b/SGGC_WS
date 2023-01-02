@@ -7,17 +7,17 @@ import static org.testcontainers.containers.localstack.LocalStackContainer.Servi
 
 /**
  * Represents a Testcontainer for the Localstack service, with some extra default values applied to better suit usage
- * by the SGGC application
+ * by the SGGC application.
  */
 public class SggcLocalStackContainer extends LocalStackContainer {
 
-    private static final String DEFAULT_DOCKER_IMAGE = "localstack/localstack:latest";
-    private static final int DEFAULT_EXPOSED_PORT = 4566;
+    private static final String DOCKER_IMAGE = "localstack/localstack:latest";
+    private static final int EXPOSED_PORT = 4566;
     public static final LocalStackContainer.Service[] ENABLED_SERVICES = {SECRETSMANAGER};
 
     public SggcLocalStackContainer() {
-        super(DockerImageName.parse(DEFAULT_DOCKER_IMAGE));
-        this.withExposedPorts(DEFAULT_EXPOSED_PORT)
+        super(DockerImageName.parse(DOCKER_IMAGE));
+        this.withExposedPorts(EXPOSED_PORT)
                 .withServices(ENABLED_SERVICES);
     }
 }

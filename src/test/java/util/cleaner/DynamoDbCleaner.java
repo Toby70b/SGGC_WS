@@ -21,9 +21,12 @@ public class DynamoDbCleaner implements TestResourceCleaner {
 
     public static final String LOCAL_DYNAMO_DB_DDL_PATH = "Local-Developer-Setup/DynamoDB/tables/";
     private final AmazonDynamoDB dynamoDbClient;
+    private final Gson gson = new GsonBuilder()
+            .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
+            .create();
 
     /**
-     * @param dynamoDbClient a preconfigured Amazon Dynamo DB client
+     * @param dynamoDbClient a preconfigured Amazon Dynamo DB client.
      */
     public DynamoDbCleaner(AmazonDynamoDB dynamoDbClient) {
         this.dynamoDbClient = dynamoDbClient;
@@ -41,9 +44,6 @@ public class DynamoDbCleaner implements TestResourceCleaner {
                 throw new RuntimeException("Exception occurred when trying to re-create deleted DynamoDB tables", e);
             }
             dynamoDbClient.deleteTable(tableName);
-            Gson gson = new GsonBuilder()
-                    .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-                    .create();
             CreateTableRequest createTableRequest = gson.fromJson(reader, CreateTableRequest.class);
             dynamoDbClient.createTable(createTableRequest);
         }

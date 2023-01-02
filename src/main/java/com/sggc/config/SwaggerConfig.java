@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Represents the non-technical configuration for Swagger
+ * Represents the non-technical configuration for Swagger.
  */
 @Configuration
 public class SwaggerConfig {
@@ -16,7 +16,7 @@ public class SwaggerConfig {
     public static final String SGGC_API_DESCRIPTION = "REST API for the Steam Group Game Checker";
 
     @Bean
-    public OpenAPI springShopOpenAPI() {
+    public OpenAPI sggcOpenApi() {
         return new OpenAPI().info(new Info()
                 .title(SGGC_API_TITLE)
                 .description(SGGC_API_DESCRIPTION));

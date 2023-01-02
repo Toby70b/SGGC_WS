@@ -17,7 +17,6 @@
 
     <properties>
         <aws-java-sdk-bom.version>1.12.356</aws-java-sdk-bom.version>
-        <spring-boot-starter-parent.version>2.2.4.RELEASE</spring-boot-starter-parent.version>
         <testcontainers-bom.version>1.17.6</testcontainers-bom.version>
     </properties>
 
@@ -178,7 +177,7 @@
                         <ignoredUnusedDeclaredDependency>org.springframework*:*</ignoredUnusedDeclaredDependency>
                         <ignoredUnusedDeclaredDependency>com.google.http-client:google-http-client:*
                         </ignoredUnusedDeclaredDependency>
-                        <ignoredUnusedDeclaredDependency>io.springfox:springfox-swagger-ui:*
+                        <ignoredUnusedDeclaredDependency>org.springdoc:springdoc-openapi-ui:*
                         </ignoredUnusedDeclaredDependency>
                     </ignoredUnusedDeclaredDependencies>
                 </configuration>

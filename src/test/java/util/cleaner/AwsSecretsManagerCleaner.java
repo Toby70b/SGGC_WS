@@ -14,7 +14,7 @@ public class AwsSecretsManagerCleaner implements TestResourceCleaner {
     private final AWSSecretsManager secretsManagerClient;
 
     /**
-     * @param secretsManagerClient a preconfigured AWS Secrets Manager client
+     * @param secretsManagerClient a preconfigured AWS Secrets Manager client.
      */
     public AwsSecretsManagerCleaner(AWSSecretsManager secretsManagerClient) {
         this.secretsManagerClient = secretsManagerClient;

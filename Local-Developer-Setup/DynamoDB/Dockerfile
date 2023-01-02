@@ -1,4 +1,4 @@
-#Get the unzipped AWS CLI
+# Get the unzipped AWS CLI
 FROM alpine:3.16 as awscli
 RUN apk update && apk add --no-cache \
     curl \
@@ -7,7 +7,7 @@ RUN apk update && apk add --no-cache \
     && unzip awscliv2.zip
 
 FROM amazon/dynamodb-local:latest
-#Add the AWS CLI from the previous stage here so we can use it to prepopulate tables upon startup
+# Add the AWS CLI from the previous stage here so we can use it to prepopulate tables upon startup
 COPY --from=awscli aws ./
 USER root
 RUN yum -y install sudo less \
@@ -16,9 +16,9 @@ RUN yum -y install sudo less \
     && sudo ./install \
     && rm -rf ./install \
     && mkdir -p sggc-setup
-#Run script to start local dynamodb and populate it with data
+# Run script to start local dynamodb and populate it with data
 COPY init-db.sh sggc-setup/init-db.sh
-#Mark copied file as executable to run on AWS CodeBuild
+# Mark copied file as executable to run on AWS CodeBuild
 RUN  chmod +x ./sggc-setup/init-db.sh
 COPY tables sggc-setup/tables
 ENTRYPOINT ["/bin/bash" ,"-c", "sggc-setup/init-db.sh"]

@@ -55,7 +55,7 @@ public class SteamRequestSender {
                 .build()
                 .toUri();
 
-        log.debug("Contacting [{}] to get owned games of user [{}]", sanitizeRequestUri(requestUri), userId);
+        log.debug("Contacting [{}] to get owned games of user [{}].", sanitizeRequestUri(requestUri), userId);
         return restTemplate.getForObject(requestUri, GetOwnedGamesResponse.class);
     }
 
@@ -73,7 +73,7 @@ public class SteamRequestSender {
                 .build()
                 .toUri();
 
-        log.debug("Contacting [{}] to get details of game [{}]", requestUri, appId);
+        log.debug("Contacting [{}] to get details of game [{}].", requestUri, appId);
         String response = restTemplate.getForObject(requestUri, String.class);
         return parseGameDetailsList(response);
     }
@@ -90,7 +90,7 @@ public class SteamRequestSender {
                 .build()
                 .toUri();
 
-        log.debug("Contacting [{}] to resolve vanity URL [{}]", sanitizeRequestUri(requestUri), vanityUrl);
+        log.debug("Contacting [{}] to resolve vanity URL [{}].", sanitizeRequestUri(requestUri), vanityUrl);
         return restTemplate.getForObject(requestUri, ResolveVanityUrlResponse.class);
     }
 

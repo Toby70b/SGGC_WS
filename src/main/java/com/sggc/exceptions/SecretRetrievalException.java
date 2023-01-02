@@ -6,7 +6,7 @@ package com.sggc.exceptions;
 public class SecretRetrievalException extends Exception {
     
     public SecretRetrievalException(String secretId, Throwable cause) {
-        super(String.format("Exception occurred when attempting to retrieve secret [%s] from AWS secrets manager"
+        super(String.format("Exception occurred when attempting to retrieve secret [%s] from AWS secrets manager."
                 , secretId), cause);
     }
 }

@@ -10,6 +10,10 @@ import util.containers.SggcDynamoDbLocalContainer;
 import util.containers.SggcLocalStackContainer;
 import util.containers.WiremockContainer;
 
+/**
+ * Represents a class designed to be extended by integration tests. Initializes environment necessary for a functioning
+ * integration test.
+ */
 @SpringBootTest(classes = SteamGroupGamesApplication.class)
 @TestPropertySource(properties = {"spring.config.location = classpath:app-int-test.yml"})
 @Testcontainers

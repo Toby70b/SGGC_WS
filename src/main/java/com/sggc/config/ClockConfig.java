@@ -8,7 +8,7 @@ import java.time.Clock;
 //TODO: Is this needed? Was this required for mocking? If not Look to remove this in future
 
 /**
- * Represents the application's internal clock configuration
+ * Represents the application's internal clock configuration.
  */
 @Configuration
 public class ClockConfig {

@@ -1,7 +1,7 @@
 package util.constants;
 
 /**
- * Represents a class for constants related to Secrets required by the Application. To be used for application tests
+ * Represents a class for constants related to Secrets required by the Application. To be used for application tests.
  */
 public class SecretsTestConstants {
 
