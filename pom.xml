@@ -11,6 +11,7 @@
 
     <groupId>com.sggc</groupId>
     <artifactId>sggcws</artifactId>
+    <!-- Remember to update Buildspec and Dockerfile files when updating this! Should look at solution for this -->
     <version>2.0.0</version>
     <name>sggc-ws</name>
     <description>Demo project for Spring Boot</description>

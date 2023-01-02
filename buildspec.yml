@@ -37,6 +37,6 @@ reports:
     base-directory: 'target/failsafe-reports'
 artifacts:
   files:
-    - target/sggcws-1.1.1.jar
+    - target/sggcws-2.0.0.jar
     - appspec.yml
   discard-paths: yes
