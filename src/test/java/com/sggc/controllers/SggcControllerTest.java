@@ -1,6 +1,5 @@
 package com.sggc.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sggc.errors.ApiError;
 import com.sggc.exceptions.SecretRetrievalException;
 import com.sggc.exceptions.TooFewSteamIdsException;
