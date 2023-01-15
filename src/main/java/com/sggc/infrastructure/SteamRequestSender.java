@@ -50,7 +50,7 @@ public class SteamRequestSender {
      * @throws SecretRetrievalException if an error occurs retrieving the Steam API key secret from AWS secrets manager
      */
     public GetOwnedGamesResponse requestUsersOwnedGamesFromSteamApi(String userId) throws SecretRetrievalException {
-        URI requestUri = SteamApiRequest(GET_OWNED_GAMES_ENDPOINT)
+        URI requestUri = steamApiRequest(GET_OWNED_GAMES_ENDPOINT)
                 .queryParam(STEAM_ID_QUERY_PARAM_KEY, userId)
                 .build()
                 .toUri();
@@ -85,7 +85,7 @@ public class SteamRequestSender {
      * @return a response from the Steam API containing the resolved Steam user id
      */
     public ResolveVanityUrlResponse resolveVanityUrl(String vanityUrl) throws SecretRetrievalException {
-        URI requestUri = SteamApiRequest(RESOLVE_VANITY_URL_ENDPOINT)
+        URI requestUri = steamApiRequest(RESOLVE_VANITY_URL_ENDPOINT)
                 .queryParam(VANITY_URL_QUERY_PARAM_KEY, vanityUrl)
                 .build()
                 .toUri();
