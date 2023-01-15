@@ -191,7 +191,7 @@ public class SteamRequestSender {
      * @return a builder object which can be chained to provide more properties that the request will be constructed with
      * @throws SecretRetrievalException if an error occurs retrieving the Steam API key secret from AWS secrets manager
      */
-    private UriComponentsBuilder SteamApiRequest(String endpoint) throws SecretRetrievalException {
+    private UriComponentsBuilder steamApiRequest(String endpoint) throws SecretRetrievalException {
         return UriComponentsBuilder.fromUriString(steamProperties.getApiAddress() + endpoint)
                 .queryParam(STEAM_KEY_QUERY_PARAM_KEY, getSteamApiKey());
     }
