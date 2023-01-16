@@ -102,14 +102,8 @@ public class SteamRequestSender {
      * @throws IOException if an error occurs while serializing the string into JSON
      */
     private GameData parseGameDetailsList(String stringToParse) throws IOException {
-        Gson gson = new Gson();
-        JsonElement jsonTree = parseResponseStringToJson(stringToParse);
-        JsonObject obj = jsonTree.getAsJsonObject();
-        // The root of the response is an id of the game thus get the responses root value
-        String gameId = obj.keySet().iterator().next();
-        obj = obj.getAsJsonObject(gameId);
-        String successField = "success";
-        boolean responseSuccess = Boolean.parseBoolean(obj.get(successField).toString());
+        JsonObject rootObject = getAppDetailsResponseRootObject(stringToParse);
+        boolean responseSuccess = isAppDetailsResponseSuccessful(rootObject);
         /*
         Sometimes steam no longer has info on the Game Id e.g. 33910 ARMA II, this is probably because the devs of the games
         in question may have created a new steam product for the exact same game (demo perhaps?), so to avoid crashing if the game no longer
@@ -118,10 +112,55 @@ public class SteamRequestSender {
         if (!responseSuccess) {
             log.debug("Could not determine whether game was multiplayer. Will be treated as multiplayer.");
             return new GameData(Collections.singleton(new GameCategory(SteamGameCategory.MULTIPLAYER)));
+        } else  {
+            if (doesGameHaveCategories(rootObject)){
+                log.debug("Could not determine whether game was multiplayer. Will be treated as multiplayer.");
+                return new GameData(Collections.singleton(new GameCategory(SteamGameCategory.MULTIPLAYER)));
+            }
         }
         String dataField = "data";
-        obj = obj.getAsJsonObject(dataField);
-        return gson.fromJson(obj.toString(), GameData.class);
+        rootObject = rootObject.getAsJsonObject(dataField);
+        Gson gson = new Gson();
+        return gson.fromJson(rootObject.toString(), GameData.class);
+    }
+
+    /**
+     * Returns the 'root' object from the Steam store's Get App Details endpoint.
+     * @param jsonString string representing the response from the endpoint.
+     *
+     * @return a Json object containing the details the Steam store contains on a game.
+     * @throws IOException if an error occurs while serializing the string into JSON
+     */
+    public JsonObject getAppDetailsResponseRootObject(String jsonString) throws IOException {
+        JsonElement jsonTree = parseResponseStringToJson(jsonString);
+        JsonObject obj = jsonTree.getAsJsonObject();
+        // The root of the response is an id of the game thus get the responses root value
+        String gameId = obj.keySet().iterator().next();
+        return obj.getAsJsonObject(gameId);
+    }
+
+    /**
+     * Determines whether the response from the Steam store's Get App Details endpoint was successful.
+     *
+     * @param obj the response from the HTTP request deserialized into a {@link JsonObject} for easier parsing.
+     * @return a Json representation of the categories field in the response.
+     */
+    private boolean isAppDetailsResponseSuccessful(JsonObject obj) {
+        String successFieldKey = "success";
+        return Boolean.parseBoolean(obj.get(successFieldKey).toString());
+    }
+
+    /**
+     * Determines whether the Steam store's details for a game includes any categories.
+     *
+     * @param obj the response from the HTTP request deserialized into a {@link JsonObject} for easier parsing.
+     * @return a Json representation of the categories field in the response.
+     */
+    private boolean doesGameHaveCategories(JsonObject obj) {
+        String dataFieldKey = "data";
+        String gameCategoriesFieldKey = "categories";
+        JsonElement gameCategories = obj.get(dataFieldKey).getAsJsonObject().get(gameCategoriesFieldKey);
+        return gameCategories == null || gameCategories.toString().trim().isEmpty();
     }
 
     /**

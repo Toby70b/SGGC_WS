@@ -73,8 +73,8 @@ class SteamRequestSenderTest {
     class RetrieveApplicationDetails {
 
         @Test
-        @DisplayName("Given a application id which doesnt exist, when a successful request is made to retrieve an " +
-                "application's details then the service should return a parsed response")
+        @DisplayName("Given a application id, when a successful request is made to retrieve an application's details " +
+                "then the service should return a parsed response")
         void givenAValidApplicationIdWhenASuccessfulRequestIsMadeToRetrieveAnApplicationDetailsThenTheServiceShouldReturnAParsedResponse() throws IOException {
             URI mockURI = URI.create(MOCK_STORE_ADDRESS + "/api/appdetails/?appids=SomeAppId");
             String mockResponseJson = "{\n" +
@@ -122,6 +122,25 @@ class SteamRequestSenderTest {
                     "    \"SomeAppId\": {\n" +
                     "        \"success\": false\n" +
                     "    }\n" +
+                    "}";
+            GameData expectedGameDataResponse =
+                    new GameData(Collections.singleton(new GameCategory(SteamGameCategory.MULTIPLAYER)));
+
+            when(restTemplate.getForObject(mockURI, String.class)).thenReturn(mockResponseJson);
+            assertEquals(expectedGameDataResponse, steamRequestSender.requestAppDetailsFromSteamApi("SomeAppId"));
+        }
+
+        @Test
+        @DisplayName("Given a valid application which doesn't have any categories, when a successful request is made to retrieve an " +
+                "application's details then the service assume the game is multiplayer")
+        void givenAValidApplicationIdWhichDoesntHaveAnyCategoriesWhenASuccessfulRequestIsMadeToRetrieveAnApplicationDetailsThenTheServiceShouldAssumeTheGameIsMultiplayer() throws SecretRetrievalException, IOException {
+            URI mockURI = URI.create(MOCK_STORE_ADDRESS + "/api/appdetails/?appids=SomeAppId");
+            String mockResponseJson = "{\n" +
+                    "  \"SomeAppId\": {\n" +
+                    "    \"success\": true,\n" +
+                    "    \"data\": {\n" +
+                    "    }\n" +
+                    "  }\n" +
                     "}";
             GameData expectedGameDataResponse =
                     new GameData(Collections.singleton(new GameCategory(SteamGameCategory.MULTIPLAYER)));
